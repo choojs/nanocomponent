@@ -122,7 +122,7 @@ proxies an existing node. Check out the code to see how it works. The result is
 that if every element in our tree uses `cache-element`, only elements that have
 changed will be recomputed and rerendered making things very fast.
 
-## What's the exact difference between cache and widget?
+### What's the exact difference between cache and widget?
 - `cache` return a proxy node if the arguments were the same. If arguments
   change, it'll rerender and return a new node.
 - `widget` will always return a proxy node. It also listens for the node to be
