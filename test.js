@@ -1,4 +1,5 @@
 const cacheElement = require('./')
+const widget = require('./widget')
 const test = require('tape')
 const html = require('bel')
 
@@ -40,4 +41,32 @@ test('cache', (t) => {
   })
 })
 
-test('widget')
+test('widget', (t) => {
+  t.test('should validate input types', (t) => {
+    t.plan(1)
+    t.throws(widget.bind(null, 123), /function/)
+  })
+
+  t.test('should render elements', (t) => {
+    t.plan(3)
+
+    const render = widget((update) => {
+      const el = html`<div></div>`
+      update((newName) => {
+        el.innerText = newName
+      })
+      return el
+    })
+
+    const el1 = render('mittens')
+    t.equal(String(el1.innerText), 'mittens', 'init render success')
+
+    const el2 = render('snowball', 'mittens')
+    const same1 = el2.isSameNode(el1)
+    t.equal(same1, true, 'proxy success')
+
+    const el3 = render('scruffles', 'mittens')
+    const same2 = el3.isSameNode(el1)
+    t.equal(same2, true, 'proxy success')
+  })
+})

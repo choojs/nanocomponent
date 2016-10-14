@@ -4,7 +4,7 @@
   "description": "Memoize a bel element",
   "main": "index.js",
   "scripts": {
-    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "deps": "dependency-check . --entry widget.js && dependency-check . --extra --no-dev --entry widget.js",
     "test": "standard && npm run deps && NODE_ENV=test node test",
     "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover test.js"
   },
@@ -20,7 +20,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "global": "^4.3.1"
+    "global": "^4.3.1",
+    "noop2": "^2.0.0",
+    "on-load": "^3.2.0"
   },
   "devDependencies": {
     "bel": "^4.5.0",

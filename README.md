@@ -42,15 +42,7 @@ once, and then only has to worry about managing its lifecycle:
 const widget = require('cache-element/widget')
 const html = require('bel')
 
-const renderEl = widget(createEl, (curr, prev) => {
-  if (curr && !prev) return true
-  return (prev === curr)
-})
-
-let el = renderEl('Tubi', 12) // creates new element
-let el = renderEl('Tubi', 12) // returns cached element (proxy)
-let el = renderEl('Babs', 25) // returns cached element (proxy)
-function createEl (update) {
+const renderEl = widget(function createEl (update) {
   let name = null
   let age = null
 
@@ -76,7 +68,11 @@ function createEl (update) {
     age = null
     console.log('removed from DOM')
   }
-}
+})
+
+let el = renderEl('Tubi', 12) // creates new element
+let el = renderEl('Tubi', 12) // returns cached element (proxy)
+let el = renderEl('Babs', 25) // returns cached element (proxy)
 ```
 
 ## API
