@@ -1,26 +1,55 @@
-'use strict'
-
+const document = require('global/document')
 const assert = require('assert')
+
+const elType = 'div'
+
 module.exports = cacheElement
 
-const __slice = Function.prototype.call.bind(Array.prototype.slice)
+// cache an element
+// (fn, fn) -> fn()
+function cacheElement (createNode, compare) {
+  compare = compare || defaultCompare
 
-function cacheElement (fn) {
-  assert(typeof fn === 'function', 'cacheElement accepts one argument, which must be a `function`')
-  const store = {}
+  assert.equal(typeof createNode, 'function', 'cache-element: createNode should be an function')
+  assert.equal(typeof compare, 'function', 'cache-element: compare should be a function')
 
+  var isProxied = false
+  var element = null
+  var proxy = null
+
+  // render an element
+  // (any...) -> obj
   return function render () {
-    const args = __slice(arguments, 0)
-    let argsAreTheSame = !!store.prev
-    for (let i = 0; i < (store.prev || []).length; ++i) {
-      // not `break`ing cause I don't think users will pass a million args
-      argsAreTheSame = argsAreTheSame && store.prev[i] === args[i]
+    var args = new Array(arguments.length)
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i]
     }
 
-    if (argsAreTheSame) return store.el
-
-    store.prev = args
-    store.el = fn.apply(this, args)
-    return store.el
+    if (!element) {
+      element = createNode.apply(null, args)
+      return element
+    } else {
+      const isEqual = compare.apply(null, args)
+      if (isEqual) {
+        if (!isProxied) {
+          proxy = document.createElement(elType)
+          proxy.isSameNode = function (el) {
+            return (el === element)
+          }
+        }
+        return proxy
+      } else {
+        element = createNode.apply(null, args)
+        isProxied = false
+        return element
+      }
+    }
   }
+}
+
+// strict equal compare two arguments
+// (any, any) -> bool
+function defaultCompare (curr, prev) {
+  if (curr && !prev) return true
+  return (curr === prev)
 }

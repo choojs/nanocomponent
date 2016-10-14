@@ -13,20 +13,26 @@ React's `.shouldComponentUpdate()` method, but only using native DOM methods.
 
 ## Usage
 ### Caching
-Here we take a regular element, and cache it so re-renders are fast:
+Here we take a regular element, and cache it so re-renders are fast. We compare
+the arguments on each run passing it to the `compare` function:
 ```js
 const cache = require('cache-element')
 const html = require('bel')
 
-const renderEl = cache(function (name, age) {
-  return html`
-    <p>Name is ${name} and age is ${age}</p>
-  `
+const renderEl = cache(createEl, function compare (curr, prev) {
+  if (curr && !prev) return true
+  return (prev === curr)
 })
 
-let el = renderEl('Tubi', 12) // creates new element
-let el = renderEl('Tubi', 12) // returns cached element (proxy)
-let el = renderEl('Babs', 25) // creates new element
+let el = renderEl('Tubi') // creates new element
+let el = renderEl('Tubi', 'Tubi') // returns cached element (proxy)
+let el = renderEl('Babs', 'Tubi') // creates new element
+
+function createEl (name, age) {
+  return html`
+    <p>The person's name is ${name}</p>
+  `
+}
 ```
 
 ### Widget
@@ -36,7 +42,15 @@ once, and then only has to worry about managing its lifecycle:
 const widget = require('cache-element/widget')
 const html = require('bel')
 
-const renderEl = widget(function (update) {
+const renderEl = widget(createEl, (curr, prev) => {
+  if (curr && !prev) return true
+  return (prev === curr)
+})
+
+let el = renderEl('Tubi', 12) // creates new element
+let el = renderEl('Tubi', 12) // returns cached element (proxy)
+let el = renderEl('Babs', 25) // returns cached element (proxy)
+function createEl (update) {
   let name = null
   let age = null
 
@@ -62,22 +76,30 @@ const renderEl = widget(function (update) {
     age = null
     console.log('removed from DOM')
   }
-})
-
-let el = renderEl('Tubi', 12) // creates new element
-let el = renderEl('Tubi', 12) // returns cached element (proxy)
-let el = renderEl('Babs', 25) // returns cached element (proxy)
+}
 ```
 
 ## API
-### createEl = cache(fn(...args))
-Cache an element.
+### createEl = cache(render(...args), compare?)
+Cache an element. The `compare` function is optional, and by default compares
+the first and second argument with `===`:
+```js
+function compare (curr, prev) {
+  if (curr && !prev) return true
+  return (prev === curr)
+}
+```
 
-### createEl = widget(fn(fn(...args)))
-Render a widget.
+### createEl = widget(render(update(onupdate((...args))))
+Render a widget. Takes a `render` function which exposes an `update` function
+which takes an `onupdate` function which is passed arguments whenever arguments
+are passed into the tree. Unlike `cache`, `widget` takes no `compare` function
+as it will always return a `proxy` element. If you want to prevent any updates
+from happening, run a comparison inside `onupdate`.
 
 ### el = createEl(...args)
-Render an element, passing it arbitrary arguments.
+Render an element, passing it arbitrary arguments. The arguments are passed to
+the element's `compare` function (`onupdate` for `widget`).
 
 ## FAQ
 ### Where does this run?
