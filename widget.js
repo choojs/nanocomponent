@@ -35,7 +35,7 @@ function widgetizeElement (createNode) {
         proxy = null
       })
 
-      if (sendUpdate) sendUpdate(args)
+      if (sendUpdate) sendUpdate.apply(null, args)
       return element
     } else {
       if (!isProxied) {
@@ -44,7 +44,7 @@ function widgetizeElement (createNode) {
           return (el === element)
         }
       }
-      if (sendUpdate) sendUpdate(args)
+      if (sendUpdate) sendUpdate.apply(null, args)
       return proxy
     }
   }
