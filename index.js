@@ -16,6 +16,7 @@ function cacheElement (createNode, compare) {
   var isProxied = false
   var element = null
   var proxy = null
+  var _args = null
 
   // render an element
   // (any...) -> obj
@@ -27,9 +28,10 @@ function cacheElement (createNode, compare) {
 
     if (!element) {
       element = createNode.apply(null, args)
+      _args = args
       return element
     } else {
-      const isEqual = compare.apply(null, args)
+      const isEqual = compare(args, _args)
       if (isEqual) {
         if (!isProxied) {
           proxy = document.createElement(elType)
@@ -41,15 +43,18 @@ function cacheElement (createNode, compare) {
       } else {
         element = createNode.apply(null, args)
         isProxied = false
+        _args = args
         return element
       }
     }
   }
 }
 
-// strict equal compare two arguments
-// (any, any) -> bool
-function defaultCompare (curr, prev) {
-  if (curr && !prev) return true
-  return (curr === prev)
+function defaultCompare (args1, args2) {
+  var length = args1.length
+  if (length !== args2.length) return false
+  for (var i = 0; i < length; i++) {
+    if (args1[i] !== args2[i]) return false
+  }
+  return true
 }

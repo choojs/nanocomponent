@@ -1,7 +1,8 @@
-const cacheElement = require('./')
-const widget = require('./widget')
-const test = require('tape')
-const html = require('bel')
+var cacheElement = require('./')
+var widget = require('./widget')
+var morph = require('nanomorph')
+var test = require('tape')
+var html = require('bel')
 
 test('cache', (t) => {
   t.test('should validate input types', (t) => {
@@ -13,30 +14,31 @@ test('cache', (t) => {
   t.test('should render elements', (t) => {
     t.plan(3)
 
-    const render = cacheElement((name) => html`<div>${name}</div>`)
+    var render = cacheElement((name) => html`<div>${name}</div>`)
 
-    const el1 = render('mittens')
+    var el1 = render('mittens')
     t.equal(String(el1), '<div>mittens</div>', 'init render success')
 
-    const el2 = render('mittens', 'mittens')
-    const same1 = el2.isSameNode(el1)
+    var el2 = render('mittens')
+    var same1 = el2.isSameNode(el1)
     t.equal(same1, true, 'proxy success')
 
-    const el3 = render('scruffles', 'mittens')
+    var el3 = render('scruffles')
     t.equal(String(el3), '<div>scruffles</div>', 're-render success')
   })
 
   t.test('should accept a custom compare function', (t) => {
     t.plan(2)
-    const create = (name) => html`<div>${name}</div>`
-    const compare = (el) => (el === 'humans!')
-    const render = cacheElement(create, compare)
+    var create = (name) => html`<div>${name}</div>`
+    var render = cacheElement(create, function (args1, args2) {
+      return args1[0] === 'humans!'
+    })
 
-    const el1 = render('mittens')
+    var el1 = render('mittens')
     t.equal(String(el1), '<div>mittens</div>', 'init render success')
 
-    const el2 = render('humans!')
-    const same1 = el2.isSameNode(el1)
+    var el2 = render('humans!')
+    var same1 = el2.isSameNode(el1)
     t.equal(same1, true, 'proxy success')
   })
 })
@@ -44,29 +46,35 @@ test('cache', (t) => {
 test('widget', (t) => {
   t.test('should validate input types', (t) => {
     t.plan(1)
-    t.throws(widget.bind(null, 123), /function/)
+    t.throws(widget.bind(null, 123), /object/)
   })
 
   t.test('should render elements', (t) => {
-    t.plan(3)
+    t.plan(4)
+    var element = Element()
 
-    const render = widget((update) => {
-      const el = html`<div></div>`
-      update((newName) => {
-        el.innerText = newName
-      })
-      return el
-    })
+    var el1 = element('mittens')
+    var expected = '<div>mittens</div>'
+    t.equal(String('<div>mittens</div>'), expected, 'init render success')
 
-    const el1 = render('mittens')
-    t.equal(String(el1.innerText), 'mittens', 'init render success')
-
-    const el2 = render('snowball', 'mittens')
-    const same1 = el2.isSameNode(el1)
+    var el2 = element('snowball')
+    var same1 = el2.isSameNode(el1)
     t.equal(same1, true, 'proxy success')
+    t.ok(/snowball/.test(el1.toString()), 'content was updated')
 
-    const el3 = render('scruffles', 'mittens')
-    const same2 = el3.isSameNode(el1)
+    var el3 = element('scruffles')
+    var same2 = el3.isSameNode(el1)
     t.equal(same2, true, 'proxy success')
+
+    function Element () {
+      return widget({
+        onupdate: function (el, newName) {
+          morph(html`<p>${newName}</p>`, el)
+        },
+        render: function (name) {
+          return html`<p>${name}</p>`
+        }
+      })
+    }
   })
 })

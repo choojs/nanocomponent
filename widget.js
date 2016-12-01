@@ -1,57 +1,76 @@
-const document = require('global/document')
-const onload = require('on-load')
-const assert = require('assert')
-const noop = require('noop2')
+var document = require('global/document')
+var onload = require('on-load')
+var assert = require('assert')
 
-const elType = 'div'
+var elType = 'div'
 
-module.exports = widgetizeElement
+module.exports = widgetify
 
 // turn an element into a widget
-// (fn) -> fn(fn(fn(any...)))
-function widgetizeElement (createNode) {
-  assert.equal(typeof createNode, 'function', 'cache-element/widget: createNode should be an function')
+// (obj, fn?) -> fn(any) -> DOMElement
+function widgetify (methods, compare) {
+  compare = compare || defaultCompare
 
-  var isProxied = false
-  var sendUpdate = false
-  var element = null
-  var proxy = null
+  assert.equal(typeof methods, 'object', 'cache-element/widget: methods should be an object')
+  assert.equal(typeof methods.render, 'function', 'cache-element/widget: methods.render should be a function')
+  assert.equal(typeof compare, 'function', 'cache-element/widget: compare should be a function')
 
-  return function render () {
+  var _onupdate = methods.onupdate || noop
+  var _onunload = methods.onunload || noop
+  var _onload = methods.onload || noop
+  var _render = methods.render
+
+  var _isProxied = false
+  var _element = null
+  var _proxy = null
+  var _args = null
+
+  return function () {
     var args = new Array(arguments.length)
     for (var i = 0; i < args.length; i++) {
       args[i] = arguments[i]
     }
+    if (!_args) _args = args
 
-    if (!element) {
-      element = createNode(update)
-      assert.equal(typeof element, 'object', 'cache-element/widget: element should be an object')
+    if (!_element) {
+      _element = _render.apply(null, args)
 
-      // reset elements when el is dismounted
-      onload(element, noop, function onunload (el) {
-        isProxied = false
-        sendUpdate = false
-        element = null
-        proxy = null
+      // apply lifecycle hooks
+      // TODO: also call _element's onunload function
+      onload(_element, _onload, function (el) {
+        _isProxied = false
+        _element = null
+        _proxy = null
+
+        _onunload(el)
       })
 
-      if (sendUpdate) sendUpdate.apply(null, args)
-      return element
+      return _element
     } else {
-      if (!isProxied) {
-        proxy = document.createElement(elType)
-        proxy.isSameNode = function (el) {
-          return (el === element)
+      if (!_isProxied) {
+        _proxy = document.createElement(elType)
+        _proxy.isSameNode = function (el) {
+          return (el === _element)
         }
       }
-      if (sendUpdate) sendUpdate.apply(null, args)
-      return proxy
+      if (_onupdate && !compare(_args, args)) {
+        var copy = args.slice(0)
+        copy.unshift(_element) // add element as first arg
+        _onupdate.apply(null, copy)
+        _args = args
+      }
+      return _proxy
     }
   }
+}
 
-  // (fn) -> null
-  function update (onupdate) {
-    assert.equal(typeof onupdate, 'function', 'cache-element/widget: onupdate should be a function')
-    sendUpdate = onupdate
+function noop () {}
+
+function defaultCompare (args1, args2) {
+  var length = args1.length
+  if (length !== args2.length) return false
+  for (var i = 0; i < length; i++) {
+    if (args1[i] !== args2[i]) return false
   }
+  return true
 }
