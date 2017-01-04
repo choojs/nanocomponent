@@ -1,0 +1,34 @@
+{
+  "name": "nanocomponent",
+  "version": "1.0.0",
+  "description": "Create performant HTML elements",
+  "main": "index.js",
+  "scripts": {
+    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "test": "standard && npm run deps && NODE_ENV=test node test",
+    "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover test.js"
+  },
+  "repository": "yoshuawuyts/nanocomponent",
+  "keywords": [
+    "dom",
+    "node",
+    "perf",
+    "universal"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "cache-element": "^2.0.0",
+    "is-dom": "^1.0.6",
+    "on-load": "^3.2.0",
+    "polite-element": "^1.0.2"
+  },
+  "devDependencies": {
+    "bel": "^4.5.1",
+    "dependency-check": "^2.7.0",
+    "istanbul": "^0.4.5",
+    "standard": "^8.6.0",
+    "tape": "^4.6.3",
+    "uglifyify": "^3.0.4",
+    "unassertify": "^2.0.4"
+  }
+}
