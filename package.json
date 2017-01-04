@@ -1,6 +1,6 @@
 {
   "name": "cache-element",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Memoize a bel element",
   "main": "index.js",
   "scripts": {
