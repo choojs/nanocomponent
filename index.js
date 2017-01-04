@@ -1,7 +1,7 @@
-const document = require('global/document')
-const assert = require('assert')
+var document = require('global/document')
+var assert = require('assert')
 
-const elType = 'div'
+var elType = 'div'
 
 module.exports = cacheElement
 
@@ -31,7 +31,7 @@ function cacheElement (createNode, compare) {
       _args = args
       return element
     } else {
-      const isEqual = compare(args, _args)
+      var isEqual = compare(args, _args)
       if (isEqual) {
         if (!isProxied) {
           proxy = document.createElement(elType)
