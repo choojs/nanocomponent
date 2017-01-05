@@ -84,6 +84,13 @@ are passed in:
 $ npm install nanocomponent
 ```
 
+## See Also
+- [yoshuawuyts/nanomorph](https://github.com/yoshuawuyts/nanomorph)
+- [yoshuawuyts/nanotick](https://github.com/yoshuawuyts/nanotick)
+- [yoshuawuyts/nanoraf](https://github.com/yoshuawuyts/nanoraf)
+- [bendrucker/document-ready](https://github.com/bendrucker/document-ready)
+- [shama/on-load](https://github.com/shama/on-load)
+
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
 
