@@ -20,7 +20,8 @@ var html = require('bel')
 var staticElement = component(html`
   <div>heya</div>
 `)
-console.log(staticElement())
+var el = staticElement()
+console.log(el)
 ```
 
 ### Cache a dynamic HTML element
@@ -30,7 +31,8 @@ var cachedElement = component(function (foo) {
     <div>${foo}</div>
   `
 })
-console.log(cachedElement())
+console.log(cachedElement('hey folks'))
+console.log(cachedElement('hey humans'))
 ```
 
 ### Defer rendering until the browser has spare time available
@@ -47,26 +49,35 @@ var politeElement = component({
     `
   }
 })
+
 console.log(politeElement())
+setTimeout(function () {
+  console.log(politeElement())
+}, 1000)
 ```
 
 ### Trigger lifecycle events when loading and unloading elements to the DOM
 ```js
 var widgetElement = component({
-  onload: function () {
+  onload: function (el) {
+    el.textContent = 'totally loaded now'
   },
   onunload: function (el) {
+    el.textContent = 'no more free lunch'
   },
-  onupdate: function (foo, bar) {
-    // do stuff with new arguments
+  onupdate: function (el, verb) {
+    el.textContent = `totally ${verb}ing now`
   },
-  render: function (foo, bar) {
+  render: function (verb) {
     return html`
-      <p>lol not loaded yet</p>
+      <p>lol not ${verb}ed yet</p>
     `
   }
 })
-console.log(widgetElement())
+console.log(widgetElement('load'))
+var el = widgetElement('blep')
+document.body.appendChild(el)
+document.body.removeChild(el)
 ```
 
 ## API
