@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "start": "bankai example --open",
     "test": "standard && npm run deps && NODE_ENV=test node test",
     "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover test.js"
   },
@@ -23,6 +24,7 @@
     "polite-element": "^1.0.2"
   },
   "devDependencies": {
+    "bankai": "^5.2.1",
     "bel": "^4.5.1",
     "dependency-check": "^2.7.0",
     "istanbul": "^0.4.5",

@@ -31,8 +31,9 @@ var cachedElement = component(function (foo) {
     <div>${foo}</div>
   `
 })
-console.log(cachedElement('hey folks'))
-console.log(cachedElement('hey humans'))
+console.log(cachedElement('hey folks'))   // render
+console.log(cachedElement('hey folks'))   // return cached element
+console.log(cachedElement('hey humans'))  // render again
 ```
 
 ### Defer rendering until the browser has spare time available
@@ -78,6 +79,24 @@ console.log(widgetElement('load'))
 var el = widgetElement('blep')
 document.body.appendChild(el)
 document.body.removeChild(el)
+```
+
+### Trigger lifecycle events when coming in and out of view
+```js
+var viewportElement = component({
+  onenter: function (el) {
+    el.textContent = 'BEHOLD THE GOBLIN'
+  },
+  onexit: function (el) {
+    el.textContent = 'THE PONIES HAVE COME'
+  },
+  render: function () {
+    return html`
+      <h1>WHO COULD IT BE</h1>
+    `
+  }
+})
+console.log(viewportElement())
 ```
 
 ## API

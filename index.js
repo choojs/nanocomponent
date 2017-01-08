@@ -20,7 +20,20 @@ function nanocomponent (val) {
   if (val.placeholder) {
     assert.equal(typeof val.render, 'function', 'nanocomponent: .placeholder cannot exist without a .render method')
     val.render = politeEl(val.placeholder, val.render)
+
+    if (val.onunload) {
+      var onunload = val.onunload
+      var unloadCalled = false
+      val.onunload = function (el) {
+        if (!unloadCalled) {
+          unloadCalled = true
+        } else {
+          onunload(el)
+        }
+      }
+    }
   }
+
   return widgetEl(val)
 }
 
