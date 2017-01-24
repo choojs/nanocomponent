@@ -99,6 +99,23 @@ var viewportElement = component({
 console.log(viewportElement())
 ```
 
+### Trigger lifecycle events resizing
+```js
+var resizeElement = component({
+  onresize: function (el) {
+    var parent = el.parentNode
+    console.log('element dimensions', el.getBoundingRectangle())
+    console.log('parent dimensions', parent.getBoundingRectangle())
+  },
+  render: function () {
+    return html`
+      <div>hello planet</div>
+    `
+  }
+})
+console.log(resizeElement())
+```
+
 ## API
 ### render = nanocomponent(HtmlOrFunctionOrObject)
 Create a render function for a component based depending on the arguments that

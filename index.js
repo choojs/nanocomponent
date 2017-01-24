@@ -1,6 +1,8 @@
 var widgetEl = require('cache-element/widget')
+var observeResize = require('observe-resize')
 var politeEl = require('polite-element')
 var cachedEl = require('cache-element')
+var window = require('global/window')
 var onload = require('on-load')
 var assert = require('assert')
 var isDom = require('is-dom')
@@ -17,24 +19,66 @@ function nanocomponent (val) {
   if (isDom(val)) return staticEl(val)
   if (typeof val === 'function') return cachedEl(val)
 
-  if (val.placeholder) {
-    assert.equal(typeof val.render, 'function', 'nanocomponent: .placeholder cannot exist without a .render method')
-    val.render = politeEl(val.placeholder, val.render)
+  assert.equal(typeof render, 'function', 'nanocomponent: needs a .render function')
 
-    if (val.onunload) {
-      var onunload = val.onunload
-      var unloadCalled = false
-      val.onunload = function (el) {
-        if (!unloadCalled) {
-          unloadCalled = true
-        } else {
-          onunload(el)
-        }
-      }
+  var isServer = (!window.document)
+  var placeholder = val.placeholder
+  var onunload = val.onunload
+  var _onresize = val.onresize
+  var render = val.render
+
+  var stopPlaceholderResize = null
+  var stopRenderResize = null
+  var unloadCalled = false
+
+  if (isDom(val)) return staticEl(val)
+  else if (typeof val === 'function') return cachedEl(val)
+  else {
+    if (placeholder) {
+      if (_onresize && !isServer) applyPlaceholderResize()
+      applyPlaceholder()
+    } else {
+      if (_onresize) applyResize()
+      applyOnunload()
+    }
+    return widgetEl(val)
+  }
+
+  function applyPlaceholderResize () {
+    var _placeholder = placeholder
+    placeholder = function () {
+      stopPlaceholderResize = observeResize(_placeholder)
+    }
+
+    var _render = render
+    render = function () {
+      if (stopPlaceholderResize) stopPlaceholderResize()
+      stopRenderResize = observeResize(_render)
     }
   }
 
-  return widgetEl(val)
+  function applyPlaceholder () {
+    render = politeEl(placeholder, render)
+  }
+
+  function applyResize () {
+    var _render = render
+    render = function () {
+      stopRenderResize = observeResize(_render)
+    }
+  }
+
+  function applyOnunload () {
+    var _onunload = onunload
+    onunload = function (el) {
+      if (!unloadCalled) {
+        unloadCalled = true
+        if (_onunload) _onunload(el)
+        if (stopPlaceholderResize) stopPlaceholderResize()
+        if (stopRenderResize) stopRenderResize()
+      }
+    }
+  }
 }
 
 function staticEl (element) {
