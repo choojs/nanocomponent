@@ -25,6 +25,7 @@ function nanocomponent (val) {
 
   var stopPlaceholderResize = null
   var stopRenderResize = null
+  var enableResize = null
 
   if (isDom(val)) return createStaticElement(val)
   else if (typeof val === 'function') return createDynamicElement(val)
@@ -56,13 +57,8 @@ function nanocomponent (val) {
   }
 
   function applyResize () {
-    var _render = renderHandler
-    renderHandler = function () {
-      var el = _render()
-
+    enableResize = function (el) {
       stopRenderResize = observeResize(el, onresizeHandler)
-
-      return el
     }
   }
 
@@ -85,6 +81,7 @@ function nanocomponent (val) {
     var _onload = onloadHandler
     onloadHandler = function (el) {
       if (_onload) _onload(el)
+      if (enableResize) enableResize(el)
     }
   }
 }
