@@ -48,9 +48,14 @@ var el = component({
 var _el = el('foo', 'bar')
 var wrap = html`
   <main>
-    <h1 class="f1 pa3 underline">
-      the component testing playground
-    </h1>
+    <section class="pa3">
+      <h1 class="f1 underline">
+        the component testing playground
+      </h1>
+      <h2 class="f3">
+        Open your devtools to view the log output
+      </h2>
+    </section>
     ${_el}
   </main>
 `

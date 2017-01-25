@@ -1,4 +1,5 @@
 var observeResize = require('observe-resize')
+var onIntersect = require('on-intersect')
 var politeEl = require('polite-element')
 var onload = require('on-load')
 var assert = require('assert')
@@ -20,19 +21,21 @@ function nanocomponent (val) {
   var placeholderHandler = val.placeholder
   var onunloadHandler = val.onunload
   var onresizeHandler = val.onresize
+  var onenterHandler = val.onenter
+  var onexitHandler = val.onexit
   var onloadHandler = val.onload
   var renderHandler = val.render
 
   var stopPlaceholderResize = null
   var stopRenderResize = null
+  var enableIntersect = null
   var enableResize = null
 
   if (isDom(val)) return createStaticElement(val)
   else if (typeof val === 'function') return createDynamicElement(val)
   else {
-    createOnunload()
-    createOnload()
     if (onresizeHandler) applyResize()
+    if (onenterHandler || onexitHandler) applyOnintersect()
     applyOnloadhandler()
     if (placeholderHandler) applyPlaceholder()
     return renderHandler
@@ -40,7 +43,15 @@ function nanocomponent (val) {
 
   function applyOnloadhandler () {
     var _render = renderHandler
+    createOnunload()
+    createOnload()
     renderHandler = createDynamicElement(_render, onloadHandler, onunloadHandler)
+  }
+
+  function applyOnintersect () {
+    enableIntersect = function (el) {
+      onIntersect(el, onenterHandler, onexitHandler)
+    }
   }
 
   function applyPlaceholder () {
@@ -82,6 +93,7 @@ function nanocomponent (val) {
     onloadHandler = function (el) {
       if (_onload) _onload(el)
       if (enableResize) enableResize(el)
+      if (enableIntersect) enableIntersect(el)
     }
   }
 }
