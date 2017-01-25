@@ -9,7 +9,7 @@ Create performant HTML elements.
 - significantly speeds up perceived performance
 - improves rendering performance
 - graciously falls back if APIs are not available
-- weighs `~2kb`
+- weighs `~4kb`
 
 ## Usage
 ### Cache a static HTML element
@@ -99,7 +99,7 @@ var viewportElement = component({
 console.log(viewportElement())
 ```
 
-### Trigger lifecycle events resizing
+### Trigger lifecycle events when resizing
 ```js
 var resizeElement = component({
   onresize: function (el) {
@@ -120,11 +120,41 @@ console.log(resizeElement())
 ### render = nanocomponent(HtmlOrFunctionOrObject)
 Create a render function for a component based depending on the arguments that
 are passed in:
-- __HTMLElement:__ when a valid HTML node is passed
+- __HTMLElement:__ cache the result of the function until it's removed from the
+    DOM
 - __function:__ cache the result of the function until new arguments are passed
-- __object:__ create an object with different methods attached
+    or it's removed from the DOM
+- __object:__ create an object with different methods attached. Cached until
+    new arguments are passed in or when it's removed from the DOM
+
+When passing an object, the availble methods are:
+- __render(...args):__ (required) Render DOM elements.
+- __placeholder(..args)__ Render DOM elements and delegate the `render` call to
+  the next `requestIdleCallback` tick. This is useful to spread CPU intensive
+  work over more time and not block the render loop. When executed on the
+  server `placeholder` will always be rendered in favor of `render`. This makes
+  it easier for client-side JS to pick up where the server left off
+  (rehydration).
+- __onupdate(el, ...args):__ Allows you to change the internal DOM state when
+  new arguments are passed in. It's called when the returned `render()` call is
+  called after an initial render with different arguments. Argument equality is
+  shallowly checked using a `===` check on each argument. The first argument is
+  the currently rendered argument.
+- __onenter:__ called when the element comes into view, relies on
+  `window.IntersectionObserver`
+- __onexit:__ Called when the element goes out of view, relies on
+  `window.IntersectionObserver`
+- __onload(el):__ Called when the element is appended onto the DOM
+- __onunload(el):__ Called when the element is removed from the DOM
+- __onresize:__ Called when the element changes size. :warning: This method can
+  be called in high frequency and can cause strain on your CPU. Caution and/or
+  debounce methods are advised.
 
 ### el = render(...args)
+Call the corresponding `render` function an receive DOM elements. As long as an
+element exists on the DOM, subsequent calls to `render` will return an empty
+element with a `.isSameNode()` method on it which can be used as a caching hint
+for HTML diffing trees.
 
 ## Installation
 ```sh
@@ -132,11 +162,20 @@ $ npm install nanocomponent
 ```
 
 ## See Also
-- [yoshuawuyts/nanomorph](https://github.com/yoshuawuyts/nanomorph)
-- [yoshuawuyts/nanotick](https://github.com/yoshuawuyts/nanotick)
-- [yoshuawuyts/nanoraf](https://github.com/yoshuawuyts/nanoraf)
 - [bendrucker/document-ready](https://github.com/bendrucker/document-ready)
+- [shama/bel](https://github.com/shama/bel)
 - [shama/on-load](https://github.com/shama/on-load)
+- [yoshuawuyts/choo](https://github.com/yoshuawuyts/choo)
+- [yoshuawuyts/nanomorph](https://github.com/yoshuawuyts/nanomorph)
+- [yoshuawuyts/nanoraf](https://github.com/yoshuawuyts/nanoraf)
+- [yoshuawuyts/nanotick](https://github.com/yoshuawuyts/nanotick)
+- [yoshuawuyts/observe-resize](https://github.com/yoshuawuyts/observe-resize)
+- [yoshuawuyts/on-intersect](https://github.com/yoshuawuyts/on-intersect)
+- [yoshuawuyts/polite-element](https://github.com/yoshuawuyts/polite-element)
+
+## Similar Packages
+- [shama/base-element](https://github.com/shama/base-element)
+- [yoshuawuyts/cache-element](https://github.com/yoshuawuyts/cache-element)
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
