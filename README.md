@@ -5,8 +5,8 @@
 Create performant HTML elements.
 
 ## Features
-- works with every framework
-- significantly speeds up perceived performance
+- works with virtually every framework
+- speeds up perceived performance
 - improves rendering performance
 - graciously falls back if APIs are not available
 - weighs `~4kb`
@@ -155,6 +155,96 @@ Call the corresponding `render` function an receive DOM elements. As long as an
 element exists on the DOM, subsequent calls to `render` will return an empty
 element with a `.isSameNode()` method on it which can be used as a caching hint
 for HTML diffing trees.
+
+## FAQ
+### Why'd you build this package?
+I've been building web stuff for a while now, and have seen a fair share of
+frameworks become popular, take over developer mindshare and then disappear
+again a few years later. With each framework iteration the basic libraries tend
+to be rewritten from scratch: form validation, modals, infinite scolls, charts.
+The list is long.
+
+I think it'd be cool if we could create generic JS components that work
+natively with any JS framework through slim bindings. This would encourage
+reusability between frameworks, which means it becomes easier to pick up
+different frameworks (no need to relearn the ecosystem) and bring new
+frameworks to maturity (less new code to implement).
+
+### This sounds a lot like WebComponents, how is this different?
+WebComponents are a specification by the W3C that's been in the works for a
+while now. Certain parts have been put on hold by browser vendors until kinks
+are ironed out, and the some of the available parts are not widely adopted - or
+at least not the way they were meant to be used.
+
+When people talk about WebComponents they usually refer to the Custom Elements
+specification. This spec allows you to create new HTML tags and provides you
+with a set of lifecycle events. The `onload` / `onunload` / `render` /
+`onupdate` events are indeed quite similar to Nanocomponent. The biggest
+difference however, is the way in which elements are registered. Custom
+Elements are globally scoped in the browser and must have unique names.
+Nanocomponent is a plain JS function and will not run into namespacing issues.
+It's quite feasible to wrap a Nanocomponent instance to create a Webcomponent.
+The other way around is harder. Nanocomponent also exposes more events.
+
+### I read somewhere that Nanocomponent uses some of the same techniques as React Fiber / React Stack. Could you talk some more about this?
+Sure! React Fiber (or React Stack, I'm not sure what name they're ending up
+with) is using the same APIs under the hood as Nanocomponent, but approaches it
+from the other side of the spectrum.
+
+Nanocomponent is intended to create individual components that can run in any
+framework and have tight control over their performance. React Fiber is
+a framework where the whole render tree is optimized on each loop.
+Nanocomponent operates on the component layer, React Fiber at the framework
+layer.
+
+This doesn't mean that either one is "better" - every abstraction carries
+overhead, and different situations require different solutions. I think it's
+great performance is being tackled from multiple sides of the spectrum.
+
+### What do you mean by "Nanocomponent works with any framework"?
+Nanocomponent returns DOM elements that work in any framework that knows how to
+render raw DOM nodes. This includes pretty much every popular framework and
+compile-to-js language. Because the lifecycle events are self-encapsulated and
+we don't expose globals this means Nanocomponent doesn't have any problems
+running inside any other framework. I think Nanocomponent is quite similar in
+browser framework land to how C / CPP packages operate
+
+### I don't believe in silver bullets, tell me about the tradeoffs
+All abstractions in JS come with a cost. Luckily the cost of Nanomorph is
+fairly low (4kb, CPU and memory seem to be cool - haven't noticed any
+significant repaint costs or anything), but it should not be neglected. Measure
+and inform yourself.
+
+Nanomorph relies on fairly new DOM APIs to do what it does. If you're running
+v. old browsers this package won't help you - we're sorry.  As long as
+`window.MutationObserver` is available we should be good; the others are
+optimizations on top. These are the fancy APIs we're using:
+- `window.MutationObserver`
+- `window.IntersectionObserver`
+- `window.requestAnimationFrame`
+- `window.requestIdleCallback`
+
+Third of all this package is optimized for an environment that supports
+`require()`. I believe in iterating on proven ideas, and given the stability of
+`require()` and the tooling & community around it I'm betting that it'll stick
+around for a while.
+
+Some frameworks (like React Fiber / React Stack) might have some cool
+optimizations that allow super fine grained control over each and every element
+in the tree - nanocomponent is similar but has its own rules to wait for
+resources, so it might turn into an interesting situation where everyone is
+super politely waiting for resources and like is nice to each other. I don't
+know, but I'm guessing it'll be fun hah.
+
+Also these components won't work in environments that don't have a DOM, but I
+bet it'd be cool to look at those environments and figure out which primitives
+they have and create equivalent functionality through generic components.
+
+### Uahahghhhhblll
+Yes!
+
+### Does this render on the server?
+Yup, it does. If it doesn't for your particular setup we'd like to hear.
 
 ## Installation
 ```sh
