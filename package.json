@@ -18,12 +18,10 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "cache-element": "^2.0.0",
     "is-dom": "^1.0.6",
     "observe-resize": "^1.1.0",
     "on-load": "^3.2.0",
-    "polite-element": "^1.0.2",
-    "xtend": "^4.0.1"
+    "polite-element": "^1.0.2"
   },
   "devDependencies": {
     "bankai": "^5.2.1",
@@ -31,6 +29,7 @@
     "dependency-check": "^2.7.0",
     "istanbul": "^0.4.5",
     "standard": "^8.6.0",
+    "tachyons": "^4.6.1",
     "tape": "^4.6.3",
     "uglifyify": "^3.0.4",
     "unassertify": "^2.0.4"
