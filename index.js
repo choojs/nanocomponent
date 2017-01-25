@@ -1,13 +1,9 @@
-var widgetEl = require('cache-element/widget')
 var observeResize = require('observe-resize')
 var politeEl = require('polite-element')
-var cachedEl = require('cache-element')
-var window = require('global/window')
 var onload = require('on-load')
 var assert = require('assert')
 var isDom = require('is-dom')
-
-var elType = 'div'
+var html = require('bel')
 
 module.exports = nanocomponent
 
@@ -16,72 +12,84 @@ module.exports = nanocomponent
 function nanocomponent (val) {
   assert.ok(isDom(val) || (typeof val === 'object') || typeof val === 'function', 'nanocomponent: val should be a valid DOM node, type Object or type Function')
 
-  if (isDom(val)) return staticEl(val)
-  if (typeof val === 'function') return cachedEl(val)
+  if (isDom(val)) return createStaticElement(val)
+  if (typeof val === 'function') return createDynamicElement(val)
 
-  assert.equal(typeof render, 'function', 'nanocomponent: needs a .render function')
+  assert.equal(typeof val.render, 'function', 'nanocomponent: needs a .render function')
 
-  var isServer = (!window.document)
-  var placeholder = val.placeholder
-  var onunload = val.onunload
-  var _onresize = val.onresize
-  var render = val.render
+  var placeholderHandler = val.placeholder
+  var onunloadHandler = val.onunload
+  var onresizeHandler = val.onresize
+  var onloadHandler = val.onload
+  var renderHandler = val.render
 
   var stopPlaceholderResize = null
   var stopRenderResize = null
-  var unloadCalled = false
 
-  if (isDom(val)) return staticEl(val)
-  else if (typeof val === 'function') return cachedEl(val)
+  if (isDom(val)) return createStaticElement(val)
+  else if (typeof val === 'function') return createDynamicElement(val)
   else {
-    if (placeholder) {
-      if (_onresize && !isServer) applyPlaceholderResize()
-      applyPlaceholder()
-    } else {
-      if (_onresize) applyResize()
-      applyOnunload()
-    }
-    return widgetEl(val)
+    createOnunload()
+    createOnload()
+    if (onresizeHandler) applyResize()
+    applyOnloadhandler()
+    if (placeholderHandler) applyPlaceholder()
+    return renderHandler
   }
 
-  function applyPlaceholderResize () {
-    var _placeholder = placeholder
-    placeholder = function () {
-      stopPlaceholderResize = observeResize(_placeholder)
-    }
-
-    var _render = render
-    render = function () {
-      if (stopPlaceholderResize) stopPlaceholderResize()
-      stopRenderResize = observeResize(_render)
-    }
+  function applyOnloadhandler () {
+    var _render = renderHandler
+    renderHandler = createDynamicElement(_render, onloadHandler, onunloadHandler)
   }
 
   function applyPlaceholder () {
-    render = politeEl(placeholder, render)
-  }
-
-  function applyResize () {
-    var _render = render
-    render = function () {
-      stopRenderResize = observeResize(_render)
+    var _render = renderHandler
+    renderHandler = function () {
+      var args = new Array(arguments.length)
+      for (var i = 0; i < args.length; i++) {
+        args[i] = arguments[i]
+      }
+      var el = politeEl(placeholderHandler, _render)
+      var ret = el.apply(el, args)
+      return ret
     }
   }
 
-  function applyOnunload () {
-    var _onunload = onunload
-    onunload = function (el) {
-      if (!unloadCalled) {
-        unloadCalled = true
-        if (_onunload) _onunload(el)
-        if (stopPlaceholderResize) stopPlaceholderResize()
-        if (stopRenderResize) stopRenderResize()
+  function applyResize () {
+    var _render = renderHandler
+    renderHandler = function () {
+      var el = _render()
+
+      stopRenderResize = observeResize(el, onresizeHandler)
+
+      return el
+    }
+  }
+
+  function createOnunload () {
+    var _onunload = onunloadHandler
+    onunloadHandler = function (el) {
+      if (stopPlaceholderResize) {
+        stopPlaceholderResize()
+        stopPlaceholderResize = null
       }
+      if (stopRenderResize) {
+        stopRenderResize()
+        stopRenderResize = null
+      }
+      if (_onunload) _onunload(el)
+    }
+  }
+
+  function createOnload () {
+    var _onload = onloadHandler
+    onloadHandler = function (el) {
+      if (_onload) _onload(el)
     }
   }
 }
 
-function staticEl (element) {
+function createStaticElement (element) {
   var isRendered = false
   var isProxied = false
   var proxy = null
@@ -92,7 +100,7 @@ function staticEl (element) {
     if (!isRendered) {
       return element
     } else if (!isProxied) {
-      proxy = document.createElement(elType)
+      proxy = html`<div></div>`
       proxy.isSameNode = function (el) {
         return (el === element)
       }
@@ -108,4 +116,59 @@ function staticEl (element) {
     isProxied = false
     proxy = null
   }
+}
+
+function createDynamicElement (render, _onload, _onunload) {
+  var isRendered = false
+  var isProxied = false
+  var element = null
+  var proxy = null
+  var args = null
+
+  return function () {
+    var _args = new Array(arguments.length)
+    for (var i = 0; i < _args.length; i++) {
+      _args[i] = arguments[i]
+    }
+
+    if (!isRendered) {
+      args = _args
+      element = render.apply(render, args)
+      onload(element, handleLoad, handleUnload)
+      return element
+    } else {
+      if (!compare(_args, args)) {
+        element = render.apply(render, args)
+        onload(element, handleLoad, handleUnload)
+        return element
+      } else if (!isProxied) {
+        proxy = html`<div></div>`
+        proxy.isSameNode = function (el) {
+          return (el === element)
+        }
+      } else {
+        return proxy
+      }
+    }
+  }
+
+  function handleLoad (el) {
+    isRendered = true
+    if (_onload) _onload(el)
+  }
+
+  function handleUnload (el) {
+    isProxied = false
+    proxy = null
+    if (_onunload) _onunload(el)
+  }
+}
+
+function compare (args1, args2) {
+  var length = args1.length
+  if (length !== args2.length) return false
+  for (var i = 0; i < length; i++) {
+    if (args1[i] !== args2[i]) return false
+  }
+  return true
 }

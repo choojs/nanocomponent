@@ -3,30 +3,33 @@ var html = require('bel')
 
 var el = component({
   onenter: function () {
-    console.log('enter')
+    console.info(Date.now(), 'enter')
   },
   onexit: function () {
-    console.log('exit')
+    console.info(Date.now(), 'exit')
   },
   onload: function () {
-    console.log('load')
+    console.info(Date.now(), 'load')
   },
-  onunload: function () {
-    console.log('unload')
+  onunload: function (el) {
+    console.info(Date.now(), 'unload')
   },
   onupdate: function () {
-    console.log('update')
+    console.info(Date.now(), 'update')
+  },
+  onresize: function () {
+    console.info(Date.now(), 'resize')
   },
   placeholder: function () {
-    console.log('placeholder')
+    console.info(Date.now(), 'placeholder')
     return html`
-      <div>oi</div>
+      <button>loading</button>
     `
   },
   render: function () {
-    console.log('render')
+    console.info(Date.now(), 'render')
     return html`
-      <div>oi</div>
+      <button onclick=${onclick}>remove from DOM</button>
     `
   }
 })
@@ -38,6 +41,8 @@ var wrap = html`
 `
 
 document.body.appendChild(wrap)
-setTimeout(function () {
+
+function onclick () {
+  console.log('clicked!')
   document.body.removeChild(wrap)
-}, 2000)
+}

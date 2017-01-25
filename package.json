@@ -20,8 +20,10 @@
   "dependencies": {
     "cache-element": "^2.0.0",
     "is-dom": "^1.0.6",
+    "observe-resize": "^1.1.0",
     "on-load": "^3.2.0",
-    "polite-element": "^1.0.2"
+    "polite-element": "^1.0.2",
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
     "bankai": "^5.2.1",
