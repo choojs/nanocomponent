@@ -4,10 +4,10 @@
   "description": "Create performant HTML elements",
   "main": "index.js",
   "scripts": {
-    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "deps": "dependency-check . && dependency-check . --extra --no-dev -i yo-yoify",
     "start": "bankai example --open",
-    "test": "standard && npm run deps && NODE_ENV=test node test",
-    "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover test.js"
+    "test": "standard && npm run deps",
+    "test:cov": "standard && npm run deps"
   },
   "repository": "yoshuawuyts/nanocomponent",
   "keywords": [
