@@ -4,10 +4,10 @@
   "description": "Create performant HTML elements",
   "main": "index.js",
   "scripts": {
-    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "deps": "dependency-check . && dependency-check . --extra --no-dev -i yo-yoify",
     "start": "bankai example --open",
-    "test": "standard && npm run deps && NODE_ENV=test node test",
-    "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover test.js"
+    "test": "standard && npm run deps",
+    "test:cov": "standard && npm run deps"
   },
   "repository": "yoshuawuyts/nanocomponent",
   "keywords": [
@@ -17,11 +17,18 @@
     "universal"
   ],
   "license": "MIT",
+  "browserify": {
+    "transform": [
+      "yo-yoify"
+    ]
+  },
   "dependencies": {
-    "cache-element": "^2.0.0",
     "is-dom": "^1.0.6",
+    "observe-resize": "^1.1.0",
+    "on-intersect": "^1.1.0",
     "on-load": "^3.2.0",
-    "polite-element": "^1.0.2"
+    "polite-element": "^1.0.2",
+    "yo-yoify": "^3.5.0"
   },
   "devDependencies": {
     "bankai": "^5.2.1",
@@ -29,6 +36,7 @@
     "dependency-check": "^2.7.0",
     "istanbul": "^0.4.5",
     "standard": "^8.6.0",
+    "tachyons": "^4.6.1",
     "tape": "^4.6.3",
     "uglifyify": "^3.0.4",
     "unassertify": "^2.0.4"

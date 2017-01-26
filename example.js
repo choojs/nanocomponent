@@ -1,43 +1,70 @@
 var component = require('./')
+var css = require('sheetify')
 var html = require('bel')
+
+css('tachyons')
 
 var el = component({
   onenter: function () {
-    console.log('enter')
+    console.info(Date.now(), 'enter')
   },
   onexit: function () {
-    console.log('exit')
+    console.info(Date.now(), 'exit')
   },
   onload: function () {
-    console.log('load')
+    console.info(Date.now(), 'load')
   },
-  onunload: function () {
-    console.log('unload')
+  onunload: function (el) {
+    console.info(Date.now(), 'unload')
   },
   onupdate: function () {
-    console.log('update')
+    console.info(Date.now(), 'update')
+  },
+  onresize: function () {
+    console.info(Date.now(), 'resize')
   },
   placeholder: function () {
-    console.log('placeholder')
+    console.info(Date.now(), 'placeholder')
     return html`
-      <div>oi</div>
+      <section>
+        <button class="ma3 f3">
+          loading
+        </button>
+      </section>
     `
   },
   render: function () {
-    console.log('render')
+    console.info(Date.now(), 'render')
     return html`
-      <div>oi</div>
+      <section>
+        <button onclick=${onclick} class="ma3 f3">
+          remove from DOM
+        </button>
+      </section>
     `
   }
 })
 
+var _el = el('foo', 'bar')
 var wrap = html`
   <main>
-    ${el('foo', 'bar')}
+    <section class="pa3">
+      <h1 class="f1 underline">
+        the component testing playground
+      </h1>
+      <h2 class="f3">
+        Open your devtools to view the log output
+      </h2>
+    </section>
+    ${_el}
   </main>
 `
 
 document.body.appendChild(wrap)
-setTimeout(function () {
-  document.body.removeChild(wrap)
-}, 2000)
+
+function onclick () {
+  console.log('clicked!')
+  window.requestAnimationFrame(function () {
+    wrap.removeChild(_el)
+  })
+}
