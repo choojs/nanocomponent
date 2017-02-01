@@ -117,7 +117,7 @@ console.log(resizeElement())
 ```
 
 ### Rendering inside frameworks
-Check out [nanocomponent-adapters][adapters] on how to use `nanocomponent` in
+Check out [nanocomponent-adapters][adapt] on how to use `nanocomponent` in
 your fav framework.
 
 ## API
