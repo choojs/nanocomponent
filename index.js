@@ -140,24 +140,18 @@ function createDynamicElement (render, _onload, _onunload) {
       _args[i] = arguments[i]
     }
 
-    if (!isRendered) {
+    if (!isRendered || !compare(_args, args)) {
       args = _args
       element = render.apply(render, args)
       onload(element, handleLoad, handleUnload)
       return element
-    } else {
-      if (!compare(_args, args)) {
-        element = render.apply(render, args)
-        onload(element, handleLoad, handleUnload)
-        return element
-      } else if (!isProxied) {
-        proxy = html`<div></div>`
-        proxy.isSameNode = function (el) {
-          return (el === element)
-        }
-      } else {
-        return proxy
+    } else if (!isProxied) {
+      proxy = html`<div></div>`
+      proxy.isSameNode = function (el) {
+        return (el === element)
       }
+    } else {
+      return proxy
     }
   }
 
