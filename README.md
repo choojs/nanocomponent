@@ -5,7 +5,7 @@
 Create performant HTML elements.
 
 ## Features
-- works with virtually every framework
+- works with [virtually every framework][adapt]
 - speeds up perceived performance
 - improves rendering performance
 - graciously falls back if APIs are not available
@@ -115,6 +115,10 @@ var resizeElement = component({
 })
 console.log(resizeElement())
 ```
+
+### Rendering inside frameworks
+Check out [nanocomponent-adapters][adapters] on how to use `nanocomponent` in
+your fav framework.
 
 ## API
 ### render = nanocomponent(HtmlOrFunctionOrObject)
@@ -282,3 +286,4 @@ $ npm install nanocomponent
 [9]: https://npmjs.org/package/nanocomponent
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [11]: https://github.com/feross/standard
+[adapt]: https://github.com/yoshuawuyts/nanocomponent-adapters/
