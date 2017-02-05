@@ -147,6 +147,7 @@ function createDynamicElement (render, _onload, _onunload) {
       return element
     } else {
       if (!compare(_args, args)) {
+        args = _args
         element = render.apply(render, args)
         onload(element, handleLoad, handleUnload)
         return element
