@@ -155,6 +155,7 @@ function createDynamicElement (render, _onload, _onunload) {
         proxy.isSameNode = function (el) {
           return (el === element)
         }
+        return proxy
       } else {
         return proxy
       }
