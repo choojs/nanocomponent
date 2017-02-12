@@ -12,30 +12,6 @@ Create performant HTML elements.
 - weighs `~4kb`
 
 ## Usage
-### Cache a static HTML element
-```js
-var component = require('nanocomponent')
-var html = require('bel')
-
-var staticElement = component(html`
-  <div>heya</div>
-`)
-var el = staticElement()
-console.log(el)
-```
-
-### Cache a dynamic HTML element
-```js
-var cachedElement = component(function (foo) {
-  return html`
-    <div>${foo}</div>
-  `
-})
-console.log(cachedElement('hey folks'))   // render
-console.log(cachedElement('hey folks'))   // return cached element
-console.log(cachedElement('hey humans'))  // render again
-```
-
 ### Defer rendering until the browser has spare time available
 ```js
 var politeElement = component({
@@ -122,16 +98,8 @@ your fav framework.
 
 ## API
 ### render = nanocomponent(HtmlOrFunctionOrObject)
-Create a render function for a component based depending on the arguments that
-are passed in:
-- __HTMLElement:__ cache the result of the function until it's removed from the
-    DOM
-- __function:__ cache the result of the function until new arguments are passed
-    or it's removed from the DOM
-- __object:__ create an object with different methods attached. Cached until
-    new arguments are passed in or when it's removed from the DOM
-
-When passing an object, the availble methods are:
+Create an object with different methods attached. Cached until new arguments
+are passed in or when it's removed from the DOM. Availble methods are:
 - __render(...args):__ (required) Render DOM elements.
 - __placeholder(..args)__ Render DOM elements and delegate the `render` call to
   the next `requestIdleCallback` tick. This is useful to spread CPU intensive

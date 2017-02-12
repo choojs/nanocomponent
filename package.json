@@ -23,7 +23,6 @@
     ]
   },
   "dependencies": {
-    "is-dom": "^1.0.6",
     "observe-resize": "^1.1.0",
     "on-intersect": "^1.1.0",
     "on-load": "^3.2.0",
