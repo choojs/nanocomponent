@@ -3,7 +3,6 @@ var onIntersect = require('on-intersect')
 var politeEl = require('polite-element')
 var onload = require('on-load')
 var assert = require('assert')
-var isDom = require('is-dom')
 var html = require('bel')
 
 module.exports = nanocomponent
@@ -11,17 +10,14 @@ module.exports = nanocomponent
 // Create performant HTML elements
 // (DOMElement|fn|obj) -> fn
 function nanocomponent (val) {
-  assert.ok(isDom(val) || (typeof val === 'object') || typeof val === 'function', 'nanocomponent: val should be a valid DOM node, type Object or type Function')
-
-  if (isDom(val)) return createStaticElement(val)
-  if (typeof val === 'function') return createDynamicElement(val)
-
+  assert.equal(typeof val, 'object', 'nanocomponent: val should type function')
   assert.equal(typeof val.render, 'function', 'nanocomponent: needs a .render function')
 
   var placeholderHandler = val.placeholder
   var onunloadHandler = val.onunload
   var onresizeHandler = val.onresize
   var onenterHandler = val.onenter
+  var updateHandler = val.onupdate
   var onexitHandler = val.onexit
   var onloadHandler = val.onload
   var renderHandler = val.render
@@ -31,21 +27,17 @@ function nanocomponent (val) {
   var enableIntersect = null
   var enableResize = null
 
-  if (isDom(val)) return createStaticElement(val)
-  else if (typeof val === 'function') return createDynamicElement(val)
-  else {
-    if (onresizeHandler) applyResize()
-    if (onenterHandler || onexitHandler) applyOnintersect()
-    applyOnloadhandler()
-    if (placeholderHandler) applyPlaceholder()
-    return renderHandler
-  }
+  if (onresizeHandler) applyResize()
+  if (onenterHandler || onexitHandler) applyOnintersect()
+  applyOnloadhandler()
+  if (placeholderHandler) applyPlaceholder()
+  return renderHandler
 
   function applyOnloadhandler () {
     var _render = renderHandler
     createOnunload()
     createOnload()
-    renderHandler = createDynamicElement(_render, onloadHandler, onunloadHandler)
+    renderHandler = createElement(_render, updateHandler, onloadHandler, onunloadHandler)
   }
 
   function applyOnintersect () {
@@ -98,37 +90,9 @@ function nanocomponent (val) {
   }
 }
 
-function createStaticElement (element) {
+function createElement (render, update, _onload, _onunload) {
   var isRendered = false
-  var isProxied = false
-  var proxy = null
-
-  onload(element, handleLoad, handleUnload)
-
-  return function render () {
-    if (!isRendered) {
-      return element
-    } else if (!isProxied) {
-      proxy = html`<div></div>`
-      proxy.isSameNode = function (el) {
-        return (el === element)
-      }
-    }
-    return proxy
-  }
-
-  function handleLoad () {
-    isRendered = true
-  }
-
-  function handleUnload () {
-    isProxied = false
-    proxy = null
-  }
-}
-
-function createDynamicElement (render, _onload, _onunload) {
-  var isRendered = false
+  var isMounted = false
   var isProxied = false
   var element = null
   var proxy = null
@@ -141,34 +105,38 @@ function createDynamicElement (render, _onload, _onunload) {
     }
 
     if (!isRendered) {
+      isRendered = true
       args = _args
       element = render.apply(render, args)
       onload(element, handleLoad, handleUnload)
-      return element
-    } else {
-      if (!compare(_args, args)) {
-        args = _args
-        element = render.apply(render, args)
-        onload(element, handleLoad, handleUnload)
-        return element
-      } else if (!isProxied) {
-        proxy = html`<div></div>`
-        proxy.isSameNode = function (el) {
-          return (el === element)
-        }
-        return proxy
-      } else {
-        return proxy
+    }
+
+    if (!isMounted) return element
+    if (!compare(_args, args)) {
+      args = _args
+      if (update) {
+        // call update with element as the first arg
+        update.apply(render, args.slice(0).unshift(element))
       }
     }
+
+    if (!isProxied) {
+      proxy = html`<div></div>`
+      proxy.isSameNode = function (el) {
+        return (el === element)
+      }
+    }
+
+    return proxy
   }
 
   function handleLoad (el) {
-    isRendered = true
+    isMounted = true
     if (_onload) _onload(el)
   }
 
   function handleUnload (el) {
+    isMounted = false
     isProxied = false
     proxy = null
     if (_onunload) _onunload(el)
