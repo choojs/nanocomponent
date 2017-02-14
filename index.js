@@ -116,7 +116,8 @@ function createElement (render, update, _onload, _onunload) {
       args = _args
       if (update) {
         // call update with element as the first arg
-        update.apply(render, args.slice(0).unshift(element))
+        args.unshift(element)
+        update.apply(render, args.slice(0))
       }
     }
 
