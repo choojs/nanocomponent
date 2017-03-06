@@ -48,12 +48,20 @@ function nanocomponent (val) {
 
   function applyPlaceholder () {
     var _render = renderHandler
+    var placeholderRendered = null
+
     renderHandler = function () {
       var args = new Array(arguments.length)
       for (var i = 0; i < args.length; i++) {
         args[i] = arguments[i]
       }
-      var el = politeEl(placeholderHandler, function applyRenderHandler () {
+
+      if (placeholderRendered) return _render.apply(_render, args)
+
+      var el = politeEl(function applyPlaceholderHandler () {
+        placeholderRendered = true
+        return placeholderHandler.apply(placeholderHandler, args)
+      }, function applyRenderHandler () {
         return _render.apply(_render, args)
       })
       var ret = el.apply(el, args)
