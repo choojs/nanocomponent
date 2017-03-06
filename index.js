@@ -53,7 +53,9 @@ function nanocomponent (val) {
       for (var i = 0; i < args.length; i++) {
         args[i] = arguments[i]
       }
-      var el = politeEl(placeholderHandler, function applyRenderHandler () {
+      var el = politeEl(function applyPlaceholderHandler () {
+        return placeholderHandler.apply(placeholderHandler, args)
+      }, function applyRenderHandler () {
         return _render.apply(_render, args)
       })
       var ret = el.apply(el, args)
