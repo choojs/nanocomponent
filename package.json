@@ -13,31 +13,27 @@
   "keywords": [
     "dom",
     "node",
-    "perf",
     "universal"
   ],
   "license": "MIT",
-  "browserify": {
-    "transform": [
-      "yo-yoify"
-    ]
-  },
   "dependencies": {
-    "observe-resize": "^1.1.0",
-    "on-intersect": "^1.1.0",
-    "on-load": "^3.2.0",
-    "polite-element": "^1.0.5",
-    "yo-yoify": "^3.5.0"
+    "on-load": "^3.2.0"
   },
   "devDependencies": {
-    "bankai": "^5.2.1",
-    "bel": "^4.5.1",
+    "bankai": "^5.5.2",
+    "bel": "^4.6.0",
+    "choo": "^5.1.4",
+    "choo-log": "^6.0.0",
     "dependency-check": "^2.7.0",
+    "inherits": "^2.0.3",
     "istanbul": "^0.4.5",
+    "leaflet": "^1.0.3",
+    "nanologger": "^1.0.2",
     "standard": "^8.6.0",
     "tachyons": "^4.6.1",
     "tape": "^4.6.3",
     "uglifyify": "^3.0.4",
-    "unassertify": "^2.0.4"
+    "unassertify": "^2.0.4",
+    "yo-yoify": "^3.5.0"
   }
 }
