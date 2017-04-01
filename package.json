@@ -30,6 +30,7 @@
     "istanbul": "^0.4.5",
     "leaflet": "^1.0.3",
     "nanologger": "^1.0.2",
+    "on-idle": "^1.0.0",
     "standard": "^8.6.0",
     "tachyons": "^4.6.1",
     "tape": "^4.6.3",

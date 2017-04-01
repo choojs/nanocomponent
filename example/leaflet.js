@@ -2,6 +2,7 @@
 var Nanocomponent = require('../')
 var nanologger = require('nanologger')
 var leaflet = require('leaflet')
+var onIdle = require('on-idle')
 var html = require('bel')
 
 module.exports = Leaflet
@@ -19,13 +20,16 @@ function Leaflet () {
 Leaflet.prototype = Object.create(Nanocomponent.prototype)
 
 Leaflet.prototype._render = function (coords) {
+  var self = this
   this._coords = coords
 
   if (!this._map) {
     this._element = html`<div style="height: 500px"></div>`
     this._map = this._createMap()
   } else {
-    this._updateMap()
+    onIdle(function () {
+      self._updateMap()
+    })
   }
 
   return this._element
