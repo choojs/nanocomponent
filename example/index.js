@@ -1,0 +1,67 @@
+// adapted from https://github.com/timwis/choo-leaflet-demo/blob/master/src/index.js
+var html = require('choo/html')
+var css = require('sheetify')
+var log = require('choo-log')
+var choo = require('choo')
+
+var Leaflet = require('./leaflet.js')
+
+css('./leaflet.css')
+
+var leaflet = Leaflet()
+var app = choo()
+
+app.use(log())
+app.use(store)
+app.route('/', mainView)
+app.mount('body')
+
+function mainView (state, emit) {
+  return html`
+    <body>
+      <header>
+        <h1>${state.title}</h1>
+      </header>
+      <nav>
+        <input value=${state.title} oninput=${updateTitle}/>
+        <button onclick=${toPhiladelphia}>Philadelphia</button>
+        <button onclick=${toSeattle}>Seattle</button>
+      </nav>
+      <main>
+        ${leaflet.render(state.coords)}
+      </main>
+    </body>
+  `
+
+  function updateTitle (evt) {
+    emit('update-title', evt.target.value)
+  }
+
+  function toPhiladelphia () {
+    emit('set-coords', [39.9526, -75.1652])
+  }
+
+  function toSeattle () {
+    emit('set-coords', [47.6062, -122.3321])
+  }
+}
+
+function store (state, emitter) {
+  state.coords = [39.9526, -75.1652]
+  state.title = 'Hello, World'
+
+  emitter.on('DOMContentLoaded', function () {
+    emitter.on('set-coords', setCoords)
+    emitter.on('update-title', updateTitle)
+  })
+
+  function setCoords (newCoords) {
+    state.coords = newCoords
+    emitter.emit('render')
+  }
+
+  function updateTitle (newTitle) {
+    state.title = newTitle
+    emitter.emit('render')
+  }
+}
