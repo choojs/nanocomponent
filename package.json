@@ -4,6 +4,7 @@
   "description": "Create performant HTML elements",
   "main": "index.js",
   "scripts": {
+    "build": "bankai build example --optimize",
     "deps": "dependency-check . && dependency-check . --extra --no-dev -i yo-yoify",
     "start": "bankai example --open",
     "test": "standard && npm run deps",
