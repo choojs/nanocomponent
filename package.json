@@ -29,6 +29,7 @@
     "inherits": "^2.0.3",
     "istanbul": "^0.4.5",
     "leaflet": "^1.0.3",
+    "microbounce": "^1.0.0",
     "nanologger": "^1.0.2",
     "on-idle": "^1.0.0",
     "standard": "^8.6.0",
