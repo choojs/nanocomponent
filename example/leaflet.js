@@ -25,7 +25,7 @@ Leaflet.prototype._render = function (coords) {
 
   if (!this._map) {
     this._element = html`<div style="height: 500px"></div>`
-    this._map = this._createMap()
+    this._createMap()
   } else {
     onIdle(function () {
       self._updateMap()
@@ -40,6 +40,7 @@ Leaflet.prototype._update = function (coords) {
 }
 
 Leaflet.prototype._load = function () {
+  this._map.invalidateSize()
   this._log.info('load')
 }
 
@@ -67,7 +68,7 @@ Leaflet.prototype._createMap = function () {
     maxZoom: 20,
     ext: 'png'
   }).addTo(map)
-  return map
+  this._map = map
 }
 
 Leaflet.prototype._updateMap = function () {
