@@ -1,5 +1,3 @@
-'use strict'
-
 var onload = require('on-load')
 var assert = require('assert')
 
