@@ -1,6 +1,6 @@
 {
   "name": "nanocomponent",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "Create performant HTML elements",
   "main": "index.js",
   "scripts": {
