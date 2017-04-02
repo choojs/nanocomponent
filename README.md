@@ -79,14 +79,15 @@ Inheritable Nanocomponent prototype. Should be inherited from using
 `Nanococomponent.call(this)` and `prototype = Object.create(Nanocomponent)`.
 
 Internal properties are:
-- __this._placeholder:__ placeholder element that's returned on subsequent
+
+- `this._placeholder`: placeholder element that's returned on subsequent
   `render()` calls that don't pass the `._update()` check.
-- __this._element:__ rendered element that should be returned from the first
+- `this._element`: rendered element that should be returned from the first
   `._render()` call. Used to apply `._load()` and `._unload()` listeners on.
-- __this._hasWindow:__ boolean if `window` exists. Can be used to create
+- `this._hasWindow`: boolean if `window` exists. Can be used to create
   elements that render both in the browser and in Node.
-- __this._loaded:__ boolean if the element is currently loaded on the DOM.
-- __this._onload:__ reference to the [on-load][on-load] library.
+- `this._loaded::` boolean if the element is currently loaded on the DOM.
+- `this._onload`: reference to the [on-load][on-load] library.
 
 ### `DOMNode|placeholder = Nanocomponent.prototype.render()`
 Create an instance of the component. Calls `prototype._render()` if
