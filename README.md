@@ -15,7 +15,7 @@ function MyButton () {
   this._color = null
   Nanocomponent.call(this)
 }
-MyButton.prototype = Object.create(Nanocomponent.prototype)
+MyButton.prototype = Object.create(Nanocomponent)
 
 MyButton.prototype._render = function (color) {
   this._color = color
@@ -38,10 +38,45 @@ var myButton = MyButton()
 document.body.appendChild(myButton.render())
 ```
 
+## Implementing higher level APIs
+No matter the language, inheritance is tricky. Each layer adds more
+abstractions and can make it hard to understand what's going on. That's why we
+don't recommend doing more than one level of inheritance. However, this means
+that any API built on top of Nanocomponent directly shouldn't also expose a
+prototypical API.
+
+Instead we recommend people use an interface that somewhat resembles Node's
+`require('events').EventEmitter` API.
+
+```js
+var MyComponent = require('./my-component')
+var myComponent = MyComponent()
+
+myComponent.on('render', function () {
+  console.log('rendered')
+})
+
+myComponent.on('load', function () {
+  console.log('loaded on DOM')
+})
+
+myComponent.on('unload', function () {
+  console.log('removed from DOM')
+})
+
+document.body.appendChild(myComponent.render())
+```
+
+This API allows consumers of the `MyComponent` to hook into the event system
+without needing to inherit. It also allows `MyComponent` to expose more hooks
+with little cost. See
+[yoshuawuyts/microcomponent](https://github.com/yoshuawuyts/microcomponent) for
+an example of how to create a higher level interface.
+
 ## API
 ### `Nanocomponent.prototype()`
 Inheritable Nanocomponent prototype. Should be inherited from using
-`Nanococomponent.call(this)` and `prototype = Object.create(Nanocomponent.prototype)`.
+`Nanococomponent.call(this)` and `prototype = Object.create(Nanocomponent)`.
 
 Internal properties are:
 - __this._placeholder:__ placeholder element that's returned on subsequent
@@ -83,20 +118,21 @@ $ npm install nanocomponent
 ```
 
 ## See Also
-- [bendrucker/document-ready](https://github.com/bendrucker/document-ready)
 - [shama/bel](https://github.com/shama/bel)
-- [shama/on-load](https://github.com/shama/on-load)
-- [yoshuawuyts/choo](https://github.com/yoshuawuyts/choo)
 - [yoshuawuyts/nanomorph](https://github.com/yoshuawuyts/nanomorph)
 - [yoshuawuyts/nanoraf](https://github.com/yoshuawuyts/nanoraf)
-- [yoshuawuyts/nanotick](https://github.com/yoshuawuyts/nanotick)
+- [shama/on-load](https://github.com/shama/on-load)
 - [yoshuawuyts/observe-resize](https://github.com/yoshuawuyts/observe-resize)
+- [bendrucker/document-ready](https://github.com/bendrucker/document-ready)
 - [yoshuawuyts/on-intersect](https://github.com/yoshuawuyts/on-intersect)
-- [yoshuawuyts/polite-element](https://github.com/yoshuawuyts/polite-element)
+- [yoshuawuyts/on-idle](https://github.com/yoshuawuyts/on-idle)
+- [yoshuawuyts/nanobounce](https://github.com/yoshuawuyts/nanobounce)
+- [yoshuawuyts/nanoframe](https://github.com/yoshuawuyts/nanoframe)
 
 ## Similar Packages
 - [shama/base-element](https://github.com/shama/base-element)
 - [yoshuawuyts/cache-element](https://github.com/yoshuawuyts/cache-element)
+- [yoshuawuyts/microcomponent](https://github.com/yoshuawuyts/microcomponent)
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
