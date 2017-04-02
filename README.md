@@ -15,7 +15,7 @@ function MyButton () {
   this._color = null
   Nanocomponent.call(this)
 }
-MyButton.prototype = Object.create(Nanocomponent)
+MyButton.prototype = Object.create(Nanocomponent.prototype)
 
 MyButton.prototype._render = function (color) {
   this._color = color
@@ -41,7 +41,7 @@ document.body.appendChild(myButton.render())
 ## API
 ### `Nanocomponent.prototype()`
 Inheritable Nanocomponent prototype. Should be inherited from using
-`Nanococomponent.call(this)` and `prototype = Object.create(Nanocomponent)`.
+`Nanococomponent.call(this)` and `prototype = Object.create(Nanocomponent.prototype)`.
 
 Internal properties are:
 - __this._placeholder:__ placeholder element that's returned on subsequent
