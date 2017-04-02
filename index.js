@@ -26,12 +26,20 @@ Nanocomponent.prototype.render = function () {
     this._element = this._render.apply(this, args)
     this._onload(this._element, function () {
       self._loaded = true
-      if (self._load) self._load()
+      if (self._load) {
+        window.requestAnimationFrame(function () {
+          self._load()
+        })
+      }
     }, function () {
       self._placeholder = null
       self._element = null
       self._loaded = false
-      if (self._unload) self._unload()
+      if (self._unload) {
+        window.requestAnimationFrame(function () {
+          self._unload()
+        })
+      }
     })
     return this._element
   } else {

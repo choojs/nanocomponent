@@ -1,4 +1,5 @@
 // adapted from https://github.com/timwis/choo-leaflet-demo/blob/master/src/index.js
+var microbounce = require('microbounce')
 var html = require('choo/html')
 var css = require('sheetify')
 var log = require('choo-log')
@@ -16,6 +17,7 @@ app.use(store)
 app.route('/', mainView)
 app.mount('body')
 
+var debounce = microbounce(128)
 function mainView (state, emit) {
   return html`
     <body>
@@ -34,7 +36,10 @@ function mainView (state, emit) {
   `
 
   function updateTitle (evt) {
-    emit('update-title', evt.target.value)
+    var value = evt.target.value
+    debounce(function () {
+      emit('update-title', value)
+    })
   }
 
   function toPhiladelphia () {

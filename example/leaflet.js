@@ -25,7 +25,7 @@ Leaflet.prototype._render = function (coords) {
 
   if (!this._map) {
     this._element = html`<div style="height: 500px"></div>`
-    this._createMap()
+    if (this._hasWindow) this._createMap()
   } else {
     onIdle(function () {
       self._updateMap()
