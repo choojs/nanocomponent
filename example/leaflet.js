@@ -25,7 +25,11 @@ Leaflet.prototype._render = function (coords) {
 
   if (!this._map) {
     this._element = html`<div style="height: 500px"></div>`
-    if (this._hasWindow) this._createMap()
+    if (this._hasWindow) {
+      onIdle(function () {
+        self._createMap()
+      })
+    }
   } else {
     onIdle(function () {
       self._updateMap()
@@ -40,7 +44,9 @@ Leaflet.prototype._update = function (coords) {
 }
 
 Leaflet.prototype._load = function () {
-  this._map.invalidateSize()
+  if (this._map) {
+    this._map.invalidateSize()
+  }
   this._log.info('load')
 }
 
@@ -48,9 +54,9 @@ Leaflet.prototype._unload = function () {
   this._log.info('unload')
 
   this._map.remove()
+  this._element = null
   this._coords = null
   this._map = null
-  this._element = null
 }
 
 Leaflet.prototype._createMap = function () {
@@ -69,6 +75,10 @@ Leaflet.prototype._createMap = function () {
     ext: 'png'
   }).addTo(map)
   this._map = map
+
+  if (this._loaded) {
+    this._map.invalidateSize()
+  }
 }
 
 Leaflet.prototype._updateMap = function () {
