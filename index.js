@@ -1,3 +1,4 @@
+var nanotask = require('nanotask')
 var onload = require('on-load')
 var assert = require('assert')
 
@@ -5,6 +6,7 @@ module.exports = Nanocomponent
 
 function Nanocomponent (val) {
   this._hasWindow = typeof window !== undefined
+  this._queue = nanotask()
   this._placeholder = null
   this._onload = onload
   this._element = null
@@ -27,7 +29,7 @@ Nanocomponent.prototype.render = function () {
     this._onload(this._element, function () {
       self._loaded = true
       if (self._load) {
-        window.requestAnimationFrame(function () {
+        self._queue(function () {
           self._load()
         })
       }
@@ -36,7 +38,7 @@ Nanocomponent.prototype.render = function () {
       self._element = null
       self._loaded = false
       if (self._unload) {
-        window.requestAnimationFrame(function () {
+        self._queue(function () {
           self._unload()
         })
       }
