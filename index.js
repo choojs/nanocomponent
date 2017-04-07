@@ -13,6 +13,7 @@ function Nanocomponent (val) {
 
 Nanocomponent.prototype.render = function () {
   assert.equal(typeof this._render, 'function', 'nanocomponent: this._render should be implemented')
+  assert.equal(typeof this._update, 'function', 'nanocomponent: this._update should be implemented')
 
   var self = this
   var len = arguments.length
@@ -48,11 +49,6 @@ Nanocomponent.prototype.render = function () {
     if (!this._placeholder) this._placeholder = this._createPlaceholder()
     return this._placeholder
   }
-}
-
-// default ._update method - should be replaced with custom logic
-Nanocomponent.prototype._update = function () {
-  return true
 }
 
 Nanocomponent.prototype._createPlaceholder = function () {

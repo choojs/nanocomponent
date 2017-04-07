@@ -105,7 +105,7 @@ renders. The Node that's initially returned is saved as `this._element`.
 
 ### `Nanocomponent.prototype._update([arguments])`
 Return a boolean to determine if `prototype._render()` should be called.
-Evaluates to `true` if not implemented. Not called on the first render.
+Not called on the first render.
 
 ### `Nanocomponent.prototype._load()`
 Called when the component is mounted on the DOM.
