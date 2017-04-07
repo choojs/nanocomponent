@@ -86,7 +86,7 @@ Internal properties are:
   `._render()` call. Used to apply `._load()` and `._unload()` listeners on.
 - `this._hasWindow`: boolean if `window` exists. Can be used to create
   elements that render both in the browser and in Node.
-- `this._loaded::` boolean if the element is currently loaded on the DOM.
+- `this._loaded`: boolean if the element is currently loaded on the DOM.
 - `this._onload`: reference to the [on-load][on-load] library.
 
 ### `DOMNode|placeholder = Nanocomponent.prototype.render()`
@@ -99,13 +99,14 @@ node. This is useful for diffing algorithms like
 determine if a portion of the tree should be walked.
 
 ### `Nanocomponent.prototype._render([arguments])`
-Render an HTML node with arguments. For `prototype._load()` and
-`prototype._unload()` to work, make sure you return the same node on subsequent
-renders. The Node that's initially returned is saved as `this._element`.
+__Must be implemented.__ Render an HTML node with arguments. For
+`prototype._load()` and `prototype._unload()` to work, make sure you return the
+same node on subsequent renders. The Node that's initially returned is saved as
+`this._element`.
 
 ### `Nanocomponent.prototype._update([arguments])`
-Return a boolean to determine if `prototype._render()` should be called.
-Not called on the first render.
+__Must be implemented.__ Return a boolean to determine if `prototype._render()`
+should be called.  Not called on the first render.
 
 ### `Nanocomponent.prototype._load()`
 Called when the component is mounted on the DOM.
