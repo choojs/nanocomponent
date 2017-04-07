@@ -4,7 +4,7 @@ var assert = require('assert')
 module.exports = Nanocomponent
 
 function Nanocomponent (val) {
-  this._hasWindow = typeof window !== undefined
+  this._hasWindow = typeof window !== 'undefined'
   this._placeholder = null
   this._onload = onload
   this._element = null
