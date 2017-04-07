@@ -76,7 +76,8 @@ an example of how to create a higher level interface.
 ## API
 ### `Nanocomponent.prototype()`
 Inheritable Nanocomponent prototype. Should be inherited from using
-`Nanococomponent.call(this)` and `prototype = Object.create(Nanocomponent)`.
+`Nanococomponent.call(this)` and `prototype =
+Object.create(Nanocomponent.prototype)`.
 
 Internal properties are:
 
