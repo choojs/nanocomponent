@@ -1,0 +1,26 @@
+{
+  "name": "cached-element",
+  "version": "1.0.0",
+  "description": "Cache bel elements",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcomnes/cached-element.git"
+  },
+  "keywords": [
+    "bel",
+    "choo"
+  ],
+  "author": "Bret Comnes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bcomnes/cached-element/issues"
+  },
+  "homepage": "https://github.com/bcomnes/cached-element#readme",
+  "dependencies": {
+    "global": "^4.3.1"
+  }
+}
