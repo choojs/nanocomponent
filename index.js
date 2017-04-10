@@ -12,6 +12,9 @@ function CachedElement () {
 }
 
 CachedElement.prototype.render = function () {
+  assert.equal(typeof this._render, 'function', 'nanocomponent: this._render should be implemented')
+  assert.equal(typeof this._update, 'function', 'nanocomponent: this._update should be implemented')
+
   var args = new Array(arguments.length)
   for (var i = 0; i < args.length; i++) {
     args[i] = arguments[i]
