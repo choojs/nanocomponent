@@ -1,7 +1,7 @@
 {
   "name": "cached-element",
-  "version": "1.0.0",
-  "description": "Cache bel elements",
+  "version": "2.0.1",
+  "description": "Cache bel components",
   "main": "index.js",
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bcomnes/cached-element.git"
+    "url": "git+https://github.com/bcomnes/cache-component.git"
   },
   "keywords": [
     "bel",
@@ -27,9 +27,9 @@
   "author": "Bret Comnes",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bcomnes/cached-element/issues"
+    "url": "https://github.com/bcomnes/cache-component/issues"
   },
-  "homepage": "https://github.com/bcomnes/cached-element#readme",
+  "homepage": "https://github.com/bcomnes/cache-component#readme",
   "dependencies": {
     "global": "^4.3.1"
   },
