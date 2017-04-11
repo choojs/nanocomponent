@@ -19,7 +19,7 @@ CacheElement.prototype.render = function () {
     args[i] = arguments[i]
   }
 
-  if (this._element) {
+  if (this._element && this._element.parentElement !== null) {
     var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
       this._element = this._render.apply(this, args)
