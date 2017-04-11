@@ -1,9 +1,9 @@
 var document = require('global/document')
 var assert = require('assert')
 
-module.exports = CachedElement
+module.exports = CacheElement
 
-function CachedElement () {
+function CacheElement () {
   this._hasWindow = typeof window !== 'undefined'
   this._element = null
   this._proxy = null
@@ -11,7 +11,7 @@ function CachedElement () {
   this._args = null
 }
 
-CachedElement.prototype.render = function () {
+CacheElement.prototype.render = function () {
   assert.equal(typeof this._render, 'function', 'nanocomponent: this._render should be implemented')
   assert.equal(typeof this._update, 'function', 'nanocomponent: this._update should be implemented')
 
@@ -38,9 +38,9 @@ CachedElement.prototype.render = function () {
   }
 }
 
-CachedElement.prototype._createProxy = function () {
+CacheElement.prototype._createProxy = function () {
   var el = document.createElement('div')
-  el.setAttribute('data-cached-element', '')
+  el.setAttribute('data-cache-element', '')
   var self = this
   el.isSameNode = function (el) {
     return el === self._element
@@ -48,7 +48,7 @@ CachedElement.prototype._createProxy = function () {
   return el
 }
 
-CachedElement.prototype._update = function (args1, args2) {
+CacheElement.prototype._update = function (args1, args2) {
   var length = args1.length
   if (length !== args2.length) return true
   for (var i = 0; i < length; i++) {

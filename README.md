@@ -2,7 +2,7 @@
 [![npm version][2]][3] [![build status][4]][5] [![test coverage][6]][7]
 [![downloads][8]][9] [![js-standard-style][10]][11]
 
-Cached [bel][bel] element components. Makes rendering elements _very fast™_. Analogous to
+Cached [bel][bel] components. Makes rendering elements _very fast™_. Analogous to
 React's `.shouldComponentUpdate()` method, but only using native DOM methods.
 
 Runs a `_render` function whenever arguments changed according to an `_update` function.  If the `_update` function determines an update is needed, a newly `_render`ed bel element is returned.  If an update is not needed, a `_proxy` element is returned instead.
@@ -80,8 +80,18 @@ __Must be implemented.__ Render an HTML node with arguments. The Node that's ret
 
 ### `CacheComponent.prototype._update([arguments])`
 Return a boolean to determine if `prototype._render()`
-should be called.  Not called on the first render.
+should be called.  Not called on the first render.  Defaults to the following shallow compare function:
 
+```js
+CacheElement.prototype._update = function (args1, args2) {
+  var length = args1.length
+  if (length !== args2.length) return true
+  for (var i = 0; i < length; i++) {
+    if (args1[i] !== args2[i]) return true
+  }
+  return false
+}
+```
 
 ## Installation
 ```sh
