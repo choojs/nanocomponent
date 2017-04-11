@@ -1,6 +1,10 @@
 # Logs
 logs
 *.log
+node_modules/
+coverage/
+dist/
+tmp/
 npm-debug.log*
 
 # Runtime data
