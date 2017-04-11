@@ -6,7 +6,7 @@
   "scripts": {
     "build": "bankai build example --optimize",
     "deps": "dependency-check . && dependency-check . --extra --no-dev -i yo-yoify",
-    "start": "bankai start example --optimize",
+    "start": "bankai start example",
     "test": "standard && npm run deps",
     "test:cov": "standard && npm run deps"
   },
@@ -31,7 +31,6 @@
     "leaflet": "^1.0.3",
     "microbounce": "^1.0.0",
     "nanologger": "^1.0.2",
-    "on-idle": "^1.0.0",
     "standard": "^8.6.0",
     "tachyons": "^4.6.1",
     "tape": "^4.6.3",

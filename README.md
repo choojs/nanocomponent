@@ -17,17 +17,16 @@ function MyButton () {
 }
 MyButton.prototype = Object.create(Nanocomponent.prototype)
 
-MyButton.prototype._render = function (color) {
-  this._color = color
+MyButton.prototype._render = function () {
   return html`
-    <button style="background-color: ${color}">
+    <button style="background-color: ${this.props.color}">
       Click Me
     </button>
   `
 }
 
-MyButton.prototype._update = function (newColor) {
-  return newColor !== this._color
+MyButton.prototype._update = function (props) {
+  return props.color !== this.props.color
 }
 ```
 
@@ -89,6 +88,8 @@ Internal properties are:
   elements that render both in the browser and in Node.
 - `this._loaded`: boolean if the element is currently loaded on the DOM.
 - `this._onload`: reference to the [on-load][on-load] library.
+- `this.props`: current state properties
+- `this.oldProps`: previous state properties
 
 ### `DOMNode|placeholder = Nanocomponent.prototype.render()`
 Create an instance of the component. Calls `prototype._render()` if
@@ -99,13 +100,13 @@ node. This is useful for diffing algorithms like
 [nanomorph](https://github.com/yoshuawuyts/nanomorph) which use this method to
 determine if a portion of the tree should be walked.
 
-### `Nanocomponent.prototype._render([arguments])`
+### `Nanocomponent.prototype._render()`
 __Must be implemented.__ Render an HTML node with arguments. For
 `prototype._load()` and `prototype._unload()` to work, make sure you return the
 same node on subsequent renders. The Node that's initially returned is saved as
 `this._element`.
 
-### `Nanocomponent.prototype._update([arguments])`
+### `Nanocomponent.prototype._update(props)`
 __Must be implemented.__ Return a boolean to determine if `prototype._render()`
 should be called.  Not called on the first render.
 
