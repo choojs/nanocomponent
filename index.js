@@ -20,7 +20,7 @@ CacheElement.prototype.render = function () {
   }
 
   if (this._element) {
-    var shouldUpdate = this._update(args, this._args)
+    var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
       this._element = this._render.apply(this, args)
       this._isProxied = false
@@ -47,11 +47,12 @@ CacheElement.prototype._createProxy = function () {
   return el
 }
 
-CacheElement.prototype._update = function (newArgs, oldArgs) {
-  var length = newArgs.length
-  if (length !== oldArgs.length) return true
+CacheElement.prototype._update = function () {
+  var length = arguments.length
+  if (length !== this._args.length) return true
+
   for (var i = 0; i < length; i++) {
-    if (newArgs[i] !== oldArgs[i]) return true
+    if (arguments[i] !== this._args[i]) return true
   }
   return false
 }

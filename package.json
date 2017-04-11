@@ -1,5 +1,5 @@
 {
-  "name": "cached-element",
+  "name": "cache-component",
   "version": "3.0.0-0",
   "description": "Cache bel components",
   "main": "index.js",

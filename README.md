@@ -78,16 +78,17 @@ Internal properties are:
 __Must be implemented.__ Render an HTML node with arguments. The Node that's returned is cached as
 `this._element`.  Only called on first render and whenever you return `true` from `prototype._update()`.  You must return a DOM node from this function on every call.
 
-### `CacheComponent.prototype._update(newArgs, oldArgs)`
+### `CacheComponent.prototype._update([arguments])`
 Return a boolean to determine if `prototype._render()`
 should be called.  Not called on the first render.  Defaults to the following shallow compare function:
 
 ```js
-CacheElement.prototype._update = function (newArgs, oldArgs) {
-  var length = newArgs.length
-  if (length !== oldArgs.length) return true
+CacheElement.prototype._update = function () {
+  var length = arguments.length
+  if (length !== this._args.length) return true
+
   for (var i = 0; i < length; i++) {
-    if (newArgs[i] !== oldArgs[i]) return true
+    if (arguments[i] !== this._args[i]) return true
   }
   return false
 }

@@ -51,8 +51,8 @@ test('cache', (t) => {
       `
     }
 
-    MyComp.prototype._update = function (args1, args2) {
-      return args1[0] !== 'humans!'
+    MyComp.prototype._update = function (arg1) {
+      return arg1 !== 'humans!'
     }
 
     var myComp = new MyComp()
