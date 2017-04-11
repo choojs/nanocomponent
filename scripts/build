@@ -10,10 +10,6 @@ build_dev () {
     --standalone=cacheElement \
     -t envify \
     > dist/cache-element.js
-    NODE_ENV=development browserify widget.js \
-      --standalone=widget \
-      -t envify \
-      > dist/widget.js
 }
 
 build_min () {
@@ -26,13 +22,6 @@ build_min () {
     -p bundle-collapser/plugin \
     | uglifyjs \
     > dist/cache-element.min.js
-    NODE_ENV=production browserify widget.js \
-      --standalone=widget \
-      -t envify \
-      -g unassertify \
-      -g uglifyify \
-      -p bundle-collapser/plugin \
-      > dist/widget.min.js
 }
 
 # parse CLI flags

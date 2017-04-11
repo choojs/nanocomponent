@@ -4,11 +4,11 @@
   "description": "Cache bel elements",
   "main": "index.js",
   "scripts": {
-    "deps": "dependency-check . --entry widget.js && dependency-check . --extra --no-dev --entry widget.js",
+    "deps": "dependency-check . && dependency-check . --extra --no-dev",
     "build:dev": "./scripts/build dev",
     "build:min": "./scripts/build min",
     "prepublish": "npm run build:dev && npm run build:min",
-    "test": "standard *.js && npm run deps && NODE_ENV=test node test",
+    "test": "standard *.js && npm run deps && NODE_ENV=test node test | tap-format-spec",
     "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover test.js"
   },
   "repository": {
@@ -34,18 +34,17 @@
     "global": "^4.3.1"
   },
   "devDependencies": {
-        "bel": "^4.5.0",
-        "browserify": "^13.1.1",
-        "bundle-collapser": "^1.2.1",
-        "dependency-check": "^2.6.0",
-        "envify": "^4.0.0",
-        "istanbul": "^0.4.5",
-        "nanomorph": "^1.1.0",
-        "standard": "^8.3.0",
-        "tape": "^4.6.0",
-        "uglifyify": "^3.0.4",
-        "uglifyjs": "^2.4.10",
-        "unassertify": "^2.0.3"
-    }
-
+    "@tap-format/spec": "^0.2.0",
+    "bel": "^4.5.0",
+    "browserify": "^13.1.1",
+    "bundle-collapser": "^1.2.1",
+    "dependency-check": "^2.6.0",
+    "envify": "^4.0.0",
+    "istanbul": "^0.4.5",
+    "standard": "^8.3.0",
+    "tape": "^4.6.0",
+    "uglifyify": "^3.0.4",
+    "uglifyjs": "^2.4.10",
+    "unassertify": "^2.0.3"
+  }
 }

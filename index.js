@@ -7,13 +7,12 @@ function CacheElement () {
   this._hasWindow = typeof window !== 'undefined'
   this._element = null
   this._proxy = null
-  this._isProxied  = false
+  this._isProxied = false
   this._args = null
 }
 
 CacheElement.prototype.render = function () {
-  assert.equal(typeof this._render, 'function', 'nanocomponent: this._render should be implemented')
-  assert.equal(typeof this._update, 'function', 'nanocomponent: this._update should be implemented')
+  assert.equal(typeof this._render, 'function', 'cache-element: this._render should be implemented')
 
   var args = new Array(arguments.length)
   for (var i = 0; i < args.length; i++) {
