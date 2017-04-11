@@ -25,8 +25,6 @@ test('cache', (t) => {
     }
 
     var myComp = new MyComp()
-    // Mock browser
-    myComp._hasWindow = true
 
     var el1 = myComp.render('mittens')
     t.equal(String(el1), '<div>mittens</div>', 'init render success')
@@ -58,8 +56,6 @@ test('cache', (t) => {
     }
 
     var myComp = new MyComp()
-    // Mock browser
-    myComp._hasWindow = true
 
     var el1 = myComp.render('mittens')
     t.equal(String(el1), '<div>mittens</div>', 'init render success')

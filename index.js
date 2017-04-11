@@ -19,11 +19,7 @@ CacheElement.prototype.render = function () {
     args[i] = arguments[i]
   }
 
-  if (!this._element || !this._hasWindow) {
-    this._element = this._render.apply(this, args)
-    this._args = args
-    return this._element
-  } else {
+  if (this._element) {
     var shouldUpdate = this._update(args, this._args)
     if (shouldUpdate) {
       this._element = this._render.apply(this, args)
@@ -34,12 +30,16 @@ CacheElement.prototype.render = function () {
       if (!this._isProxied) this._proxy = this._createProxy()
       return this._proxy
     }
+  } else {
+    this._element = this._render.apply(this, args)
+    this._args = args
+    return this._element
   }
 }
 
 CacheElement.prototype._createProxy = function () {
-  var el = document.createElement('div')
-  el.setAttribute('data-cache-element', '')
+  var el = this._hasWindow ? document.createElement('div') : this._element
+  el.setAttribute('data-cache-component', '')
   var self = this
   el.isSameNode = function (el) {
     return el === self._element
@@ -47,11 +47,11 @@ CacheElement.prototype._createProxy = function () {
   return el
 }
 
-CacheElement.prototype._update = function (args1, args2) {
-  var length = args1.length
-  if (length !== args2.length) return true
+CacheElement.prototype._update = function (newArgs, oldArgs) {
+  var length = newArgs.length
+  if (length !== oldArgs.length) return true
   for (var i = 0; i < length; i++) {
-    if (args1[i] !== args2[i]) return true
+    if (newArgs[i] !== oldArgs[i]) return true
   }
   return false
 }
