@@ -3,28 +3,40 @@ var assert = require('assert')
 
 module.exports = Nanocomponent
 
-function Nanocomponent (val) {
+function Nanocomponent (opts) {
   this._hasWindow = typeof window !== 'undefined'
   this._placeholder = null
   this._onload = onload
   this._element = null
   this._loaded = false
+  this.state = {}
+  this.props = {}
+  this.oldProps = {}
+
+  if (opts && opts.pure) this._update = defaultUpdate
 }
 
-Nanocomponent.prototype.render = function () {
+Nanocomponent.prototype.render = function (props) {
   assert.equal(typeof this._render, 'function', 'nanocomponent: this._render should be implemented')
   assert.equal(typeof this._update, 'function', 'nanocomponent: this._update should be implemented')
 
   var self = this
-  var len = arguments.length
-  var args = new Array(len)
-  for (var i = 0; i < len; i++) args[i] = arguments[i]
 
-  if (!this._hasWindow) {
-    this._element = this._render.apply(this, args)
-    return this._element
-  } else if (!this._element) {
-    this._element = this._render.apply(this, args)
+  if (this._hasWindow && this._element) {
+    var shouldUpdate = this._update(props)
+    if (shouldUpdate) {
+      this.oldProps = this.props
+      this.props = props
+      this._render()
+    }
+    if (!this._placeholder) this._placeholder = this._createPlaceholder()
+    return this._placeholder
+  } else {
+    this.oldProps = this.props
+    this.props = props
+    this._element = this._render()
+
+    if (!this._hasWindow) return this._element
     this._onload(this._element, function () {
       self._loaded = true
       if (self._load) {
@@ -43,11 +55,6 @@ Nanocomponent.prototype.render = function () {
       }
     })
     return this._element
-  } else {
-    var shouldUpdate = this._update.apply(this, args)
-    if (shouldUpdate) this._render.apply(this, args)
-    if (!this._placeholder) this._placeholder = this._createPlaceholder()
-    return this._placeholder
   }
 }
 
@@ -59,4 +66,14 @@ Nanocomponent.prototype._createPlaceholder = function () {
     return el === self._element
   }
   return el
+}
+
+function defaultUpdate (newProps) {
+  const propsKeys = Object.keys(this.props)
+  const newPropsKeys = Object.keys(newProps)
+  if (propsKeys.length !== newPropsKeys.length) return true
+  for (var i = 0; i < propsKeys.length; i++) {
+    if (this.props[propsKeys[i]] !== newProps[propsKeys[i]]) return true
+  }
+  return false
 }
