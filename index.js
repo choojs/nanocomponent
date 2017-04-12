@@ -40,9 +40,12 @@ CacheElement.prototype.render = function () {
 CacheElement.prototype._createProxy = function () {
   var el = this._hasWindow ? document.createElement('div') : this._element
   el.setAttribute('data-cache-component', '')
+  if (this._element && this._element.id) {
+    el.setAttribute('id', this._element.id)
+  }
   var self = this
   el.isSameNode = function (el) {
-    return el === self._element
+    return self._element.id ? el.id === self._element.id : el === self._element
   }
   return el
 }
