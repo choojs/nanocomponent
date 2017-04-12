@@ -5,7 +5,9 @@
 Cached [bel][bel] components. Makes rendering elements _very fast™_. Analogous to
 React's `.shouldComponentUpdate()` method, but only using native DOM methods.
 
-Runs a `_render` function whenever arguments changed according to an `_update` function.  If the `_update` function determines an update is needed, a newly `_render`ed bel element is returned.  If an update is not needed, a `_proxy` element is returned instead.
+Runs a `_render` function whenever arguments changed according to an `_update` function.
+If the `_update` function determines an update is needed, a newly `_render`ed bel element is returned.
+If an update is not needed, a `_proxy` element is returned instead.
 
 ## Features
 - makes rendering elements _very fast™_
@@ -76,7 +78,8 @@ Internal properties are:
 
 ### `CacheComponent.prototype._render([arguments])`
 __Must be implemented.__ Render an HTML node with arguments. The Node that's returned is cached as
-`this._element`.  Only called on first render and whenever you return `true` from `prototype._update()`.  You must return a DOM node from this function on every call.
+`this._element`.  Only called on first render and whenever you return `true` from `prototype._update()`.
+You must return a DOM node from this function on every call.
 
 ### `CacheComponent.prototype._update([arguments])`
 Return a boolean to determine if `prototype._render()`
@@ -100,6 +103,7 @@ $ npm install cache-component
 ```
 
 ## FAQ
+
 ### Where does this run?
 Make sure you're running a diffing engine that checks for `.isSameNode()`, if
 it doesn't you'll end up with super weird results because proxy nodes will
@@ -112,6 +116,7 @@ This is needed because a given DOM node can only exist in one DOM tree at the
 time, so we need a way to reference mounted nodes in the tree without actually
 using them. Hence the proxy pattern, and the recently added support for it in
 certain diffing engines:
+
 ```js
 var html = require('bel')
 
@@ -147,25 +152,55 @@ changed will be recomputed and rerendered making things very fast.
 ### What's the exact difference between cache-element and nanocomponent?
 - `cache-component` returns a proxy node if the arguments were the same. If arguments
   change, it'll rerender and return a new node.
-- `nanocomponent` will render a new node initially and always return a proxy node on subsequent calls to `prototype.render`.  This means the component is responsible for mutating any internal changes. It also listens for the node to be
+- `nanocomponent` will render a new node initially and always return a proxy node on
+  subsequent calls to `prototype.render`.  This means the component is responsible for
+  mutating any internal changes. It also listens for the node to be
   unmounted from the DOM so it can clean up internal references, making it more
   expensive to use.
+
+### Whats the relationship beteen `cache-component` and [`cache-element`][ce]?
+
+This module was essentially a merge of [`cache-element`][ce] v2.0.1 with the API of [`nanomorph`][nm]
+avar [`cache-element`][ce] switched over to using [`nanomorph`][nm] and essentially had a different purpose.
+There are still ongoing discussions on the future of [`cache-element`][ce].  The idea behind the inheritance
+API is that it provides a handy place to store event handler functions so they don't get redeclaired
+between render frames like inline functions do.
+
+## See Also
+- [shama/bel](https://github.com/shama/bel)
+- [yoshuawuyts/nanomorph](https://github.com/yoshuawuyts/nanomorph)
+- [yoshuawuyts/nanoraf](https://github.com/yoshuawuyts/nanoraf)
+- [shama/on-load](https://github.com/shama/on-load)
+- [yoshuawuyts/observe-resize](https://github.com/yoshuawuyts/observe-resize)
+- [bendrucker/document-ready](https://github.com/bendrucker/document-ready)
+- [yoshuawuyts/on-intersect](https://github.com/yoshuawuyts/on-intersect)
+- [yoshuawuyts/on-idle](https://github.com/yoshuawuyts/on-idle)
+- [yoshuawuyts/nanobounce](https://github.com/yoshuawuyts/nanobounce)
+- [yoshuawuyts/nanoframe](https://github.com/yoshuawuyts/nanoframe)
+
+## Similar Packages
+- [shama/base-element](https://github.com/shama/base-element)
+- [yoshuawuyts/cache-element][ce]
+- [yoshuawuyts/microcomponent](https://github.com/yoshuawuyts/microcomponent)
+- [yoshuawuyts/nanocomponent](https://github.com/yoshuawuyts/nanocomponent)
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
 
 [0]: https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square
 [1]: https://nodejs.org/api/documentation.html#documentation_stability_index
-[2]: https://img.shields.io/npm/v/cache-element.svg?style=flat-square
-[3]: https://npmjs.org/package/cache-element
-[4]: https://img.shields.io/travis/yoshuawuyts/cache-element/master.svg?style=flat-square
-[5]: https://travis-ci.org/yoshuawuyts/cache-element
-[6]: https://img.shields.io/codecov/c/github/yoshuawuyts/cache-element/master.svg?style=flat-square
-[7]: https://codecov.io/github/yoshuawuyts/cache-element
-[8]: http://img.shields.io/npm/dm/cache-element.svg?style=flat-square
-[9]: https://npmjs.org/package/cache-element
+[2]: https://img.shields.io/npm/v/cache-component.svg?style=flat-square
+[3]: https://npmjs.org/package/cache-component
+[4]: https://img.shields.io/travis/hypermodules/cache-component/master.svg?style=flat-square
+[5]: https://travis-ci.org/hypermodules/cache-component
+[6]: https://img.shields.io/codecov/c/github/hypermodules/cache-component/master.svg?style=flat-square
+[7]: https://codecov.io/github/hypermodules/cache-component
+[8]: http://img.shields.io/npm/dm/cache-component.svg?style=flat-square
+[9]: https://npmjs.org/package/cache-component
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [11]: https://github.com/feross/standard
 [bel]: https://github.com/shama/bel
 [md]: https://github.com/patrick-steele-idem/morphdom
 [210]: https://github.com/patrick-steele-idem/morphdom/pull/81
+[nm]: https://github.com/yoshuawuyts/nanomorph
+[ce]: https://github.com/yoshuawuyts/cache-element
