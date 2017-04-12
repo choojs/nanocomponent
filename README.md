@@ -19,11 +19,17 @@ MyButton.prototype = Object.create(Nanocomponent.prototype)
 
 MyButton.prototype._render = function (color) {
   this._color = color
-  return html`
-    <button style="background-color: ${color}">
-      Click Me
-    </button>
-  `
+  if (!this._element) {
+    // initial render
+    return html`
+      <button style="background-color: ${color}">
+        Click Me
+      </button>
+    `
+  } else {
+    // mutate this._element
+    this._element.style.backgroundColor = color
+  }
 }
 
 MyButton.prototype._update = function (newColor) {
