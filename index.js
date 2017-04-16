@@ -7,7 +7,6 @@ function CacheElement () {
   this._hasWindow = typeof window !== 'undefined'
   this._element = null
   this._proxy = null
-  this._isProxied = false
   this._args = null
 }
 
@@ -23,12 +22,11 @@ CacheElement.prototype.render = function () {
     var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
       this._element = this._render.apply(this, args)
-      this._isProxied = false
+      this._proxy = null
       this._args = args
       return this._element
     } else {
-      if (!this._isProxied) {
-        this._isProxied = true
+      if (!this._proxy) {
         this._proxy = this._createProxy()
       }
       return this._proxy
