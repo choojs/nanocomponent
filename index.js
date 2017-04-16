@@ -27,7 +27,10 @@ CacheElement.prototype.render = function () {
       this._args = args
       return this._element
     } else {
-      if (!this._isProxied) this._proxy = this._createProxy()
+      if (!this._isProxied) {
+        this._isProxied = true
+        this._proxy = this._createProxy()
+      }
       return this._proxy
     }
   } else {
