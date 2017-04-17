@@ -21,10 +21,9 @@ CacheElement.prototype.render = function () {
   if (this._element && this._element.parentElement !== null) {
     var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
-      this._element = this._render.apply(this, args)
       this._proxy = null
       this._args = args
-      return this._element
+      return this._render.apply(this, args)
     } else {
       if (!this._proxy) {
         this._proxy = this._createProxy()
@@ -32,6 +31,9 @@ CacheElement.prototype.render = function () {
       return this._proxy
     }
   } else {
+    // CAPTURE THE FIRST RENDER. THIS IS BASICALLY A DOM POINTER.
+    // IF YOUR SUBSEQUENT RENDERS SNEAK ONTO THIS PROPERTY, YOU
+    // WILL END UP RENDERING PROXY NODES.
     this._element = this._render.apply(this, args)
     this._args = args
     return this._element
@@ -39,16 +41,18 @@ CacheElement.prototype.render = function () {
 }
 
 CacheElement.prototype._createProxy = function () {
-  var el = this._hasWindow ? document.createElement('div') : this._element
-  el.setAttribute('data-cache-component', '')
+  var proxy = this._hasWindow ? document.createElement('div') : this._element
+  proxy.setAttribute('data-cache-component', '')
   if (this._element && this._element.id) {
-    el.setAttribute('id', this._element.id)
+    proxy.setAttribute('id', this._element.id)
   }
   var self = this
-  el.isSameNode = function (el) {
-    return self._element.id ? el.id === self._element.id : el === self._element
+  proxy.isSameNode = function (el) {
+    window.newNode = el
+    window.oldNode = self._element
+    return self._element.id ? el.id === self._element.id : el.isSameNode(self._element)
   }
-  return el
+  return proxy
 }
 
 CacheElement.prototype._update = function () {
