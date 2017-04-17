@@ -69,9 +69,8 @@ Internal properties are:
 
 - `this._proxy`: proxy element that's returned on subsequent
   `render()` calls that don't pass the `._update()` check.
-- `this._isProxied`: used to keep track if the proxy element has been created or not.
 - `this._element`: rendered element that should be returned from the
-  `._render()` call.
+  `._render()` call.  This is a DOM pointer to the DOM node in the live DOM tree that you actually see and interact with.
 - `this._hasWindow`: boolean if `window` exists. Can be used to create
   elements that render both in the browser and in Node.
 - `this._args`: a reference to the arguments array that was used during the last `_render()` call.

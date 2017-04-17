@@ -31,9 +31,6 @@ CacheElement.prototype.render = function () {
       return this._proxy
     }
   } else {
-    // CAPTURE THE FIRST RENDER. THIS IS BASICALLY A DOM POINTER.
-    // IF YOUR SUBSEQUENT RENDERS SNEAK ONTO THIS PROPERTY, YOU
-    // WILL END UP RENDERING PROXY NODES.
     this._element = this._render.apply(this, args)
     this._args = args
     return this._element

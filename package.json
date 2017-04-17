@@ -1,6 +1,6 @@
 {
   "name": "cache-component",
-  "version": "3.0.0-3",
+  "version": "3.0.0",
   "description": "Cache bel components",
   "main": "index.js",
   "scripts": {
@@ -21,8 +21,7 @@
     "element",
     "thunk",
     "cache",
-    "perf",
-    "cache"
+    "perf"
   ],
   "author": "Bret Comnes",
   "license": "MIT",
