@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bcomnes/cache-component.git"
+    "url": "git+https://github.com/hypermodules/cache-component.git"
   },
   "keywords": [
     "bel",
@@ -26,9 +26,9 @@
   "author": "Bret Comnes",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bcomnes/cache-component/issues"
+    "url": "https://github.com/hypermodules/cache-component/issues"
   },
-  "homepage": "https://github.com/bcomnes/cache-component#readme",
+  "homepage": "https://github.com/hypermodules/cache-component#readme",
   "dependencies": {
     "global": "^4.3.1"
   },

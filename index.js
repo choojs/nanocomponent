@@ -45,9 +45,7 @@ CacheElement.prototype._createProxy = function () {
   }
   var self = this
   proxy.isSameNode = function (el) {
-    window.newNode = el
-    window.oldNode = self._element
-    return self._element.id ? el.id === self._element.id : el.isSameNode(self._element)
+    return self._element.id ? el.id === self._element.id : el === self._element
   }
   return proxy
 }
