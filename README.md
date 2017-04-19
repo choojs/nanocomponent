@@ -148,7 +148,7 @@ changed will be recomputed and rerendered making things very fast.
 
 `nanomorph`, which saw first use in choo 5, has supported `isSameNode` since it's conception.
 
-### What's the exact difference between cache-element and nanocomponent?
+### What's the exact difference between cache-component and nanocomponent?
 - `cache-component` returns a proxy node if the arguments were the same. If arguments
   change, it'll rerender and return a new node.
 - `nanocomponent` will render a new node initially and always return a proxy node on
@@ -160,9 +160,9 @@ changed will be recomputed and rerendered making things very fast.
 ### Whats the relationship beteen `cache-component` and [`cache-element`][ce]?
 
 This module was essentially a merge of [`cache-element`][ce] v2.0.1 with the API of [`nanomorph`][nm]
-avar [`cache-element`][ce] switched over to using [`nanomorph`][nm] and essentially had a different purpose.
+before [`cache-element`][ce] switched over to using [`nanomorph`][nm] and essentially had a different purpose.
 There are still ongoing discussions on the future of [`cache-element`][ce].  The idea behind the inheritance
-API is that it provides a handy place to store event handler functions so they don't get redeclaired
+API is that it provides a handy place to store event handler functions so they don't get redeclared
 between render frames like inline functions do.
 
 ## See Also
