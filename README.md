@@ -162,7 +162,7 @@ changed will be recomputed and rerendered making things very fast.
 This module was essentially a merge of [`cache-element`][ce] v2.0.1 with the API of [`nanomorph`][nm]
 before [`cache-element`][ce] switched over to using [`nanomorph`][nm] and essentially had a different purpose.
 There are still ongoing discussions on the future of [`cache-element`][ce].  The idea behind the inheritance
-API is that it provides a handy place to store event handler functions so they don't get redeclaired
+API is that it provides a handy place to store event handler functions so they don't get redeclared
 between render frames like inline functions do.
 
 ## See Also
