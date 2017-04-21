@@ -6,8 +6,8 @@ Cached [bel][bel] components. Makes rendering elements _very fast™_. Analogous
 React's `.shouldComponentUpdate()` method, but only using native DOM methods.
 
 Runs a `_render` function whenever arguments changed according to an `_update` function.
-If the `_update` function determines an update is needed, a newly `_render`ed bel element is returned.
-If an update is not needed, a `_proxy` element is returned instead.
+If the `_update` function determines an update is needed, a newly `_render`ed bel element is calculated and then [`nanomorph`][nm]ed onto the children nodes of the last render.
+After the first render, a `_proxy` element is always returned.  When the component is removed from the live DOM tree, all internal proxy and element references are deleted.
 
 ## Features
 - makes rendering elements _very fast™_
@@ -47,7 +47,7 @@ var element = CachedButton()
 
 let el = element('red') // creates new element
 let el = element('red') // returns cached element (proxy)
-let el = element('blue') // creates new element
+let el = element('blue') // returns cached element (proxy) and mutates children
 
 ```
 
@@ -157,13 +157,10 @@ changed will be recomputed and rerendered making things very fast.
 `nanomorph`, which saw first use in choo 5, has supported `isSameNode` since it's conception.
 
 ### What's the exact difference between cache-component and nanocomponent?
-- `cache-component` returns a proxy node if the arguments were the same. If arguments
-  change, it'll rerender and return a new node.
+- `cache-component` is very similar to nanocomponent, except it handles morphing for you if you want by re-running the _render function.  It works similar to react's component class.  Additionally, it retains the class interface so you can store your event handlers on the prototype chain and on the class instance.  Once the component is rendered + mounted in the DOM for the first time, cache-component always returns a proxy node.
 - `nanocomponent` will render a new node initially and always return a proxy node on
   subsequent calls to `prototype.render`.  This means the component is responsible for
-  mutating any internal changes. It also listens for the node to be
-  unmounted from the DOM so it can clean up internal references, making it more
-  expensive to use.
+  mutating any internal changes.
 
 ### Whats the relationship beteen `cache-component` and [`cache-element`][ce]?
 
