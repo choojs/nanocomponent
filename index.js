@@ -1,6 +1,7 @@
 var document = require('global/document')
 var assert = require('assert')
 var onload = require('on-load')
+var nanomorph = require('nanomorph')
 
 module.exports = CacheElement
 
@@ -23,15 +24,11 @@ CacheElement.prototype.render = function () {
   if (this._element) {
     var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
-      this._proxy = null
       this._args = args
-      return this._render.apply(this, args)
-    } else {
-      if (!this._proxy) {
-        this._proxy = this._createProxy()
-      }
-      return this._proxy
+      nanomorph(this._element, this._render.apply(this, args))
     }
+    if (!this._proxy) { this._proxy = this._createProxy() }
+    return this._proxy
   } else {
     this._element = this._render.apply(this, args)
     this._args = args
@@ -45,7 +42,7 @@ CacheElement.prototype._createProxy = function () {
   var proxy = document.createElement('div')
   var self = this
   proxy.setAttribute('data-cache-component', '')
-  proxy.isSameNode = function (el) { return el.id === self._element.id || el === self._element }
+  proxy.isSameNode = function (el) { return el === self._element }
   return proxy
 }
 
