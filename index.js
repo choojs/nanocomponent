@@ -1,5 +1,6 @@
 var document = require('global/document')
 var assert = require('assert')
+var onload = require('on-load')
 
 module.exports = CacheElement
 
@@ -8,17 +9,18 @@ function CacheElement () {
   this._element = null
   this._proxy = null
   this._args = null
+
+  this._handleLoad = this._handleLoad.bind(this)
+  this._handleUnload = this._handleUnload.bind(this)
 }
 
 CacheElement.prototype.render = function () {
   assert.equal(typeof this._render, 'function', 'cache-element: this._render should be implemented')
 
   var args = new Array(arguments.length)
-  for (var i = 0; i < args.length; i++) {
-    args[i] = arguments[i]
-  }
+  for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
 
-  if (this._element && this._element.parentElement !== null) {
+  if (this._element) {
     var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
       this._proxy = null
@@ -33,21 +35,30 @@ CacheElement.prototype.render = function () {
   } else {
     this._element = this._render.apply(this, args)
     this._args = args
+    onload(this._element, this._handleLoad, this._handleUnload)
     return this._element
   }
 }
 
 CacheElement.prototype._createProxy = function () {
-  var proxy = this._hasWindow ? document.createElement('div') : this._element
-  proxy.setAttribute('data-cache-component', '')
-  if (this._element && this._element.id) {
-    proxy.setAttribute('id', this._element.id)
-  }
+  if (!this._hasWindow) return this._element
+  var proxy = document.createElement('div')
   var self = this
-  proxy.isSameNode = function (el) {
-    return self._element.id ? el.id === self._element.id : el === self._element
-  }
+  proxy.setAttribute('data-cache-component', '')
+  proxy.isSameNode = function (el) { return el.id === self._element.id || el === self._element }
   return proxy
+}
+
+CacheElement.prototype._handleLoad = function () {
+  var self = this
+  if (this._load) window.requestAnimationFrame(function () { self._load() })
+}
+
+CacheElement.prototype._handleUnload = function () {
+  var self = this
+  this._proxy = null
+  this._element = null
+  if (this._unload) window.requestAnimationFrame(function () { self._unload() })
 }
 
 CacheElement.prototype._update = function () {

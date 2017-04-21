@@ -96,6 +96,14 @@ CacheElement.prototype._update = function () {
 }
 ```
 
+### `CacheComponent.prototype._load()`
+
+Called when the component is mounted on the DOM.
+
+### `Nanocomponent.prototype._unload()`
+
+Called when the component is removed from the DOM.
+
 ## Installation
 ```sh
 $ npm install cache-component
