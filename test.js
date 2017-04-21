@@ -9,7 +9,7 @@ test('cache', (t) => {
     t.throws(comp.render.bind(comp), /_render should be implemented/)
   })
 
-  t.test('should render elements', (t) => {
+  t.skip('should render elements', (t) => {
     t.plan(3)
 
     function MyComp () {
@@ -37,7 +37,7 @@ test('cache', (t) => {
     t.equal(String(el3), '<div>scruffles</div>', 're-render success')
   })
 
-  t.test('should accept a custom compare function', (t) => {
+  t.skip('should accept a custom compare function', (t) => {
     t.plan(2)
     function MyComp () {
       if (!(this instanceof MyComp)) return new MyComp()

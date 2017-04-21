@@ -21,7 +21,10 @@ CacheElement.prototype.render = function () {
   var args = new Array(arguments.length)
   for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
 
-  if (this._element) {
+  if (!this._hasWindow) {
+    this._element = this._render.apply(this, args)
+    return this._element
+  } if (this._element) {
     var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
       this._args = args
@@ -32,13 +35,12 @@ CacheElement.prototype.render = function () {
   } else {
     this._element = this._render.apply(this, args)
     this._args = args
-    onload(this._element, this._handleLoad, this._handleUnload)
+    if (this._hasWindow) onload(this._element, this._handleLoad, this._handleUnload)
     return this._element
   }
 }
 
 CacheElement.prototype._createProxy = function () {
-  if (!this._hasWindow) return this._element
   var proxy = document.createElement('div')
   var self = this
   proxy.setAttribute('data-cache-component', '')
