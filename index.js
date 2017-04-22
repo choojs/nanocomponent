@@ -10,7 +10,7 @@ function CacheElement () {
   this._element = null
   this._proxy = null
   this._args = null
-  this._ceId = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
+  this._ccId = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
 
   this._handleLoad = this._handleLoad.bind(this)
   this._handleUnload = this._handleUnload.bind(this)
@@ -44,8 +44,8 @@ CacheElement.prototype.render = function () {
 CacheElement.prototype._createProxy = function () {
   var proxy = document.createElement('div')
   var self = this
-  proxy.setAttribute('data-cache-component', this._ceId)
-  proxy.isSameNode = function (el) { return el.dataset.cacheComponent === self._ceId || el === self._element }
+  proxy.setAttribute('data-cache-component', this._ccId)
+  proxy.isSameNode = function (el) { return el.dataset.cacheComponent === self._ccId || el === self._element }
   return proxy
 }
 
