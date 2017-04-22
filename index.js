@@ -36,6 +36,7 @@ CacheElement.prototype.render = function () {
   } else {
     this._element = this._render.apply(this, args)
     this._args = args
+    this._brandNode(this._element)
     onload(this._element, this._handleLoad, this._handleUnload, this)
     return this._element
   }
@@ -44,9 +45,13 @@ CacheElement.prototype.render = function () {
 CacheElement.prototype._createProxy = function () {
   var proxy = document.createElement('div')
   var self = this
-  proxy.setAttribute('data-cache-component', this._ccId)
-  proxy.isSameNode = function (el) { return el.dataset.cacheComponent === self._ccId || el === self._element }
+  this._brandNode(proxy)
+  proxy.isSameNode = function (el) { return (el.dataset && el.dataset.cacheComponent === self._ccId) || el === self._element }
   return proxy
+}
+
+CacheElement.prototype._brandNode = function (node) {
+  node.setAttribute('data-cache-component', this._ccId)
 }
 
 CacheElement.prototype._handleLoad = function () {
