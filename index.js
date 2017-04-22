@@ -10,6 +10,7 @@ function CacheElement () {
   this._element = null
   this._proxy = null
   this._args = null
+  this._ccId = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
 
   this._handleLoad = this._handleLoad.bind(this)
   this._handleUnload = this._handleUnload.bind(this)
@@ -24,7 +25,7 @@ CacheElement.prototype.render = function () {
   if (!this._hasWindow) {
     this._element = this._render.apply(this, args)
     return this._element
-  } if (this._element) {
+  } else if (this._element) {
     var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
       this._args = args
@@ -35,7 +36,8 @@ CacheElement.prototype.render = function () {
   } else {
     this._element = this._render.apply(this, args)
     this._args = args
-    if (this._hasWindow) onload(this._element, this._handleLoad, this._handleUnload)
+    this._brandNode(this._element)
+    onload(this._element, this._handleLoad, this._handleUnload, this)
     return this._element
   }
 }
@@ -43,9 +45,13 @@ CacheElement.prototype.render = function () {
 CacheElement.prototype._createProxy = function () {
   var proxy = document.createElement('div')
   var self = this
-  proxy.setAttribute('data-cache-component', '')
-  proxy.isSameNode = function (el) { return el === self._element }
+  this._brandNode(proxy)
+  proxy.isSameNode = function (el) { return (el.dataset && el.dataset.cacheComponent === self._ccId) || el === self._element }
   return proxy
+}
+
+CacheElement.prototype._brandNode = function (node) {
+  node.setAttribute('data-cache-component', this._ccId)
 }
 
 CacheElement.prototype._handleLoad = function () {
