@@ -100,7 +100,7 @@ CacheElement.prototype._update = function () {
 
 Called when the component is mounted on the DOM.
 
-### `Nanocomponent.prototype._unload()`
+### `CacheComponent.prototype._unload()`
 
 Called when the component is removed from the DOM.
 
