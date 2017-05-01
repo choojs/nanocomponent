@@ -15,6 +15,13 @@ function Nanocomponent (val) {
   this._loaded = false
 }
 
+Nanocomponent.prototype._ensureID = function () {
+  // Get ID - needed for nanomorph child element reordering
+  var id = this._element.getAttribute('id')
+  if (!id) this._element.setAttribute('id', this._ID)
+  else this._ID = id
+}
+
 Nanocomponent.prototype.render = function () {
   assert.equal(typeof this._render, 'function', 'nanocomponent: this._render should be implemented')
   assert.equal(typeof this._update, 'function', 'nanocomponent: this._update should be implemented')
@@ -29,11 +36,7 @@ Nanocomponent.prototype.render = function () {
     return this._element
   } else if (!this._element) {
     this._element = this._render.apply(this, args)
-
-    // Get ID - needed for nanomorph child element reordering
-    var id = this._element.getAttribute('id')
-    if (!id) this._element.setAttribute('id', this._ID)
-    else this._ID = id
+    this._ensureID()
 
     this._onload(this._element, function () {
       self._loaded = true
@@ -55,7 +58,10 @@ Nanocomponent.prototype.render = function () {
     return this._element
   } else {
     var shouldUpdate = this._update.apply(this, args)
-    if (shouldUpdate) this._render.apply(this, args)
+    if (shouldUpdate) {
+      this._render.apply(this, args)
+      this._ensureID()
+    }
     if (!this._placeholder) this._placeholder = this._createPlaceholder()
     return this._placeholder
   }
