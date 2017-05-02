@@ -45,9 +45,9 @@ CachedButton.prototype._update = function (newColor) {
 
 var element = CachedButton()
 
-let el = element('red') // creates new element
-let el = element('red') // returns cached element (proxy)
-let el = element('blue') // returns cached element (proxy) and mutates children
+let el = element.render('red') // creates new element
+let el = element.render('red') // returns cached element (proxy)
+let el = element.render('blue') // returns cached element (proxy) and mutates children
 
 ```
 
