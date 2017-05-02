@@ -9,7 +9,6 @@ module.exports = Nanocomponent
 function Nanocomponent (val) {
   this._hasWindow = typeof window !== 'undefined'
   this._ID = KEY + '-' + INDEX++
-  this._placeholder = null
   this._onload = onload
   this._element = null
   this._loaded = false
@@ -46,7 +45,6 @@ Nanocomponent.prototype.render = function () {
         })
       }
     }, function () {
-      self._placeholder = null
       self._element = null
       self._loaded = false
       if (self._unload) {
@@ -62,18 +60,7 @@ Nanocomponent.prototype.render = function () {
       this._render.apply(this, args)
       this._ensureID()
     }
-    if (!this._placeholder) this._placeholder = this._createPlaceholder()
-    return this._placeholder
+    return this._element
   }
 }
 
-Nanocomponent.prototype._createPlaceholder = function () {
-  var el = document.createElement('div')
-  el.setAttribute('data-nanocomponent', '')
-  el.setAttribute('id', this._ID)
-  var self = this
-  el.isSameNode = function (el) {
-    return el === self._element
-  }
-  return el
-}

@@ -87,8 +87,6 @@ Object.create(Nanocomponent.prototype)`.
 
 Internal properties are:
 
-- `this._placeholder`: placeholder element that's returned on subsequent
-  `render()` calls that don't pass the `._update()` check.
 - `this._element`: rendered element that should be returned from the first
   `._render()` call. Used to apply `._load()` and `._unload()` listeners on.
 - `this._hasWindow`: boolean if `window` exists. Can be used to create
@@ -96,12 +94,11 @@ Internal properties are:
 - `this._loaded`: boolean if the element is currently loaded on the DOM.
 - `this._onload`: reference to the [on-load][on-load] library.
 
-### `DOMNode|placeholder = Nanocomponent.prototype.render()`
+### `DOMNode = Nanocomponent.prototype.render()`
 Create an instance of the component. Calls `prototype._render()` if
 `prototype._update()` returns `true`. As long as the element is mounted on the
-DOM, subsequent calls to `.render()` will return a placeholder element with a
-`.isSameNode()` method that compares arguments with the previously rendered
-node. This is useful for diffing algorithms like
+DOM, subsequent calls to `.render()` will return exactly the cachde element.
+This is useful for diffing algorithms like
 [nanomorph](https://github.com/yoshuawuyts/nanomorph) which use this method to
 determine if a portion of the tree should be walked.
 
