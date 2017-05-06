@@ -61,9 +61,16 @@ CacheElement.prototype._handleLoad = function () {
 
 CacheElement.prototype._handleUnload = function () {
   var self = this
-  this._proxy = null
-  this._element = null
-  if (this._unload) window.requestAnimationFrame(function () { self._unload() })
+  if (this._unload) {
+    window.requestAnimationFrame(function () {
+      self._unload()
+      self._proxy = null
+      self._element = null
+    })
+  } else {
+    this._proxy = null
+    this._element = null
+  }
 }
 
 CacheElement.prototype._update = function () {
