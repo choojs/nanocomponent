@@ -1,12 +1,13 @@
 var document = require('global/document')
+var morph = require('nanomorph')
 
-module.exports = CacheElement
+module.exports = CacheComponent
 
 function makeId () {
   return 'cc-' + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
 }
 
-function CacheElement () {
+function CacheComponent () {
   this._hasWindow = typeof window !== 'undefined'
   this._proxy = null
   this._args = null
@@ -23,7 +24,7 @@ function CacheElement () {
   })
 }
 
-CacheElement.prototype.render = function () {
+CacheComponent.prototype.render = function () {
   var args = new Array(arguments.length)
   for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
   if (!this._hasWindow) {
@@ -33,7 +34,8 @@ CacheElement.prototype.render = function () {
     if (shouldUpdate) {
       this._args = args
       this._proxy = null
-      return this._brandNode(this._handleId(this._render.apply(this, args)))
+      morph(this._element, this._brandNode(this._handleId(this._render.apply(this, args))))
+      if (this._didUpdate) window.requestAnimationFrame(function () { this._didUpdate() })
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
     return this._proxy
@@ -44,7 +46,7 @@ CacheElement.prototype.render = function () {
   }
 }
 
-CacheElement.prototype._createProxy = function () {
+CacheComponent.prototype._createProxy = function () {
   var proxy = document.createElement('div')
   var self = this
   this._brandNode(proxy)
@@ -55,12 +57,12 @@ CacheElement.prototype._createProxy = function () {
   return proxy
 }
 
-CacheElement.prototype._brandNode = function (node) {
+CacheComponent.prototype._brandNode = function (node) {
   node.setAttribute('data-cache-component', this._ccId)
   return node
 }
 
-CacheElement.prototype._handleId = function (node) {
+CacheComponent.prototype._handleId = function (node) {
   if (node.id) {
     this._id = node.id
   } else {
@@ -69,11 +71,11 @@ CacheElement.prototype._handleId = function (node) {
   return node
 }
 
-CacheElement.prototype._render = function () {
+CacheComponent.prototype._render = function () {
   throw new Error('cahce-component: _render should be implemented!')
 }
 
-CacheElement.prototype._update = function () {
+CacheComponent.prototype._update = function () {
   var length = arguments.length
   if (length !== this._args.length) return true
 

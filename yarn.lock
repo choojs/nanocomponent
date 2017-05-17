@@ -976,7 +976,7 @@ mute-stream@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.5.tgz#8fbfabb0a98a253d3184331f9e8deb7372fac6c0"
 
-nanomorph@^4.0.4:
+nanomorph@^4.0.5:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/nanomorph/-/nanomorph-4.0.5.tgz#7e27cc5e28a05df0c278f53ba430f253f3ac3fac"
 

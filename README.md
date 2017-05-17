@@ -96,13 +96,10 @@ CacheElement.prototype._update = function () {
 }
 ```
 
-### `CacheComponent.prototype._load()`
+### `CacheComponent.prototype._didUpdate()`
 
-Called when the component is mounted on the DOM.
-
-### `CacheComponent.prototype._unload()`
-
-Called when the component is removed from the DOM.
+Called after a mounted component updates.  You can use this hook to call scroll to or other dom methods on the mounted componet.
+You can access `this._element` to reference the root node.
 
 ## Installation
 ```sh
