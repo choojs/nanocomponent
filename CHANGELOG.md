@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 5.0.0 - 2017-05-16
+## 5.0.0-1 - 2017-05-16
+* Beta release!  Please let me know if there is anything wrong with this!
 * Remove `on-load` and use a new dom ID based dom tracking system.  Requires ES5 support for getters.
 * Remove `_load` and `_unload` methods.  You have to wrap instances of `cache-component` with `on-load` on your own now.
 * Add `_didUpdate` hook so you can call dom methods after the component updates.  Handy for updating a scroll position.
