@@ -1,79 +1,81 @@
 var document = require('global/document')
-var assert = require('assert')
-var onload = require('on-load')
-var nanomorph = require('nanomorph')
+var morph = require('nanomorph')
 
-module.exports = CacheElement
+module.exports = CacheComponent
 
-function CacheElement () {
-  this._hasWindow = typeof window !== 'undefined'
-  this._element = null
-  this._proxy = null
-  this._args = null
-  this._ccId = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
-
-  this._handleLoad = this._handleLoad.bind(this)
-  this._handleUnload = this._handleUnload.bind(this)
+function makeId () {
+  return 'cc-' + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
 }
 
-CacheElement.prototype.render = function () {
-  assert.equal(typeof this._render, 'function', 'cache-element: this._render should be implemented')
+function CacheComponent () {
+  this._hasWindow = typeof window !== 'undefined'
+  this._proxy = null
+  this._args = null
+  this._ccId = null
+  this._id = null
 
+  var self = this
+
+  Object.defineProperty(this, '_element', {
+    get: function () {
+      var el = document.getElementById(self._id)
+      if (el) return el.dataset.cacheComponent === self._ccId ? el : undefined
+    }
+  })
+}
+
+CacheComponent.prototype.render = function () {
   var args = new Array(arguments.length)
   for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
-
   if (!this._hasWindow) {
-    this._element = this._render.apply(this, args)
-    return this._element
+    return this._render.apply(this, args)
   } else if (this._element) {
     var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
       this._args = args
-      nanomorph(this._element, this._render.apply(this, args))
+      this._proxy = null
+      morph(this._element, this._brandNode(this._handleId(this._render.apply(this, args))))
+      if (this._didUpdate) window.requestAnimationFrame(function () { this._didUpdate() })
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
     return this._proxy
   } else {
-    this._element = this._render.apply(this, args)
+    this._ccId = makeId()
     this._args = args
-    this._brandNode(this._element)
-    onload(this._element, this._handleLoad, this._handleUnload, this)
-    return this._element
+    return this._brandNode(this._handleId(this._render.apply(this, args)))
   }
 }
 
-CacheElement.prototype._createProxy = function () {
+CacheComponent.prototype._createProxy = function () {
   var proxy = document.createElement('div')
   var self = this
   this._brandNode(proxy)
-  proxy.isSameNode = function (el) { return (el.dataset && el.dataset.cacheComponent === self._ccId) || el === self._element }
+  proxy.id = this._id
+  proxy.isSameNode = function (el) {
+    return (el && el.dataset.cacheComponent === self._ccId)
+  }
   return proxy
 }
 
-CacheElement.prototype._brandNode = function (node) {
+CacheComponent.prototype._brandNode = function (node) {
   node.setAttribute('data-cache-component', this._ccId)
+  return node
 }
 
-CacheElement.prototype._handleLoad = function () {
-  var self = this
-  if (this._load) window.requestAnimationFrame(function () { self._load() })
-}
-
-CacheElement.prototype._handleUnload = function () {
-  var self = this
-  if (this._unload) {
-    window.requestAnimationFrame(function () {
-      self._unload()
-      self._proxy = null
-      self._element = null
-    })
+CacheComponent.prototype._handleId = function (node) {
+  if (node.id) {
+    this._id = node.id
   } else {
-    this._proxy = null
-    this._element = null
+    node.id = this._id = this._ccId
   }
+  return node
 }
 
-CacheElement.prototype._update = function () {
+CacheComponent.prototype._render = function () {
+  throw new Error('cahce-component: _render should be implemented!')
+}
+
+CacheComponent.prototype._update = function () {
   var length = arguments.length
   if (length !== this._args.length) return true
 
