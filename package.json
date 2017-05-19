@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@tap-format/spec": "^0.2.0",
-    "bel": "^4.5.0",
+    "bel": "^5.0.0",
     "dependency-check": "^2.6.0",
     "envify": "^4.0.0",
     "standard": "^10.0.0",
