@@ -14,6 +14,7 @@ function Nanocomponent () {
   this._element = null
   this._loaded = false
   this.props = {}
+  this.oldProps = null
   this.state = {}
 }
 
