@@ -17,23 +17,22 @@ function MyButton () {
 }
 MyButton.prototype = Object.create(Nanocomponent.prototype)
 
-MyButton.prototype._render = function (color) {
-  this._color = color
+MyButton.prototype._render = function () {
   if (!this._element) {
     // initial render
     return html`
-      <button style="background-color: ${color}">
+      <button style="background-color: ${this.props.color}">
         Click Me
       </button>
     `
   } else {
     // mutate this._element
-    this._element.style.backgroundColor = color
+    this._element.style.backgroundColor = this.props.color
   }
 }
 
-MyButton.prototype._update = function (newColor) {
-  return newColor !== this._color
+MyButton.prototype._update = function (props) {
+  return props.color !== this.props.color
 }
 ```
 
@@ -95,8 +94,11 @@ Internal properties are:
   elements that render both in the browser and in Node.
 - `this._loaded`: boolean if the element is currently loaded on the DOM.
 - `this._onload`: reference to the [on-load][on-load] library.
+- `this.props`: the current `props` passed to `render()`
+- `this.oldProps`: the previous `props`
+- `this.state`: any out of band state to be stored
 
-### `DOMNode|placeholder = Nanocomponent.prototype.render()`
+### `DOMNode|placeholder = Nanocomponent.prototype.render(props)`
 Create an instance of the component. Calls `prototype._render()` if
 `prototype._update()` returns `true`. As long as the element is mounted on the
 DOM, subsequent calls to `.render()` will return a placeholder element with a
@@ -105,13 +107,13 @@ node. This is useful for diffing algorithms like
 [nanomorph](https://github.com/yoshuawuyts/nanomorph) which use this method to
 determine if a portion of the tree should be walked.
 
-### `Nanocomponent.prototype._render([arguments])`
+### `Nanocomponent.prototype._render(props)`
 __Must be implemented.__ Render an HTML node with arguments. For
 `prototype._load()` and `prototype._unload()` to work, make sure you return the
 same node on subsequent renders. The Node that's initially returned is saved as
 `this._element`.
 
-### `Nanocomponent.prototype._update([arguments])`
+### `Nanocomponent.prototype._update(props)`
 __Must be implemented.__ Return a boolean to determine if `prototype._render()`
 should be called.  Not called on the first render.
 

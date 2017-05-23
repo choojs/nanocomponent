@@ -12,18 +12,15 @@ function Leaflet () {
   Nanocomponent.call(this)
 
   this._log = nanologger('leaflet')
-  this._element = null
-  this._coords = null
-  this._map = null
-  this._zoom = 12
+  this.state.map = null
+  this.state.zoom = 12
 }
 Leaflet.prototype = Object.create(Nanocomponent.prototype)
 
-Leaflet.prototype._render = function (coords) {
+Leaflet.prototype._render = function () {
   var self = this
-  this._coords = coords
 
-  if (!this._map) {
+  if (!this.state.map) {
     this._element = html`<div style="height: 500px"></div>`
     if (this._hasWindow) this._createMap()
   } else {
@@ -35,28 +32,28 @@ Leaflet.prototype._render = function (coords) {
   return this._element
 }
 
-Leaflet.prototype._update = function (coords) {
-  return coords[0] !== this._coords[0] || coords[1] !== this._coords[1]
+Leaflet.prototype._update = function (props) {
+  return props.coords[0] !== this.props.coords[0] ||
+    props.coords[1] !== this.props.coords[1]
 }
 
 Leaflet.prototype._load = function () {
-  this._map.invalidateSize()
+  this.state.map.invalidateSize()
   this._log.info('load')
 }
 
 Leaflet.prototype._unload = function () {
   this._log.info('unload')
 
-  this._map.remove()
-  this._coords = null
-  this._map = null
+  this.state.map.remove()
+  this.state = {}
   this._element = null
 }
 
 Leaflet.prototype._createMap = function () {
   var element = this._element
-  var coords = this._coords
-  var zoom = this._zoom
+  var coords = this.props.coords
+  var zoom = this.state.zoom
 
   this._log.info('create-map', coords)
 
@@ -68,11 +65,11 @@ Leaflet.prototype._createMap = function () {
     maxZoom: 20,
     ext: 'png'
   }).addTo(map)
-  this._map = map
+  this.state.map = map
 }
 
 Leaflet.prototype._updateMap = function () {
-  var coords = this._coords
+  var coords = this.props.coords
   this._log.info('update-map', coords)
-  this._map.setView(coords)
+  this.state.map.setView(coords)
 }

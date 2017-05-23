@@ -30,7 +30,7 @@ function mainView (state, emit) {
         <button onclick=${toSeattle}>Seattle</button>
       </nav>
       <main>
-        ${leaflet.render(state.coords)}
+        ${leaflet.render({ coords: state.coords })}
       </main>
     </body>
   `

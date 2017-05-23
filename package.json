@@ -6,7 +6,7 @@
   "scripts": {
     "build": "bankai build example --optimize",
     "deps": "dependency-check . && dependency-check . --extra --no-dev -i yo-yoify",
-    "start": "bankai start example --optimize",
+    "start": "bankai start example",
     "test": "standard && npm run deps",
     "test:cov": "standard && npm run deps"
   },
