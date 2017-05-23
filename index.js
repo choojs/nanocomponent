@@ -59,7 +59,7 @@ Nanocomponent.prototype.render = function () {
   } else {
     var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
-      this._render.apply(this, args)
+      this._element = this._render.apply(this, args)
       this._ensureID()
     }
     if (!this._placeholder) this._placeholder = this._createPlaceholder()
