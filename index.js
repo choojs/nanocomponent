@@ -54,8 +54,6 @@ Nanocomponent.prototype.render = function (props) {
         })
       }
     }, function () {
-      self._placeholder = null
-      self._element = null
       self._loaded = false
       if (self._unload) {
         window.requestAnimationFrame(function () {
