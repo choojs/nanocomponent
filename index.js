@@ -72,7 +72,7 @@ CacheComponent.prototype._handleId = function (node) {
 }
 
 CacheComponent.prototype._render = function () {
-  throw new Error('cahce-component: _render should be implemented!')
+  throw new Error('cache-component: _render should be implemented!')
 }
 
 CacheComponent.prototype._update = function () {
