@@ -47,6 +47,7 @@ Nanocomponent.prototype.render = function (props) {
   } else if (!this._element) {
     this._rerender(props)
     this._onload(this._element, function () {
+      if (self._loaded) return
       self._loaded = true
       if (self._load) {
         window.requestAnimationFrame(function () {
@@ -54,6 +55,7 @@ Nanocomponent.prototype.render = function (props) {
         })
       }
     }, function () {
+      if (document.body.contains(self._element)) return
       self._loaded = false
       if (self._unload) {
         window.requestAnimationFrame(function () {
