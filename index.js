@@ -62,7 +62,7 @@ Nanocomponent.prototype.render = function (props) {
           self._unload()
         })
       }
-    })
+    }, this._ID)
     return this._element
   } else {
     var shouldUpdate = this._update(props)
