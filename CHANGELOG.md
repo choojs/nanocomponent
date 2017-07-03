@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.1.0
+* Update [nanomorph](http://ghub.io/nanomorph) to `^5.1.2`.  This adds the new child-reordering algorithm so we get a minor version bump.  Keep an eye out for weird ness and report broken corner cases 🙏
+
 ## 5.0.1
 * Fix proxy leak by resetting proxy node ID after DOM removal is detected.
 
