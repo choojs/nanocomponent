@@ -42,6 +42,7 @@ CacheComponent.prototype.render = function () {
   } else {
     this._ccId = makeId()
     this._args = args
+    this._proxy = null
     return this._brandNode(this._handleId(this._render.apply(this, args)))
   }
 }
