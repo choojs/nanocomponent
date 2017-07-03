@@ -1,6 +1,6 @@
 {
   "name": "cache-component",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Cache bel components",
   "main": "index.js",
   "scripts": {
