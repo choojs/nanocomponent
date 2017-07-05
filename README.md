@@ -96,10 +96,25 @@ CacheElement.prototype._update = function () {
 }
 ```
 
+### `CacheComponent.prototype._willMount(el)`
+
+Called before returning a fully rendered dom node that is presumably inserted into the document.  This is called on first render, and once every
+subsequent render after the element is found to have been removed from the dom.  It gets passed a reference `el` to the dom node that will be returned.
+
+### `CacheComponent.prototype._didMount(el)`
+
+This function is called after the fully rendered dom node is returned and receives a reference `el` to that dom node.   In practice, this hooks indicates
+the dom node has been mounted and can be interacted with to set scroll position and other attributes.
+
+### `CacheComponent.prototype._willUpdate(el)`
+
+Called before the component will update.  `_willUpdate` gets a `el` reference so that you can modify the element that will be use to internally morph the mounted dom node.
+
 ### `CacheComponent.prototype._didUpdate()`
 
-Called after a mounted component updates.  You can use this hook to call scroll to or other dom methods on the mounted componet.
-You can access `this._element` to reference the root node.
+Called after a mounted component updates.  You can use this hook to call scroll to or other dom methods on the mounted component.
+You can access `this._element` to reference the root node mounted in the page.  This hook does not get a `el` argument as this node is tossed away at this stage.
+
 
 ## Installation
 ```sh

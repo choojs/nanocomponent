@@ -26,6 +26,8 @@ function CacheComponent () {
 
 CacheComponent.prototype.render = function () {
   var args = new Array(arguments.length)
+  var self = this
+  var el
   for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
   if (!this._hasWindow) {
     return this._render.apply(this, args)
@@ -34,8 +36,10 @@ CacheComponent.prototype.render = function () {
     if (shouldUpdate) {
       this._args = args
       this._proxy = null
-      morph(this._element, this._brandNode(this._handleId(this._render.apply(this, args))))
-      if (this._didUpdate) window.requestAnimationFrame(function () { this._didUpdate() })
+      el = this._brandNode(this._handleId(this._render.apply(this, args)))
+      if (this._willUpdate) this._willUpdate()
+      morph(this._element, el)
+      if (this._didUpdate) window.requestAnimationFrame(function () { self._didUpdate() })
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
     return this._proxy
@@ -43,7 +47,10 @@ CacheComponent.prototype.render = function () {
     this._ccId = makeId()
     this._args = args
     this._proxy = null
-    return this._brandNode(this._handleId(this._render.apply(this, args)))
+    el = this._brandNode(this._handleId(this._render.apply(this, args)))
+    if (this._willMount) this._willMount(el)
+    if (this._didMount) window.requestAnimationFrame(function () { self._didMount(el) })
+    return el
   }
 }
 

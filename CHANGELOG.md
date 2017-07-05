@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.2.0
+* Added more lifecycle hooks: `_willMount`, `_didMount`, `_willUpdate` in addition to `_didUpdate`.
+
 ## 5.1.0
 * Update [nanomorph](http://ghub.io/nanomorph) to `^5.1.2`.  This adds the new child-reordering algorithm so we get a minor version bump.  Keep an eye out for weird ness and report broken corner cases 🙏
 
