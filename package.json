@@ -27,7 +27,8 @@
   "homepage": "https://github.com/hypermodules/cache-component#readme",
   "dependencies": {
     "global": "^4.3.1",
-    "nanomorph": "^5.1.2"
+    "nanomorph": "^5.1.2",
+    "on-load": "^3.2.0"
   },
   "devDependencies": {
     "@tap-format/spec": "^0.2.0",
