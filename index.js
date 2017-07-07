@@ -19,7 +19,7 @@ function CacheComponent () {
 
   var self = this
 
-  Object.defineProperty(this, '_element', {
+  Object.defineProperty(this, 'element', {
     get: function () {
       var el = document.getElementById(self._id)
       if (el) return el.dataset.cacheComponent === self._ccID ? el : undefined
@@ -37,13 +37,13 @@ CacheComponent.prototype.render = function () {
   for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
   if (!this._hasWindow) {
     return this._render.apply(this, args)
-  } else if (this._element) {
+  } else if (this.element) {
     var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
       this._args = args
       // this._proxy = null
       el = this._brandNode(this._ensureID(this._render.apply(this, args)))
-      morph(this._element, el)
+      morph(this.element, el)
       if (this._didUpdate) window.requestAnimationFrame(function () { self._didUpdate() })
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
@@ -53,7 +53,7 @@ CacheComponent.prototype.render = function () {
     this._args = args
     this._proxy = null
     el = this._brandNode(this._ensureID(this._render.apply(this, args)))
-    if (this._willRender) this._willMount(el)
+    if (this._willRender) this._willRender(el)
     if (this._load || this._unload) {
       onload(
             el,
@@ -63,14 +63,14 @@ CacheComponent.prototype.render = function () {
               if (self._load) window.requestAnimationFrame(function () { self._load() })
             },
             function () {
-              if (self._element) return
+              if (self.element) return
               self._loaded = false
               if (self._unload) window.requestAnimationFrame(function () { self._unload() })
             },
             this
           )
     }
-    if (this._didRender) window.requestAnimationFrame(function () { self._didMount(el) })
+    if (this._didRender) window.requestAnimationFrame(function () { self._didRender(el) })
     return el
   }
 }
