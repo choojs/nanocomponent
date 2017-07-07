@@ -113,5 +113,3 @@ CacheComponent.prototype._update = function () {
   }
   return false
 }
-
-function noop () {}
