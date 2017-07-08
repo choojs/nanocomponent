@@ -28,8 +28,8 @@ function CacheComponent () {
 }
 
 CacheComponent.prototype.render = function () {
-  assert.equal(typeof this._render, 'function', 'nanocomponent: this._render should be implemented')
-  assert.equal(typeof this._update, 'function', 'nanocomponent: this._update should be implemented')
+  assert.equal(typeof this._render, 'function', 'cache-component: this._render should be implemented')
+  assert.equal(typeof this._update, 'function', 'cache-component: this._update should be implemented')
 
   var self = this
   var args = new Array(arguments.length)
@@ -42,7 +42,9 @@ CacheComponent.prototype.render = function () {
     if (shouldUpdate) {
       this._args = args
       // this._proxy = null
-      el = this._brandNode(this._ensureID(this._render.apply(this, args)))
+      el = this._render.apply(this, args)
+      assert(el instanceof window.HTMLElement, 'cache-component: _render should return a DOM node')
+      el = this._brandNode(this._ensureID(el))
       morph(this.element, el)
       if (this._didUpdate) window.requestAnimationFrame(function () { self._didUpdate() })
     }
@@ -52,23 +54,12 @@ CacheComponent.prototype.render = function () {
     this._ccID = makeID()
     this._args = args
     this._proxy = null
-    el = this._brandNode(this._ensureID(this._render.apply(this, args)))
+    el = this._render.apply(this, args)
+    assert(el instanceof window.HTMLElement, 'cache-component: _render should return a DOM node')
+    el = this._brandNode(this._ensureID(el))
     if (this._willRender) this._willRender(el)
     if (this._load || this._unload) {
-      onload(
-            el,
-            function () {
-              if (self._loaded) return
-              self._loaded = true
-              if (self._load) window.requestAnimationFrame(function () { self._load() })
-            },
-            function () {
-              if (self.element) return
-              self._loaded = false
-              if (self._unload) window.requestAnimationFrame(function () { self._unload() })
-            },
-            this
-          )
+      onload(el, this._handleLoad.bind(this), this._handleUnload.bind(this), this)
     }
     if (this._didRender) window.requestAnimationFrame(function () { self._didRender(el) })
     return el
@@ -88,6 +79,7 @@ CacheComponent.prototype._createProxy = function () {
 
 CacheComponent.prototype._brandNode = function (node) {
   node.setAttribute('data-cache-component', this._ccID)
+  node.setAttribute('data-component-name', this.constructor.name)
   return node
 }
 
@@ -98,6 +90,20 @@ CacheComponent.prototype._ensureID = function (node) {
     node.id = this._id = this._ccID
   }
   return node
+}
+
+CacheComponent.prototype._handleLoad = function () {
+  var self = this
+  if (this._loaded) return
+  this._loaded = true
+  if (this._load) window.requestAnimationFrame(function () { self._load() })
+}
+
+CacheComponent.prototype._handleUnload = function () {
+  var self = this
+  if (this.element) return
+  this._loaded = false
+  if (this._unload) window.requestAnimationFrame(function () { self._unload() })
 }
 
 CacheComponent.prototype._render = function () {
