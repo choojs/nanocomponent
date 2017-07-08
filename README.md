@@ -2,7 +2,7 @@
 [![npm version][2]][3] [![build status][4]][5]
 [![downloads][8]][9] [![js-standard-style][10]][11]
 
-Native DOM component API abstraction that pairs nicely with DOM diffing algorithms.
+Native DOM component abstraction that pairs nicely with DOM diffing algorithms.
 
 ## Features
 - Isolate native DOM libraries from DOM diffing algorithms
