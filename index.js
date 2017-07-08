@@ -15,7 +15,7 @@ function CacheComponent () {
   this._ccID = null // internal cache-component id
   this._proxy = null
   this._args = null
-  this._loaded = false
+  this._loaded = false // Used to debounce on-load when child-reordering
 
   var self = this
 
@@ -28,9 +28,6 @@ function CacheComponent () {
 }
 
 CacheComponent.prototype.render = function () {
-  assert.equal(typeof this._render, 'function', 'cache-component: this._render should be implemented')
-  assert.equal(typeof this._update, 'function', 'cache-component: this._update should be implemented')
-
   var self = this
   var args = new Array(arguments.length)
   var el
@@ -42,9 +39,7 @@ CacheComponent.prototype.render = function () {
     if (shouldUpdate) {
       this._args = args
       // this._proxy = null
-      el = this._render.apply(this, args)
-      assert(el instanceof window.HTMLElement, 'cache-component: _render should return a DOM node')
-      el = this._brandNode(this._ensureID(el))
+      el = this._handleRender(args)
       morph(this.element, el)
       if (this._didUpdate) window.requestAnimationFrame(function () { self._didUpdate() })
     }
@@ -54,16 +49,19 @@ CacheComponent.prototype.render = function () {
     this._ccID = makeID()
     this._args = args
     this._proxy = null
-    el = this._render.apply(this, args)
-    assert(el instanceof window.HTMLElement, 'cache-component: _render should return a DOM node')
-    el = this._brandNode(this._ensureID(el))
+    el = this._handleRender(args)
     if (this._willRender) this._willRender(el)
     if (this._load || this._unload) {
       onload(el, this._handleLoad.bind(this), this._handleUnload.bind(this), this)
     }
-    if (this._didRender) window.requestAnimationFrame(function () { self._didRender(el) })
     return el
   }
+}
+
+CacheComponent.prototype._handleRender = function (args) {
+  var el = this._render.apply(this, args)
+  assert(el instanceof window.HTMLElement, 'cache-component: _render should return a DOM node')
+  return this._brandNode(this._ensureID(el))
 }
 
 CacheComponent.prototype._createProxy = function () {
@@ -79,29 +77,25 @@ CacheComponent.prototype._createProxy = function () {
 
 CacheComponent.prototype._brandNode = function (node) {
   node.setAttribute('data-cache-component', this._ccID)
-  node.setAttribute('data-component-name', this.constructor.name)
   return node
 }
 
 CacheComponent.prototype._ensureID = function (node) {
-  if (node.id) {
-    this._id = node.id
-  } else {
-    node.id = this._id = this._ccID
-  }
+  if (node.id) this._id = node.id
+  else node.id = this._id = this._ccID
   return node
 }
 
 CacheComponent.prototype._handleLoad = function () {
   var self = this
-  if (this._loaded) return
+  if (this._loaded) return // Debounce child-reorders
   this._loaded = true
   if (this._load) window.requestAnimationFrame(function () { self._load() })
 }
 
 CacheComponent.prototype._handleUnload = function () {
   var self = this
-  if (this.element) return
+  if (this.element) return // Debounce child-reorders
   this._loaded = false
   if (this._unload) window.requestAnimationFrame(function () { self._unload() })
 }
