@@ -1,6 +1,16 @@
-# cache-component [![stability][0]][1]
+# nanocomponent [![stability][0]][1]
 [![npm version][2]][3] [![build status][4]][5]
 [![downloads][8]][9] [![js-standard-style][10]][11]
+
+Native DOM component API abstraction that pairs nicely with DOM diffing algorithms.
+
+## Features
+- Isolate native DOM libraries from DOM diffing algorithms
+- makes rendering elements _very fast™_
+- Component nesting and state update passthrough
+- implemented in only a few lines
+- only uses native DOM methods
+- Class based components, which offer a great place to store methods for re-use.
 
 Cached [bel][bel] components. Makes rendering elements _very fast™_. Analogous to
 React's `.shouldComponentUpdate()` method, but only using native DOM methods.
@@ -8,12 +18,6 @@ React's `.shouldComponentUpdate()` method, but only using native DOM methods.
 Runs a `_render` function whenever arguments changed according to an `_update` function.
 If the `_update` function determines an update is needed, a newly `_render`ed bel element is calculated and then [`nanomorph`][nm]ed onto the children nodes of the last render.
 After the first render, a `_proxy` element is always returned.  When the component is removed from the live DOM tree, all internal proxy and element references are deleted.
-
-## Features
-- makes rendering elements _very fast™_
-- implemented in only a few lines
-- only uses native DOM methods
-- Class based components, which offer a great place to store methods for re-use.
 
 ## Usage
 
@@ -62,18 +66,18 @@ document.body.appendChild(cachedButton.render('green'))
 
 ### `CacheComponent.prototype()`
 Inheritable CachedComponent prototype. Should be inherited from using
-`CacheComponent.call(this)` and `prototype =
-Object.create(CacheComponent.prototype)`.
+`CacheComponent.call(this)` and `prototype = Object.create(CacheComponent.prototype)`.
 
 Internal properties are:
 
-- `this._proxy`: proxy element that's returned on subsequent
-  `render()` calls that don't pass the `._update()` check.
-- `this._element`: rendered element that should be returned from the
-  `._render()` call.  This is a DOM pointer to the DOM node in the live DOM tree that you actually see and interact with.
+- `this._proxy`: proxy (aka placeholder) element that is returned whenever the component is mounted in the document DOM.
 - `this._hasWindow`: boolean if `window` exists. Can be used to create
   elements that render both in the browser and in Node.
 - `this._args`: a reference to the arguments array that was used during the last `_render()` call.
+- `this._id`: a reference to the ID of the root node.  If no ID is found on the root node of the rendered component, this is set to the component ID.
+- `this._ccID`: internal component instance ID.  This gets generated every time `render` is called when the component is not found in the dom.
+- `this._loaded`: used to debounce `on-load` when
+- `this.element`: a [getter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get) property that returns the component's DOM node if its mounted in the page and `null` when its not.
 
 ### `CacheComponent.prototype._render([arguments])`
 __Must be implemented.__ Render an HTML node with arguments. The Node that's returned is cached as

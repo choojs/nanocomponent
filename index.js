@@ -38,7 +38,6 @@ CacheComponent.prototype.render = function () {
     var shouldUpdate = this._update.apply(this, args)
     if (shouldUpdate) {
       this._args = args
-      // this._proxy = null
       el = this._handleRender(args)
       morph(this.element, el)
       if (this._didUpdate) window.requestAnimationFrame(function () { self._didUpdate() })
