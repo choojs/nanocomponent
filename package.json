@@ -1,7 +1,7 @@
 {
-  "name": "cache-component",
-  "version": "5.2.0",
-  "description": "Cache bel components",
+  "name": "nanocomponent",
+  "version": "6.0.0",
+  "description": "Native DOM components that pair nicely with DOM diffing algorithms",
   "main": "index.js",
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hypermodules/cache-component.git"
+    "url": "git+https://github.com/choojs/nanocomponent.git"
   },
   "keywords": [
     "bel",
@@ -17,14 +17,21 @@
     "element",
     "thunk",
     "cache",
-    "perf"
+    "perf",
+    "nanomorph",
+    "morphdom",
+    "nanocomponent",
+    "cache-component"
   ],
-  "author": "Bret Comnes",
+  "author": "Trainspotters",
+  "contributors": [
+    "Bret Comnes <bcomnes@gmail.com> (http://bret.io)"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hypermodules/cache-component/issues"
+    "url": "https://github.com/choojs/nanocomponent/issues"
   },
-  "homepage": "https://github.com/hypermodules/cache-component#readme",
+  "homepage": "https://github.com/choojs/nanocomponent#readme",
   "dependencies": {
     "global": "^4.3.1",
     "nanomorph": "^5.1.2",

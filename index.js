@@ -3,16 +3,16 @@ var morph = require('nanomorph')
 var onload = require('on-load')
 var assert = require('assert')
 
-module.exports = CacheComponent
+module.exports = Nanocomponent
 
 function makeID () {
-  return 'cc-' + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
+  return 'ncid-' + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
 }
 
-function CacheComponent () {
+function Nanocomponent () {
   this._hasWindow = typeof window !== 'undefined'
   this._id = null // represents the id of the root node
-  this._ccID = null // internal cache-component id
+  this._ncID = null // internal nanocomponent id
   this._proxy = null
   this._args = null
   this._loaded = false // Used to debounce on-load when child-reordering
@@ -22,12 +22,12 @@ function CacheComponent () {
   Object.defineProperty(this, 'element', {
     get: function () {
       var el = document.getElementById(self._id)
-      if (el) return el.dataset.cacheComponent === self._ccID ? el : undefined
+      if (el) return el.dataset.nanocomponent === self._Nanocomponent ? el : undefined
     }
   })
 }
 
-CacheComponent.prototype.render = function () {
+Nanocomponent.prototype.render = function () {
   var self = this
   var args = new Array(arguments.length)
   for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
@@ -43,7 +43,7 @@ CacheComponent.prototype.render = function () {
     if (!this._proxy) { this._proxy = this._createProxy() }
     return this._proxy
   } else {
-    this._ccID = makeID()
+    this._ncID = makeID()
     this._args = args
     this._proxy = null
     var el = this._handleRender(args)
@@ -55,53 +55,53 @@ CacheComponent.prototype.render = function () {
   }
 }
 
-CacheComponent.prototype._handleRender = function (args) {
+Nanocomponent.prototype._handleRender = function (args) {
   var el = this._render.apply(this, args)
-  assert(el instanceof window.HTMLElement, 'cache-component: _render should return a DOM node')
+  assert(el instanceof window.HTMLElement, 'nanocomponent: _render should return a DOM node')
   return this._brandNode(this._ensureID(el))
 }
 
-CacheComponent.prototype._createProxy = function () {
+Nanocomponent.prototype._createProxy = function () {
   var proxy = document.createElement('div')
   var self = this
   this._brandNode(proxy)
   proxy.id = this._id
   proxy.isSameNode = function (el) {
-    return (el && el.dataset.cacheComponent === self._ccID)
+    return (el && el.dataset.nanocomponent === self._ncID)
   }
   return proxy
 }
 
-CacheComponent.prototype._brandNode = function (node) {
-  node.setAttribute('data-cache-component', this._ccID)
+Nanocomponent.prototype._brandNode = function (node) {
+  node.setAttribute('data-nanocomponent', this._ncID)
   return node
 }
 
-CacheComponent.prototype._ensureID = function (node) {
+Nanocomponent.prototype._ensureID = function (node) {
   if (node.id) this._id = node.id
-  else node.id = this._id = this._ccID
+  else node.id = this._id = this._ncID
   return node
 }
 
-CacheComponent.prototype._handleLoad = function () {
+Nanocomponent.prototype._handleLoad = function () {
   var self = this
   if (this._loaded) return // Debounce child-reorders
   this._loaded = true
   if (this._load) window.requestAnimationFrame(function () { self._load() })
 }
 
-CacheComponent.prototype._handleUnload = function () {
+Nanocomponent.prototype._handleUnload = function () {
   var self = this
   if (this.element) return // Debounce child-reorders
   this._loaded = false
   if (this._unload) window.requestAnimationFrame(function () { self._unload() })
 }
 
-CacheComponent.prototype._render = function () {
-  throw new Error('cache-component: _render should be implemented!')
+Nanocomponent.prototype._render = function () {
+  throw new Error('nanocomponent: _render should be implemented!')
 }
 
-CacheComponent.prototype._update = function () {
+Nanocomponent.prototype._update = function () {
   var length = arguments.length
   if (length !== this._args.length) return true
 
