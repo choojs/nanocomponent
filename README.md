@@ -24,7 +24,7 @@ var html = require('bel')
 function Button () {
   if (!(this instanceof Button)) return new Button()
   this._color = null
-  Nanocomponent.csall(this)
+  Nanocomponent.call(this)
 }
 Button.prototype = Object.create(Nanocomponent.prototype)
 
@@ -220,7 +220,7 @@ function Button (opts) {
   this._color = null
   this._handleClick = this._handleClick.bind(this) // be sure to bind your methods!
 
-  Nanocomponent.csall(this)
+  Nanocomponent.call(this)
 }
 Button.prototype = Object.create(Nanocomponent.prototype)
 
@@ -359,6 +359,26 @@ class ButtonContainer extends Nanocomponent {
 }
 ```
 
+### Render function only using the DOM API
+
+```js
+var Nanocomponent = require('nanocomponent')
+
+function Button (opts) {
+  if (!(this instanceof Button)) return new Button()
+
+  Nanocomponent.call(this)
+}
+Button.prototype = Object.create(Nanocomponent.prototype)
+
+Button.prototype._render = function (color) {
+  var el = document.createElement('div')
+  el.innerText = 'hello world'
+  return el
+  `
+}
+```
+
 ## See Also
 - [shama/bel](https://github.com/shama/bel)
 - [yoshuawuyts/nanomorph](https://github.com/yoshuawuyts/nanomorph)
@@ -393,6 +413,7 @@ class ButtonContainer extends Nanocomponent {
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [11]: https://github.com/feross/standard
 [bel]: https://github.com/shama/bel
+[yoyoify]: https://github.com/shama/yo-yoify
 [md]: https://github.com/patrick-steele-idem/morphdom
 [210]: https://github.com/patrick-steele-idem/morphdom/pull/81
 [nm]: https://github.com/yoshuawuyts/nanomorph
