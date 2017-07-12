@@ -72,28 +72,28 @@ function store (state, emitter) {
 
 ### `Nanocomponent.prototype()`
 Inheritable Nanocomponent prototype. Should be inherited from using
-`Nanocomponent.call(this)` and `prototype = Object.create(Nanocomponent.prototype)`.
+`Nanocomponent.call(this)` and `prototype = Object.create(Nanocomponent.prototype)` or [ES6 Class syntax][class].
 
 Internal properties are:
 
-- `this._proxy`: proxy (aka placeholder) element that is returned on `render` whenever the component is mounted in the document DOM.
+- `this.element`: a [getter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get) property that returns the component's DOM node if its mounted in the page and `null` when its not.
+- `this._args`: a reference to the arguments array that was used during the last `_render()` call.
 - `this._hasWindow`: boolean if `window` exists. Can be used to create
   elements that render both in the browser and in Node.
-- `this._args`: a reference to the arguments array that was used during the last `_render()` call.
+- `this._proxy`: proxy (aka placeholder) element that is returned on `render` if the component is already mounted in the document DOM.
 - `this._id`: a reference to the ID of the root node.  If no ID is found on the root node of the rendered component, this is set to the component ID (`this._ncID`).
 - `this._ncID`: internal component instance ID.  This gets generated every time `render` is called when the component is not found in the DOM.
-- `this._loaded`: used to debounce `on-load` events.  Is true when `_load` runs, and false after `_unload` runs.
-- `this.element`: a [getter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get) property that returns the component's DOM node if its mounted in the page and `null` when its not.
+- `this._loaded`: used to debounce `on-load` events.  Is true after `_load` runs, and false after `_unload` runs.
 
-### `DOMNode|proxy = Nanocomponent.prototype.render()`
+### `DOMNode|proxy = Nanocomponent.prototype.render([arguments...])`
 
-Calling `render` runs a `_render` function whenever the `_update` function returns true.  `render` returns the fully rendered DOM node if the component is found not to be in DOM, otherwise it returns a `_proxy` node that implements `isSameNode`. Arguments are called on `_update` and `_render`.
+Calling `render` runs a `_render` function whenever the `_update` function returns true.  `render` returns the fully rendered DOM node if the component is found not to be in DOM, otherwise it returns a `_proxy` node that implements [`isSameNode`][isSameNode]. Arguments are called on `_update` and `_render`.
 
 ### `DOMNode = Nanocomponent.prototype._render([arguments...])`
 __Must be implemented.__ Component specific render function.  Optionally cache argument values here.  Run anything here that needs to run along side node rendering.  Must return a DOMNode.  Use `_willRender` to run code after `_render` when the component is unmounted.
 
 ### `Bool = Nanocomponent.prototype._update([arguments...])`
-Return a boolean to determine if `prototype._render()`
+__Should be implemented.__ Return a boolean to determine if `prototype._render()`
 should be called.  The `_update` method is analogous to React's `shouldComponentUpdate`.   Called only when the component is mounted in the DOM tree.  Optionally cache argument values or mutate the mounted DOM node.  Defaults to the following shallow compare function:
 
 ```js
@@ -107,6 +107,8 @@ Nanocomponent.prototype._update = function () {
   return false
 }
 ```
+
+__Note__: The default shallow compare is not what you want in many situations unless your arguments are simple types like numbers, booleans or strings.
 
 ### `Nanocomponent.prototype._willRender(el)`
 
@@ -123,72 +125,13 @@ Called when the component is removed from the DOM.
 ### `Nanocomponent.prototype._didUpdate()`
 
 Called after a mounted component updates.  You can use this hook to call scroll to or other dom methods on the mounted component.
-You can access `this._element` to reference the root node mounted in the page.  This hook does not get a `el` argument as this node is tossed away at this stage.
+You can access `this.element` to reference the root node mounted in the page.  This hook does not get a `el` argument as this node is tossed away at this stage.
 
 
 ## Installation
 ```sh
 $ npm install nanocomponent
 ```
-
-## FAQ
-
-### Where does this run?
-Make sure you're running a diffing engine that checks for `.isSameNode()`, if
-it doesn't you'll end up with super weird results because proxy nodes will
-probably be rendered which is not what should happen. Probably make sure you're
-using [morphdom][md] or [nanomorph][nm]. Seriously.
-
-### What's a proxy node?
-It's a node that overloads `Node.isSameNode()` to compare it to another node.
-This is needed because a given DOM node can only exist in one DOM tree at the
-time, so we need a way to reference mounted nodes in the tree without actually
-using them. Hence the proxy pattern, and the recently added support for it in
-certain diffing engines:
-
-```js
-var html = require('bel')
-
-var el1 = html`<div>pink is the best</div>`
-var el2 = html`<div>blue is the best</div>`
-
-// let's proxy el1
-var proxy = html`<div></div>`
-proxy.isSameNode = function (targetNode) {
-  return (targetNode === el1)
-}
-
-el1.isSameNode(el1)   // true
-el1.isSameNode(el2)   // false
-proxy.isSameNode(el1) // true
-proxy.isSameNode(el2) // false
-```
-
-### How does it work?
-[Morphdom][md] is a diffing engine that diffs real DOM trees. It runs a series
-of checks between nodes to see if they should either be replaced, removed,
-updated or reordered. This is done using a series of property checks on the
-nodes.
-
-Since [v2.1.0][210] `morphdom` also runs `Node.isSameNode(otherNode)`. This
-allows us to override the function and replace it with a custom function that
-proxies an existing node. Check out the code to see how it works. The result is
-that if every element in our tree uses `nanocomponent`, only elements that have
-changed will be recomputed and re-rendered making things very fast.
-
-`nanomorph`, which saw first use in choo 5, has supported `isSameNode` since it's conception.
-
-### What's the exact difference between cache-component and nanocomponent?
-
-Nanomorph 6 is is a merge of `cache-component` a `nanomorph` 5.  It is essentially cache-component with `on-load` added.
-
-### Whats the relationship beteen `cache-component` and [`cache-element`][ce]?
-
-This module was essentially a merge of [`cache-element`][ce] v2.0.1 with the API of [`nanomorph`][nm]
-before [`cache-element`][ce] switched over to using [`nanomorph`][nm] and essentially had a different purpose.
-There are still ongoing discussions on the future of [`cache-element`][ce].  The idea behind the inheritance
-API is that it provides a handy place to store event handler functions so they don't get redeclared
-between render frames like inline functions do.
 
 ## Examples
 
@@ -379,9 +322,69 @@ Button.prototype._render = function (color) {
   var el = document.createElement('div')
   el.innerText = 'hello world'
   return el
-  `
 }
 ```
+
+
+## FAQ
+
+### Where does this run?
+Make sure you're running a diffing engine that checks for `.isSameNode()`, if
+it doesn't you'll end up with super weird results because proxy nodes will
+probably be rendered which is not what should happen. Probably make sure you're
+using [morphdom][md] or [nanomorph][nm]. Seriously.
+
+### What's a proxy node?
+It's a node that overloads `Node.isSameNode()` to compare it to another node.
+This is needed because a given DOM node can only exist in one DOM tree at the
+time, so we need a way to reference mounted nodes in the tree without actually
+using them. Hence the proxy pattern, and the recently added support for it in
+certain diffing engines:
+
+```js
+var html = require('bel')
+
+var el1 = html`<div>pink is the best</div>`
+var el2 = html`<div>blue is the best</div>`
+
+// let's proxy el1
+var proxy = html`<div></div>`
+proxy.isSameNode = function (targetNode) {
+  return (targetNode === el1)
+}
+
+el1.isSameNode(el1)   // true
+el1.isSameNode(el2)   // false
+proxy.isSameNode(el1) // true
+proxy.isSameNode(el2) // false
+```
+
+### How does it work?
+[Morphdom][md] is a diffing engine that diffs real DOM trees. It runs a series
+of checks between nodes to see if they should either be replaced, removed,
+updated or reordered. This is done using a series of property checks on the
+nodes.
+
+Since [v2.1.0][210] `morphdom` also runs `Node.isSameNode(otherNode)`. This
+allows us to override the function and replace it with a custom function that
+proxies an existing node. Check out the code to see how it works. The result is
+that if every element in our tree uses `nanocomponent`, only elements that have
+changed will be recomputed and re-rendered making things very fast.
+
+`nanomorph`, which saw first use in choo 5, has supported `isSameNode` since its conception.
+
+### What's the exact difference between cache-component and nanocomponent?
+
+Nanomorph 6 is is a merge of `cache-component` a `nanomorph` 5.  It is essentially cache-component with `on-load` added.
+
+### Whats the relationship beteen `cache-component` and [`cache-element`][ce]?
+
+This module was essentially a merge of [`cache-element`][ce] v2.0.1 with the API of [`nanomorph`][nm]
+before [`cache-element`][ce] switched over to using [`nanomorph`][nm] and essentially had a different purpose.
+There are still ongoing discussions on the future of [`cache-element`][ce].  The idea behind the inheritance
+API is that it provides a handy place to store event handler functions so they don't get redeclared
+between render frames like inline functions do.
+
 
 ## See Also
 - [shama/bel](https://github.com/shama/bel)
@@ -422,3 +425,5 @@ Button.prototype._render = function (color) {
 [210]: https://github.com/patrick-steele-idem/morphdom/pull/81
 [nm]: https://github.com/yoshuawuyts/nanomorph
 [ce]: https://github.com/yoshuawuyts/cache-element
+[class]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
+[isSameNode]: https://github.com/choojs/nanomorph#caching-dom-elements
