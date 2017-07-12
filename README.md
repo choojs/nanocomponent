@@ -313,6 +313,10 @@ class TextButton extends Nanocomponent {
     }
     return false
   }
+
+  _unload () {
+    console.log('I don\'t live in the DOM anymore')
+  }
 }
 ```
 
