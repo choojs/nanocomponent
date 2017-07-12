@@ -7,7 +7,7 @@ Native DOM components that pair nicely with DOM diffing algorithms.
 ## Features
 - Isolate native DOM libraries from DOM diffing algorithms
 - Makes rendering elements _very fast™_ by avoiding unnecessary rendering
-- Component nesting update passthrough
+- Component nesting and state update passthrough
 - Implemented in only a few lines
 - Only uses native DOM methods
 - Class based components offering a familiar component structure
