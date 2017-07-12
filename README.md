@@ -15,8 +15,6 @@ Native DOM components that pair nicely with DOM diffing algorithms.
 
 ## Usage
 
-TODO: Usage example with Choo.  Move vanilla example into the cookbook.
-
 ```js
 // Implementer API
 // ./button.js
@@ -44,24 +42,30 @@ Button.prototype._update = function (newColor) {
   return newColor !== this._color
 }
 
-var element = Button()
-
-let el = element.render('red') // creates new element
-// Insert el into the DOM somehow
-element.render('red') // returns cached element (proxy) and updates the mounted component internals
-element.render('blue') // returns cached element (proxy) and mutates children
-// Remove el from the DOM somehow
-el = element.render('green') // Returns a fully rendered element to be inserted into the DOM
 ```
 
 ```js
-// Consumer API
+var choo = require('choo')
 var Button = require('./button.js')
 var button = new Button()
-document.body.appendChild(button.render('green'))
-button.render('green') // Noop
-button.render('red') // Update the mounted component twice
-button.render('blue')
+
+var app = choo()
+app.use(store)
+app.route('/', mainView)
+app.mount('body')
+
+function mainView (state, emit) {
+  return html`
+    <body>
+      ${button.render(state.color)}
+    </body>
+  `
+}
+
+function store (state, emitter) {
+  state.color = 'green'
+}
+
 ```
 
 ## API
@@ -185,6 +189,175 @@ before [`cache-element`][ce] switched over to using [`nanomorph`][nm] and essent
 There are still ongoing discussions on the future of [`cache-element`][ce].  The idea behind the inheritance
 API is that it provides a handy place to store event handler functions so they don't get redeclared
 between render frames like inline functions do.
+
+## Examples
+
+### Vanilla js without choo
+
+```js
+// Consumer API
+var Button = require('./button.js') // Assuming button.js exports a nanocomponent
+var button = new Button()
+document.body.appendChild(button.render('green')) // inserted into the dom once
+button.render('green') // Noop
+button.render('red') // Update the mounted component twice
+button.render('blue') // Mounted components return proxy nodes
+// Proxy nodes are fiarly useless unless you are using nanomorph
+console.log(button.element) // log a reference to the mounted dom node
+```
+
+### Binding event handlers as component methods
+
+
+```js
+var Nanocomponent = require('nanocomponent')
+var html = require('bel')
+
+function Button (opts) {
+  if (!(this instanceof Button)) return new Button()
+  if (!opts) opts = {}
+  this._opts = Object.assign({}, opts)
+  this._color = null
+  this._handleClick = this._handleClick.bind(this) // be sure to bind your methods!
+
+  Nanocomponent.csall(this)
+}
+Button.prototype = Object.create(Nanocomponent.prototype)
+
+Button.prototype._handleClick = function () {
+  console.log(`hey you clicked a ${this._color} button`)
+}
+
+Button.prototype._render = function (color) {
+  this._color = color
+  return html`
+    <button onclick=${this._handleClick} style="background-color: ${color}">
+      Click Me
+    </button>
+  `
+}
+```
+
+### ES6 Class Syntax
+
+```js
+var Nanocomponent = require('nanocomponent')
+var html = require('bel')
+
+class Button extends Nanocomponent {
+  constructor (opts) {
+    if (!opts) opts = {}
+    super()
+    this._opts = Object.assign({foo: 'defaults'})
+    this._handleClick = this._handleClick.bind(this)
+
+    this._color = null
+  }
+
+  _handleClick () {
+    console.log(`hey you clicked a ${this._color} button`)
+  }
+
+  _render (color) {
+    this._color = color
+    return html`
+      <button onclick=${this._handleClick} style="background-color: ${color}">
+        Click Me
+      </button>
+    `
+  }
+
+  _update (newColor) {
+    return newColor !== this._color
+  }
+}
+```
+
+### Mutating the components instead of re-rendering
+
+```js
+var Nanocomponent = require('nanocomponent')
+var html = require('bel')
+
+class TextButton extends Nanocomponent {
+  constructor (opts) {
+    if (!opts) opts = {}
+    super()
+    this._opts = Object.assign({foo: 'defaults'})
+
+    this._color = null
+    this._text = ''
+
+    this._handleClick = this._handleClick.bind(this)
+  }
+
+  _handleClick () {
+    console.log(`hey you clicked a ${this._color} button`)
+  }
+
+  _render (color, text) {
+    this._color = color
+    this._text = text
+    return html`
+      <button onclick=${this._handleClick} style="background-color: ${color}">
+        Click Me
+      </button>
+    `
+  }
+
+  _update (color, text) {
+    if (color !== this._color) return true // re-render
+    if (text !== this._text) {
+      this._text = text
+      this.element.innerText = this._text // mutate mounted dom node directly
+    }
+    return false
+  }
+}
+```
+
+### Nested components and component containers
+
+Components nest and can skip renders at intermediary levels.  Components can also act as containers that shape app data flowing into view specific components.
+
+```js
+var Nanocomponent = require('nanocomponent')
+var html = require('bel')
+var Button = require('./button.js')
+
+class ButtonContainer extends Nanocomponent {
+  constructor () {
+    super()
+
+    this._button1 = new Button ()
+    this._button2 = new Button ()
+    this._button3 = new Button ()
+  }
+
+  _shapeData (state) {
+    return [state.colors.color1, state.colors.color2, state.colors.color3]
+  }
+
+  _render (state) {
+    var colorArray = this._shapeData(state)
+    return html`
+      <div>
+        ${this._button1.render(colorArray[0])}
+        ${this._button2.render(colorArray[1])}
+        ${this._button3.render(colorArray[2])}
+      </div>
+    `
+  }
+
+  _update (state) {
+    var colorArray = this._shapeData(state) // process app specific data in a container
+    this._button1.render(colorArray[0]) // pass processed data to owned children components
+    this._button2.render(colorArray[1])
+    this._button3.render(colorArray[2])
+    return false // always return false when mounted
+  }
+}
+```
 
 ## See Also
 - [shama/bel](https://github.com/shama/bel)
