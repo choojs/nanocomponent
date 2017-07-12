@@ -385,7 +385,6 @@ There are still ongoing discussions on the future of [`cache-element`][ce].  The
 API is that it provides a handy place to store event handler functions so they don't get redeclared
 between render frames like inline functions do.
 
-
 ## See Also
 - [shama/bel](https://github.com/shama/bel)
 - [yoshuawuyts/nanomorph](https://github.com/yoshuawuyts/nanomorph)
@@ -402,7 +401,6 @@ between render frames like inline functions do.
 - [shama/base-element](https://github.com/shama/base-element)
 - [yoshuawuyts/cache-element][ce]
 - [yoshuawuyts/microcomponent](https://github.com/yoshuawuyts/microcomponent)
-- [yoshuawuyts/nanocomponent](https://github.com/yoshuawuyts/nanocomponent)
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
