@@ -4,8 +4,9 @@ node_js:
   - 'node'
 sudo: false
 cache:
-  yarn: true
+  directories:
+    - ~/.npm
 install:
-  - yarn
+  - npm i
 script:
-  - yarn run test
+  - npm test
