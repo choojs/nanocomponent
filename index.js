@@ -1,86 +1,112 @@
+var document = require('global/document')
+var morph = require('nanomorph')
 var onload = require('on-load')
 var assert = require('assert')
 
-var KEY = 'ncid-' + (new Date() % 9e6).toString(36)
-var INDEX = 0
-
 module.exports = Nanocomponent
+
+function makeID () {
+  return 'ncid-' + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
+}
 
 function Nanocomponent () {
   this._hasWindow = typeof window !== 'undefined'
-  this._ID = KEY + '-' + INDEX++
-  this._placeholder = null
-  this._onload = onload
-  this._element = null
-  this._loaded = false
-  this.props = {}
-  this.oldProps = null
-  this.state = {}
-}
-
-Nanocomponent.prototype._ensureID = function () {
-  // Get ID - needed for nanomorph child element reordering
-  var id = this._element.getAttribute('id')
-  if (!id) this._element.setAttribute('id', this._ID)
-  else this._ID = id
-}
-
-Nanocomponent.prototype._rerender = function (props) {
-  this.oldProps = this.props
-  this.props = props
-  this._element = this._render()
-  this._ensureID()
-}
-
-Nanocomponent.prototype.render = function (props) {
-  assert.equal(typeof this._render, 'function', 'nanocomponent: this._render should be implemented')
-  assert.equal(typeof this._update, 'function', 'nanocomponent: this._update should be implemented')
+  this._id = null // represents the id of the root node
+  this._ncID = null // internal nanocomponent id
+  this._proxy = null
+  this._args = null
+  this._loaded = false // Used to debounce on-load when child-reordering
 
   var self = this
-  var len = arguments.length
-  var args = new Array(len)
-  for (var i = 0; i < len; i++) args[i] = arguments[i]
 
-  if (!this._hasWindow) {
-    this._rerender(props)
-    return this._element
-  } else if (!this._element) {
-    this._rerender(props)
-    this._onload(this._element, function () {
-      if (self._loaded) return
-      self._loaded = true
-      if (self._load) {
-        window.requestAnimationFrame(function () {
-          self._load()
-        })
-      }
-    }, function () {
-      if (document.body.contains(self._element)) return
-      self._loaded = false
-      if (self._unload) {
-        window.requestAnimationFrame(function () {
-          self._unload()
-        })
-      }
-    }, this._ID)
-    return this._element
-  } else {
-    var shouldUpdate = this._update(props)
-    if (shouldUpdate) {
-      this._rerender(props)
+  Object.defineProperty(this, 'element', {
+    get: function () {
+      var el = document.getElementById(self._id)
+      if (el) return el.dataset.nanocomponent === self._Nanocomponent ? el : undefined
     }
-    if (!this._placeholder) this._placeholder = this._createPlaceholder()
-    return this._placeholder
+  })
+}
+
+Nanocomponent.prototype.render = function () {
+  var self = this
+  var args = new Array(arguments.length)
+  for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
+  if (!this._hasWindow) {
+    return this._render.apply(this, args)
+  } else if (this.element) {
+    var shouldUpdate = this._update.apply(this, args)
+    if (shouldUpdate) {
+      this._args = args
+      morph(this.element, this._handleRender(args))
+      if (this._didUpdate) window.requestAnimationFrame(function () { self._didUpdate() })
+    }
+    if (!this._proxy) { this._proxy = this._createProxy() }
+    return this._proxy
+  } else {
+    this._ncID = makeID()
+    this._args = args
+    this._proxy = null
+    var el = this._handleRender(args)
+    if (this._willRender) this._willRender(el)
+    if (this._load || this._unload) {
+      onload(el, this._handleLoad.bind(this), this._handleUnload.bind(this), this)
+    }
+    return el
   }
 }
 
-Nanocomponent.prototype._createPlaceholder = function () {
-  var el = document.createElement('div')
-  el.setAttribute('data-nanocomponent', '')
-  el.setAttribute('id', this._ID)
+Nanocomponent.prototype._handleRender = function (args) {
+  var el = this._render.apply(this, args)
+  assert(el instanceof window.HTMLElement, 'nanocomponent: _render should return a DOM node')
+  return this._brandNode(this._ensureID(el))
+}
+
+Nanocomponent.prototype._createProxy = function () {
+  var proxy = document.createElement('div')
   var self = this
-  el.isSameNode = function (el) {
-    return el === self._element
+  this._brandNode(proxy)
+  proxy.id = this._id
+  proxy.isSameNode = function (el) {
+    return (el && el.dataset.nanocomponent === self._ncID)
   }
-  return el
+  return proxy
+}
+
+Nanocomponent.prototype._brandNode = function (node) {
+  node.setAttribute('data-nanocomponent', this._ncID)
+  return node
+}
+
+Nanocomponent.prototype._ensureID = function (node) {
+  if (node.id) this._id = node.id
+  else node.id = this._id = this._ncID
+  return node
+}
+
+Nanocomponent.prototype._handleLoad = function () {
+  var self = this
+  if (this._loaded) return // Debounce child-reorders
+  this._loaded = true
+  if (this._load) window.requestAnimationFrame(function () { self._load() })
+}
+
+Nanocomponent.prototype._handleUnload = function () {
+  var self = this
+  if (this.element) return // Debounce child-reorders
+  this._loaded = false
+  if (this._unload) window.requestAnimationFrame(function () { self._unload() })
+}
+
+Nanocomponent.prototype._render = function () {
+  throw new Error('nanocomponent: _render should be implemented!')
+}
+
+Nanocomponent.prototype._update = function () {
+  var length = arguments.length
+  if (length !== this._args.length) return true
+
+  for (var i = 0; i < length; i++) {
+    if (arguments[i] !== this._args[i]) return true
+  }
+  return false
 }
