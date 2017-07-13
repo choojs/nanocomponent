@@ -62,7 +62,7 @@ function mainView (state, emit) {
 
 app.use(function (state, emitter) {
   state.color = 'green'
-}
+})
 ```
 
 ## Patterns
@@ -70,6 +70,7 @@ These are some common patterns you might encounter when writing components.
 
 ### Standalone
 Nanocomponents is part of the choo ecosystem, but works great standalone!
+
 ```js
 var Button = require('./button.js')
 var button = new Button()
@@ -89,6 +90,7 @@ console.log(button.element)
 
 Sometimes it's useful to be pass around prototype methods into other functions.
 This can be done by binding the method that's going to be passed around:
+
 ```js
 var Nanocomponent = require('nanocomponent')
 var html = require('bel')
@@ -115,6 +117,7 @@ Component.prototype._render = function () {
 
 Because Class syntax is just sugar for prototype code, Nanocomponent can be
 written using Classes too:
+
 ```js
 var Nanocomponent = require('nanocomponent')
 var html = require('bel')
@@ -144,6 +147,7 @@ class Component extends Nanocomponent {
 Sometimes you might want to mutate the element that's currently mounted, rather
 than performing DOM diffing. Think cases like third party widgets that manage
 themselves.
+
 ```js
 var Nanocomponent = require('nanocomponent')
 var html = require('bel')
@@ -317,6 +321,10 @@ $ npm install nanocomponent
 - [choojs/choo](https://github.com/choojs/choo)
 - [shama/bel](https://github.com/shama/bel)
 - [shama/on-load](https://github.com/shama/on-load)
+- [yoshuawuyts/observe-resize](https://github.com/yoshuawuyts/observe-resize)
+- [bendrucker/document-ready](https://github.com/bendrucker/document-ready)
+- [yoshuawuyts/on-intersect](https://github.com/yoshuawuyts/on-intersect)
+- [yoshuawuyts/on-idle](https://github.com/yoshuawuyts/on-idle)
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
