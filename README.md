@@ -326,6 +326,11 @@ $ npm install nanocomponent
 - [yoshuawuyts/on-intersect](https://github.com/yoshuawuyts/on-intersect)
 - [yoshuawuyts/on-idle](https://github.com/yoshuawuyts/on-idle)
 
+## Similar Packages
+- [shama/base-element](https://github.com/shama/base-element)
+- [yoshuawuyts/cache-element](https://github.com/yoshuawuyts/cache-element)
+- [yoshuawuyts/microcomponent](https://github.com/yoshuawuyts/microcomponent)
+
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
 
