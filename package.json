@@ -42,10 +42,15 @@
     "@tap-format/spec": "^0.2.0",
     "bankai": "^8.1.1",
     "bel": "^5.0.0",
+    "choo": "^5.6.2",
+    "choo-log": "^7.0.1",
     "dependency-check": "^2.6.0",
     "envify": "^4.0.0",
     "leaflet": "^1.1.0",
+    "nanologger": "^1.2.0",
+    "on-idle": "^3.1.0",
     "standard": "^10.0.0",
-    "tape": "^4.6.0"
+    "tape": "^4.6.0",
+    "microbounce": "^1.0.0"
   }
 }

@@ -9,7 +9,7 @@ var Leaflet = require('./leaflet.js')
 
 css('./leaflet.css')
 
-var leaflet = Leaflet()
+var leaflet = new Leaflet()
 var app = choo()
 
 app.use(log())
