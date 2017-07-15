@@ -104,7 +104,6 @@ Nanocomponent.prototype._render = function () {
 Nanocomponent.prototype._update = function () {
   var length = arguments.length
   if (length !== this._args.length) return true
-
   for (var i = 0; i < length; i++) {
     if (arguments[i] !== this._args[i]) return true
   }

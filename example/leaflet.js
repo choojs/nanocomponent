@@ -12,47 +12,36 @@ function Leaflet () {
   Nanocomponent.call(this)
 
   this._log = nanologger('leaflet')
-  this.state = {}
-  this.state.zoom = 12
-  this.state.map = null
+  this.map = null // capture leaflet
+  this.coords = [0, 0] // null island
 }
+
 Leaflet.prototype = Object.create(Nanocomponent.prototype)
 
-Leaflet.prototype._render = function (props) {
-  this.props = props
-  return html`<div style="height: 500px">
-    <div id="map"></div>
-  </div>`
+Leaflet.prototype._render = function (coords) {
+  this.coords = coords
+  return html`
+    <div style="height: 500px">
+      <div id="map"></div>
+    </div>
+  `
 }
 
-Leaflet.prototype._willRender = function (el) {
-  this._createMap(el)
-}
-
-Leaflet.prototype._update = function (props) {
+Leaflet.prototype._update = function (coords) {
+  if (!this.map) return this._log.warn('missing map', 'failed to update')
+  if (coords[0] !== this.coords[0] || coords[1] !== this.coords[1]) {
+    this.coords = coords
+    this._log.info('update-map', coords)
+    this.map.setView(coords)
+  }
   return false
 }
 
-Leaflet.prototype._load = function () {
-  this._log.info('load')
-  this.state.map.invalidateSize()
-}
-
-Leaflet.prototype._unload = function () {
-  this._log.info('unload')
-
-  this.state.map.remove()
-  this.state = {}
-}
-
-Leaflet.prototype._createMap = function (el) {
-  var coords = this.props.coords
-  var zoom = this.state.zoom
-  console.log(el)
-
+Leaflet.prototype._willRender = function (el) {
+  var coords = this.coords
   this._log.info('create-map', coords)
 
-  var map = leaflet.map(element).setView(coords, zoom)
+  var map = leaflet.map(el).setView(coords, 12)
   leaflet.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
     attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     subdomains: 'abcd',
@@ -60,16 +49,18 @@ Leaflet.prototype._createMap = function (el) {
     maxZoom: 20,
     ext: 'png'
   }).addTo(map)
-  this.state.map = map
+  this.map = map
 }
 
-Leaflet.prototype._updateMap = function () {
-  var coords = this.props.coords
-  this._log.info('update-map', coords)
-
-  this.state.map.setView(coords)
+Leaflet.prototype._load = function () {
+  this._log.info('load')
+  this.map.invalidateSize()
 }
 
-Leaflet.prototype._didUpdate = function () {
-  this.state.map.invalidateSize()
+Leaflet.prototype._unload = function () {
+  this._log.info('unload')
+
+  this.map.remove()
+  this.map = null
+  this.coords = [0, 0]
 }

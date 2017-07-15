@@ -13,15 +13,13 @@ function Leaflet () {
 
   this._log = nanologger('leaflet')
   this.map = null // capture leaflet
-  this.zoom = 12
   this.coords = [0,0] // null island
 }
 
 Leaflet.prototype = Object.create(Nanocomponent.prototype)
 
 
-Leaflet.prototype._render = function (zoom, coords) {
-  this.zoom = 12
+Leaflet.prototype._render = function (coords) {
   this.coords = coords
   return html`
     <div style="height: 500px">
@@ -30,9 +28,29 @@ Leaflet.prototype._render = function (zoom, coords) {
   `
 
 
-Leaflet.prototype._update = function (props) {
-
+Leaflet.prototype._update = function (coords) {
+  if (!this.map) return this._log.warn('missing map', 'failed to update')
+  if (coords[0] !== this.coords[0] || coords[1] !== this.coords[1]) {
+    this.coords = coords
+    this._log.info('update-map', coords)
+    this.map.setView(coords)
+  }
   return false
+}
+
+Leaflet.prototype._willRender = function (el) {
+  var coords = this.coords
+  this._log.info('create-map', coords)
+
+  var map = leaflet.map(el).setView(coords, 12)
+  leaflet.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
+    attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    subdomains: 'abcd',
+    minZoom: 0,
+    maxZoom: 20,
+    ext: 'png'
+  }).addTo(map)
+  this.map = map
 }
 
 Leaflet.prototype._load = function () {
@@ -43,6 +61,7 @@ Leaflet.prototype._load = function () {
 Leaflet.prototype._unload = function () {
   this._log.info('unload')
 
-  this.state.map.remove()
-  this.state = {}
+  this.map.remove()
+  this.map = null
+  this.coords = [0,0]
 }
