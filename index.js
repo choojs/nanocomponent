@@ -22,7 +22,7 @@ function Nanocomponent () {
   Object.defineProperty(this, 'element', {
     get: function () {
       var el = document.getElementById(self._id)
-      if (el) return el.dataset.nanocomponent === self._Nanocomponent ? el : undefined
+      if (el) return el.dataset.nanocomponent === self._ncID ? el : undefined
     }
   })
 }
