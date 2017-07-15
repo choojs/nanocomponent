@@ -30,9 +30,12 @@ Leaflet.prototype._render = function (coords) {
 Leaflet.prototype._update = function (coords) {
   if (!this.map) return this._log.warn('missing map', 'failed to update')
   if (coords[0] !== this.coords[0] || coords[1] !== this.coords[1]) {
-    this.coords = coords
-    this._log.info('update-map', coords)
-    this.map.setView(coords)
+    var self = this
+    onIdle(function () {
+      self.coords = coords
+      self._log.info('update-map', coords)
+      self.map.setView(coords, 12)
+    })
   }
   return false
 }

@@ -4,10 +4,9 @@ var html = require('choo/html')
 var css = require('sheetify')
 var log = require('choo-log')
 var choo = require('choo')
-
 var Leaflet = require('./leaflet.js')
 
-css('./leaflet.css')
+css('leaflet')
 
 var leaflet = new Leaflet()
 var app = choo()
