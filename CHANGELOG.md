@@ -17,7 +17,7 @@ Be sure to read the README so that you get an understanding of the new API, but 
 - **Breaking**: `_didMount` is removed.  Consider using `_load` instead now.  If you want this on-load free hook still, you can just call `window.requestAnimationFrame` from `_willRender`.
 - **Breaking**: `_willUpdate` is removed.  Anything you can do in `_willUpdate` you can just move to `_update`.
 - **Breaking**: `_update` should always be implemented.  Instead of the old default shallow compare, not implementing `_update` throws.  You can `require('nanocomponent/compare')` to implement the shallow compare if you want that still.  See below.
-- **Changed**: `_didUpdate()` now receives an element argument `el` e.g. `_didUpdate(el)`.  This makes it consistent with the other life-cycle methods. `this.element` is passed to `_didUpdate()`, whereas the other life-cycle methods have direct references to a freshly rendered DOM instance.  This means that it can sometimes be null, so you need to protect for that, the same way you did when directly accessing `this.element` in this hook.
+- **Changed**: `_didUpdate()` now receives an element argument `el` e.g. `_didUpdate(el)`.  This makes it's argument signature consistent with the other life-cycle methods.
 - **Added**: Added [on-load][ol] hooks `_load` and `_unload`.  [on-load][ol] listeners only get added when one or both of the hooks are implemented on a component making the mutation observers optional.
 
 
