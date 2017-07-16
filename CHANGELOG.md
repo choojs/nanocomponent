@@ -24,7 +24,7 @@ Be sure to read the README so that you get an understanding of the new API, but 
 #### `cache-component@5` to `nanocomponent@6` upgrade guide:
 
 - No changes nessisary to `_render`
-- You should implement `_update` now.  Here is an example of doing shallow compare on components that didn't implement their own update function previously:
+- You must implement `_update` now.  Here is an example of doing shallow compare on components that didn't implement their own update function previously:
 
 ```js
 var html = require('choo/html')
@@ -69,6 +69,8 @@ class Meta extends Component {
 - Move any `_willUpdate` implementations into `_update`.
 - `_didUpdate` remains the same.
 - Take advantage of `_load` and `_unload` 🙌
+
+### Changes since nanocomponent@5
 
 ## 5.2.0
 * Added more lifecycle hooks: `_willMount`, `_didMount`, `_willUpdate` in addition to `_didUpdate`.

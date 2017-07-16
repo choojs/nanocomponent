@@ -288,7 +288,7 @@ rendering.  Must return a DOMNode. Use `_willRender` to run code after
 `_render` when the component is unmounted.
 
 ### `Boolean = Nanocomponent.prototype._update([arguments…])`
-__Should be implemented.__ Return a boolean to determine if
+__Must be implemented.__ Return a boolean to determine if
 `prototype._render()` should be called.  The `_update` method is analogous to
 React's `shouldComponentUpdate`. Called only when the component is mounted in
 the DOM tree.
