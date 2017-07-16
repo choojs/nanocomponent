@@ -17,6 +17,9 @@ function Nanocomponent () {
   this._args = null
   this._loaded = false // Used to debounce on-load when child-reordering
 
+  this._handleLoad = this._handleLoad.bind(this)
+  this._handleUnload = this._handleUnload.bind(this)
+
   var self = this
 
   Object.defineProperty(this, 'element', {
@@ -38,7 +41,7 @@ Nanocomponent.prototype.render = function () {
     if (shouldUpdate) {
       this._args = args
       morph(this.element, this._handleRender(args))
-      if (this._didUpdate) window.requestAnimationFrame(function () { self._didUpdate() })
+      if (this._didUpdate) window.requestAnimationFrame(function () { self._didUpdate(self.element) })
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
     return this._proxy
@@ -49,7 +52,7 @@ Nanocomponent.prototype.render = function () {
     var el = this._handleRender(args)
     if (this._willRender) this._willRender(el)
     if (this._load || this._unload) {
-      onload(el, this._handleLoad.bind(this), this._handleUnload.bind(this), this)
+      onload(el, this._handleLoad, this._handleUnload, this)
     }
     return el
   }

@@ -1,6 +1,25 @@
-# cached-element Change Log
+# nanocomponent Change Log
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
+
+## 6.0.0 - DATE HERE
+
+🎉 nanocomponent and cache-component are merged into one module: `nanocomponent@6.0.0` 🎉.
+
+Be sure to read the new README so that you get an understanding of the new API, but here is a quick summary of what has changed from the perspective of both modules:
+
+### Changes since cache-component@5
+
+`nanocomponent@6` is mostly the same as `cache-component@5` except for the following:
+
+- **Breaking**: The `_element` getter is renamed to `element`.
+- **Breaking**: `_willMount` is renamed to `_willRender` because DOM mounting can't be guaranteed from the perspective of a component.
+- **Breaking**: `_didMount` is removed.  If you want this hook still, you can just call `window.requestAnimationFrame` from `_willRender`.
+- **Breaking**: `_willUpdate` is removed.  Anything you can do in `_willUpdate` you can just move to `_update`.
+- **Breaking**: `_update` should always be implemented.  Instead of a shallow compare, the default `_update` now always returns `true` causing full component renders.
+- **Changed**: `_didUpdate()` now receives an element argument `el` e.g. `_didUpdate(el)`.  This makes it consistent with the other life-cycle methods. `this.element` is passed to `_didUpdate()`, whereas the other life-cycle methods have direct references to a freshly rendered DOM instance.  This means that it can sometimes be null, so you need to protect for that, the same way you did when directly accessing `this.element` in this hook.
+- **Added**: Added [on-load][ol] hooks `_load` and `_unload`.  [on-load][ol] listeners only get added when one or both of the hooks are implemented on a component making the mutation observers optional.
+
 
 ## 5.2.0
 * Added more lifecycle hooks: `_willMount`, `_didMount`, `_willUpdate` in addition to `_didUpdate`.

@@ -294,23 +294,21 @@ React's `shouldComponentUpdate`. Called only when the component is mounted in
 the DOM tree.
 
 ### `Nanocomponent.prototype._willRender(el)`
-A function called right after `_render` returns, but before the fully rendered
-element is returned to the `render` caller.  Receives a reference to the
-returning element `el`. Run any first render hooks here. The `_load` and
+A function called right after `_render` returns with `el`, but before the fully rendered
+element is returned to the `render` caller. Run any first render hooks here. The `_load` and
 `_unload` hooks are added at this stage.
 
-### `Nanocomponent.prototype._load()`
+### `Nanocomponent.prototype._load(el)`
 Called when the component is mounted on the DOM. Uses [on-load][onload] under
 the hood.
 
-### `Nanocomponent.prototype._unload()`
+### `Nanocomponent.prototype._unload(el)`
 Called when the component is removed from the DOM. Uses [on-load][onload] under
 the hood.
 
-### `Nanocomponent.prototype._didUpdate()`
-Called after a mounted component updates.  You can use this hook to call
-`element.scrollIntoView` or other dom methods on the mounted component. You
-can access `this.element` to reference the root node mounted in the page.
+### `Nanocomponent.prototype._didUpdate(el)`
+Called after a mounted component updates (e.g. `_update` returns true).  You can use this hook to call
+`element.scrollIntoView` or other dom methods on the mounted component.
 
 ## Installation
 ```sh
