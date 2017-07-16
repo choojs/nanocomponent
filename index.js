@@ -14,7 +14,7 @@ function Nanocomponent () {
   this._id = null // represents the id of the root node
   this._ncID = null // internal nanocomponent id
   this._proxy = null
-  this._args = null
+  this._args = []
   this._loaded = false // Used to debounce on-load when child-reordering
 
   this._handleLoad = this._handleLoad.bind(this)
@@ -105,10 +105,5 @@ Nanocomponent.prototype._render = function () {
 }
 
 Nanocomponent.prototype._update = function () {
-  var length = arguments.length
-  if (length !== this._args.length) return true
-  for (var i = 0; i < length; i++) {
-    if (arguments[i] !== this._args[i]) return true
-  }
-  return false
+  throw new Error('nanocomponent: _update should be implemented!')
 }

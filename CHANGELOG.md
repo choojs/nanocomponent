@@ -4,9 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 6.0.0 - DATE HERE
 
-🎉 nanocomponent and cache-component are merged into one module: `nanocomponent@6.0.0` 🎉.
+🎉 nanocomponent and [cache-component][cc] are merged into one module: `nanocomponent@6.0.0` 🎉.
 
-Be sure to read the new README so that you get an understanding of the new API, but here is a quick summary of what has changed from the perspective of both modules:
+Be sure to read the README so that you get an understanding of the new API, but here is a quick summary of what has changed from the perspective of both modules:
 
 ### Changes since cache-component@5
 
@@ -16,10 +16,59 @@ Be sure to read the new README so that you get an understanding of the new API, 
 - **Breaking**: `_willMount` is renamed to `_willRender` because DOM mounting can't be guaranteed from the perspective of a component.
 - **Breaking**: `_didMount` is removed.  If you want this hook still, you can just call `window.requestAnimationFrame` from `_willRender`.
 - **Breaking**: `_willUpdate` is removed.  Anything you can do in `_willUpdate` you can just move to `_update`.
-- **Breaking**: `_update` should always be implemented.  Instead of a shallow compare, the default `_update` now always returns `true` causing full component renders.
+- **Breaking**: `_update` should always be implemented.  Instead of the old default shallow compare, not implementing `_update` throws.  You can `require('nanocomponent/compare')` to implement the shallow compare if you want that still.  See below.
 - **Changed**: `_didUpdate()` now receives an element argument `el` e.g. `_didUpdate(el)`.  This makes it consistent with the other life-cycle methods. `this.element` is passed to `_didUpdate()`, whereas the other life-cycle methods have direct references to a freshly rendered DOM instance.  This means that it can sometimes be null, so you need to protect for that, the same way you did when directly accessing `this.element` in this hook.
 - **Added**: Added [on-load][ol] hooks `_load` and `_unload`.  [on-load][ol] listeners only get added when one or both of the hooks are implemented on a component making the mutation observers optional.
 
+
+#### `cache-component@5` to `nanocomponent@6` upgrade guide:
+
+- No changes nessisary to `_render`
+- You should implement `_update` now.  Here is an example of doing shallow compare on components that didn't implement their own update function previously:
+
+```js
+var html = require('choo/html')
+var Component = require('nanocomponent')
+var compare = require('nanocomponent/compare')
+
+class Meta extends Component {
+  constructor () {
+    super()
+
+    this._title = null
+    this._artist = null
+    this._album = null
+  }
+
+  _render (title, artist, album) {
+    this._title = title || '--'
+    this._artist = artist || '--'
+    this._album = album || '--'
+
+    return html`
+      <div>
+        <p>${title}</p>
+        <p>
+          ${artist} - ${album}
+        </p>
+      </div>
+    `
+  }
+
+  // Implement this to recreate cache-component@5
+  // behavior when _update was not implemented
+  _update () {
+    return compare(arguments, this._args)
+  }
+}
+
+```
+
+- Rename components with `_willMount` to `_willRender`
+- Move any `_didMount` implementations into `_load` or a `window.requestAnmimationFrame` inside of `_willRender`.
+- Move any `_willUpdate` implementations into `_update`.
+- `_didUpdate` remains the same.
+- Take advantage of `_load` and `_unload` 🙌
 
 ## 5.2.0
 * Added more lifecycle hooks: `_willMount`, `_didMount`, `_willUpdate` in addition to `_didUpdate`.
@@ -52,3 +101,6 @@ Be sure to read the new README so that you get an understanding of the new API, 
 
 ## 3.0.0 - 2017-04-10
 * initial release
+
+[ol]: https://github.com/shama/on-load
+[cc]: https://github.com/hypermodules/cache-component
