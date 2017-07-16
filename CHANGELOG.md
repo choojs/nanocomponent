@@ -14,7 +14,7 @@ Be sure to read the README so that you get an understanding of the new API, but 
 
 - **Breaking**: The `_element` getter is renamed to `element`.
 - **Breaking**: `_willMount` is renamed to `_willRender` because DOM mounting can't be guaranteed from the perspective of a component.
-- **Breaking**: `_didMount` is removed.  If you want this hook still, you can just call `window.requestAnimationFrame` from `_willRender`.
+- **Breaking**: `_didMount` is removed.  Consider using `_load` instead now.  If you want this on-load free hook still, you can just call `window.requestAnimationFrame` from `_willRender`.
 - **Breaking**: `_willUpdate` is removed.  Anything you can do in `_willUpdate` you can just move to `_update`.
 - **Breaking**: `_update` should always be implemented.  Instead of the old default shallow compare, not implementing `_update` throws.  You can `require('nanocomponent/compare')` to implement the shallow compare if you want that still.  See below.
 - **Changed**: `_didUpdate()` now receives an element argument `el` e.g. `_didUpdate(el)`.  This makes it consistent with the other life-cycle methods. `this.element` is passed to `_didUpdate()`, whereas the other life-cycle methods have direct references to a freshly rendered DOM instance.  This means that it can sometimes be null, so you need to protect for that, the same way you did when directly accessing `this.element` in this hook.
