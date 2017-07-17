@@ -89,7 +89,7 @@ class Meta extends Component {
 - Move any DOM mutation code from `._render` into `._update`.
 - Ensure `._returns` a DOM node always. (You will get warnings if you don't and it probably won't work)
 - Consider moving any `._load` actions into `._willRender` if they don't depend on the newly rendered node being mounted in a DOM tree yet.
-- Take advantage of `_didUpdate` allowing you to interact with your component after `._render` is called on mounted components 🙌
+- Take advantage of `._didUpdate` allowing you to interact with your component after `._render` is called on mounted components 🙌
 
 ## 5.2.0
 * Added more lifecycle hooks: `_willMount`, `_didMount`, `_willUpdate` in addition to `_didUpdate`.
