@@ -12,7 +12,7 @@ Be sure to read the README so that you get an understanding of the new API, but 
 
 `nanocomponent@6` is mostly the same as `cache-component@5` except for the following:
 
-- **Breaking**: The `_element` getter is renamed to `element`.
+- **Breaking**: The `_element` [getter][getter] is renamed to `element`.
 - **Breaking**: `_willMount` is renamed to `_willRender` because DOM mounting can't be guaranteed from the perspective of a component.
 - **Breaking**: `_didMount` is removed.  Consider using `_load` instead now.  If you want this on-load free hook still, you can just call `window.requestAnimationFrame` from `_willRender`.
 - **Breaking**: `_willUpdate` is removed.  Anything you can do in `_willUpdate` you can just move to `_update`.
