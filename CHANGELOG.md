@@ -12,7 +12,7 @@ Be sure to read the README so that you get an understanding of the new API, but 
 
 `nanocomponent@6` is mostly the same as `cache-component@5` except for the following:
 
-- **Breaking**: The `_element` getter is renamed to `.element`.
+- **Breaking**: The `_element` getter is renamed to `element`.
 - **Breaking**: `_willMount` is renamed to `_willRender` because DOM mounting can't be guaranteed from the perspective of a component.
 - **Breaking**: `_didMount` is removed.  Consider using `_load` instead now.  If you want this on-load free hook still, you can just call `window.requestAnimationFrame` from `_willRender`.
 - **Breaking**: `_willUpdate` is removed.  Anything you can do in `_willUpdate` you can just move to `_update`.
@@ -74,10 +74,10 @@ class Meta extends Component {
 
 `nanocomponent@6` has some subtle but important differences from `nanocompnent@5`.  Be sure to read the README and check out the examples to get an understanding of the new API.
 
-- **Breaking**: The `_element` property is removed.  A [getter][getter] called `.element` is now used instead.  Since this is now a read-only getter, you must not assign anything to this property or else bad things will happen.  The `.element` getter returns the component's DOM node if mounted in the page, and `undefined` otherwise.  You are allowed to mutate that DOM node by hand however.  Just don't reassign the property on the component instance.
-- **Changed**: `.render` can now handle being removed and re-rendered into the DOM.  It can also handle rendering two instances of components in two different views over each other.
+- **Breaking**: The `_element` property is removed.  A [getter][getter] called `element` is now used instead.  Since this is now a read-only getter, you must not assign anything to this property or else bad things will happen.  The `element` getter returns the component's DOM node if mounted in the page, and `undefined` otherwise.  You are allowed to mutate that DOM node by hand however.  Just don't reassign the property on the component instance.
+- **Changed**: `render` can now handle being removed and re-rendered into the DOM.  It can also handle rendering two instances of components in two different views over each other.
 - **Breaking**: `_render` must now return a DOM node always.  In earlier versions you could get away with not returning from `_render` and assigning nodes to `_element`.  No longer!  Also, you should move your DOM mutations into `_update`.
-- **Changed**: Update still works the same way: return true to run `_render` or return false to skip a call to `_render` when `.render` is called.  If you decide to mutate `.element` "by hand" on updates, do that here (rather than conditional paths inside `_render`).
+- **Changed**: Update still works the same way: return true to run `_render` or return false to skip a call to `_render` when `render` is called.  If you decide to mutate `element` "by hand" on updates, do that here (rather than conditional paths inside `_render`).
 - **Changed**: `_load` and `_unload` have always been optional, but now the mutation observers are only added if at least one of these methods are implemented prior to component instantiation.
 - **Added**: `_willRender` lifecycle hook.  Its similar to `_load` but runs before mounting.
 - **Added**: `_didUpdate` runs after `_update` returns true and the results of `_render` is mutated over the mounted component.  Useful for adjusting scroll position.
