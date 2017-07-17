@@ -87,7 +87,7 @@ class Meta extends Component {
 
 - Read through the new leaflet example to get an idea of the differences between the old and new API. 🗺
 - Move any DOM mutation code from `_render` into `_update`.
-- Ensure `_returns` a DOM node always. (You will get warnings if you don't and it probably won't work)
+- Ensure `_render` returns a DOM node always. (You will get warnings if you don't and it probably won't work)
 - Consider moving any `_load` actions into `_willRender` if they don't depend on the newly rendered node being mounted in a DOM tree yet.
 - Take advantage of `_didUpdate` allowing you to interact with your component after `_render` is called on mounted components 🙌
 
