@@ -1,0 +1,33 @@
+var Nanocomponent = require('./')
+var test = require('tape')
+var html = require('bel')
+
+test('cache', (t) => {
+  t.test('should validate input types', (t) => {
+    t.plan(1)
+    var comp = new Nanocomponent()
+    t.throws(comp.render.bind(comp), /_render should be implemented/)
+  })
+
+  t.test('should render elements', (t) => {
+    t.plan(2)
+
+    function MyComp () {
+      if (!(this instanceof MyComp)) return new MyComp()
+      Nanocomponent.call(this)
+    }
+    MyComp.prototype = Object.create(Nanocomponent.prototype)
+
+    MyComp.prototype._render = function (name) {
+      return html`<div>${name}</div>`
+    }
+
+    var myComp = new MyComp()
+
+    var el1 = myComp.render('mittens')
+    t.equal(String(el1), '<div>mittens</div>', 'init render success')
+
+    var el3 = myComp.render('scruffles')
+    t.equal(String(el3), '<div>scruffles</div>', 're-render success')
+  })
+})

@@ -12,52 +12,39 @@ function Leaflet () {
   Nanocomponent.call(this)
 
   this._log = nanologger('leaflet')
-  this.state.map = null
-  this.state.zoom = 12
+  this.map = null // capture leaflet
+  this.coords = [0, 0] // null island
 }
+
 Leaflet.prototype = Object.create(Nanocomponent.prototype)
 
-Leaflet.prototype._render = function () {
-  var self = this
+Leaflet.prototype._render = function (coords) {
+  this.coords = coords
+  return html`
+    <div style="height: 500px">
+      <div id="map"></div>
+    </div>
+  `
+}
 
-  if (!this.state.map) {
-    this._element = html`<div style="height: 500px"></div>`
-    if (this._hasWindow) this._createMap()
-  } else {
+Leaflet.prototype._update = function (coords) {
+  if (!this.map) return this._log.warn('missing map', 'failed to update')
+  if (coords[0] !== this.coords[0] || coords[1] !== this.coords[1]) {
+    var self = this
     onIdle(function () {
-      self._updateMap()
+      self.coords = coords
+      self._log.info('update-map', coords)
+      self.map.setView(coords, 12)
     })
   }
-
-  return this._element
+  return false
 }
 
-Leaflet.prototype._update = function (props) {
-  return props.coords[0] !== this.props.coords[0] ||
-    props.coords[1] !== this.props.coords[1]
-}
-
-Leaflet.prototype._load = function () {
-  this.state.map.invalidateSize()
-  this._log.info('load')
-}
-
-Leaflet.prototype._unload = function () {
-  this._log.info('unload')
-
-  this.state.map.remove()
-  this.state = {}
-  this._element = null
-}
-
-Leaflet.prototype._createMap = function () {
-  var element = this._element
-  var coords = this.props.coords
-  var zoom = this.state.zoom
-
+Leaflet.prototype._willRender = function (el) {
+  var coords = this.coords
   this._log.info('create-map', coords)
 
-  var map = leaflet.map(element).setView(coords, zoom)
+  var map = leaflet.map(el).setView(coords, 12)
   leaflet.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
     attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     subdomains: 'abcd',
@@ -65,11 +52,18 @@ Leaflet.prototype._createMap = function () {
     maxZoom: 20,
     ext: 'png'
   }).addTo(map)
-  this.state.map = map
+  this.map = map
 }
 
-Leaflet.prototype._updateMap = function () {
-  var coords = this.props.coords
-  this._log.info('update-map', coords)
-  this.state.map.setView(coords)
+Leaflet.prototype._load = function () {
+  this._log.info('load')
+  this.map.invalidateSize()
+}
+
+Leaflet.prototype._unload = function () {
+  this._log.info('unload')
+
+  this.map.remove()
+  this.map = null
+  this.coords = [0, 0]
 }

@@ -4,12 +4,11 @@ var html = require('choo/html')
 var css = require('sheetify')
 var log = require('choo-log')
 var choo = require('choo')
-
 var Leaflet = require('./leaflet.js')
 
-css('./leaflet.css')
+css('leaflet')
 
-var leaflet = Leaflet()
+var leaflet = new Leaflet()
 var app = choo()
 
 app.use(log())
@@ -30,7 +29,7 @@ function mainView (state, emit) {
         <button onclick=${toSeattle}>Seattle</button>
       </nav>
       <main>
-        ${leaflet.render({ coords: state.coords })}
+        ${leaflet.render(state.coords)}
       </main>
     </body>
   `

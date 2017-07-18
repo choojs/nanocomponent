@@ -1,42 +1,56 @@
 {
   "name": "nanocomponent",
-  "version": "5.0.3",
-  "description": "Create performant HTML elements",
+  "version": "6.0.0-0",
+  "description": "Native DOM components that pair nicely with DOM diffing algorithms",
   "main": "index.js",
   "scripts": {
-    "build": "bankai build example --optimize",
-    "deps": "dependency-check . && dependency-check . --extra --no-dev -i yo-yoify",
-    "start": "bankai start example",
-    "test": "standard && npm run deps",
-    "test:cov": "standard && npm run deps"
+    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "test": "standard *.js && npm run deps && NODE_ENV=test node test | tap-format-spec",
+    "start": "bankai start example"
   },
-  "repository": "yoshuawuyts/nanocomponent",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/choojs/nanocomponent.git"
+  },
   "keywords": [
-    "dom",
-    "node",
-    "universal"
+    "bel",
+    "choo",
+    "element",
+    "thunk",
+    "cache",
+    "perf",
+    "nanomorph",
+    "morphdom",
+    "nanocomponent",
+    "cache-component"
+  ],
+  "author": "Trainspotters",
+  "contributors": [
+    "Bret Comnes <bcomnes@gmail.com> (http://bret.io)"
   ],
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/choojs/nanocomponent/issues"
+  },
+  "homepage": "https://github.com/choojs/nanocomponent#readme",
   "dependencies": {
+    "global": "^4.3.1",
+    "nanomorph": "^5.1.2",
     "on-load": "^3.2.0"
   },
   "devDependencies": {
-    "bankai": "^5.5.2",
-    "bel": "^4.6.0",
-    "choo": "^5.1.4",
-    "choo-log": "^6.0.0",
-    "dependency-check": "^2.7.0",
-    "inherits": "^2.0.3",
-    "istanbul": "^0.4.5",
-    "leaflet": "^1.0.3",
-    "microbounce": "^1.0.0",
-    "nanologger": "^1.0.2",
-    "on-idle": "^1.0.0",
-    "standard": "^8.6.0",
-    "tachyons": "^4.6.1",
-    "tape": "^4.6.3",
-    "uglifyify": "^3.0.4",
-    "unassertify": "^2.0.4",
-    "yo-yoify": "^3.5.0"
+    "@tap-format/spec": "^0.2.0",
+    "bankai": "^8.1.1",
+    "bel": "^5.0.0",
+    "choo": "^5.6.2",
+    "choo-log": "^7.0.1",
+    "dependency-check": "^2.6.0",
+    "envify": "^4.0.0",
+    "leaflet": "^1.1.0",
+    "nanologger": "^1.2.0",
+    "on-idle": "^3.1.0",
+    "standard": "^10.0.0",
+    "tape": "^4.6.0",
+    "microbounce": "^1.0.0"
   }
 }
