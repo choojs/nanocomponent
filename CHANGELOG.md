@@ -10,21 +10,23 @@ Be sure to read the README so that you get an understanding of the new API, but 
 
 ### Changes since `cache-component@5`
 
-`nanocomponent@6` is mostly the same as `cache-component@5` except for the following:
+`nanocomponent@6` is mostly the same as `cache-component@5` except a few methods are rename and everything you interact with has had the `_` prefix removed.
 
 - **Breaking**: The `_element` [getter][getter] is renamed to `element`.
-- **Breaking**: `_willMount` is renamed to `_willRender` because DOM mounting can't be guaranteed from the perspective of a component.
-- **Breaking**: `_didMount` is removed.  Consider using `_load` instead now.  If you want this on-load free hook still, you can just call `window.requestAnimationFrame` from `_willRender`.
-- **Breaking**: `_willUpdate` is removed.  Anything you can do in `_willUpdate` you can just move to `_update`.
-- **Breaking**: `_update` should always be implemented.  Instead of the old default shallow compare, not implementing `_update` throws.  You can `require('nanocomponent/compare')` to implement the shallow compare if you want that still.  See below.
-- **Changed**: `_didUpdate()` now receives an element argument `el` e.g. `_didUpdate(el)`.  This makes it's argument signature consistent with the other life-cycle methods.
-- **Added**: Added [on-load][ol] hooks `_load` and `_unload`.  [on-load][ol] listeners only get added when one or both of the hooks are implemented on a component making the mutation observers optional.
+- **Breaking**: `_willMount` is renamed to `willRender` because DOM mounting can't be guaranteed from the perspective of a component.
+- **Breaking**: `_didMount` is removed.  Consider using `load` instead now.  If you want this on-load free hook still, you can just call `window.requestAnimationFrame` from `willRender`.
+- **Breaking**: `_willUpdate` is removed.  Anything you can do in `_willUpdate` you can just move to `update`.
+- **Breaking**: `_update` is rename to `update` and should always be implemented.  Instead of the old default shallow compare, not implementing `update` throws.  You can `require('nanocomponent/compare')` to implement the shallow compare if you want that still.  See below.
+- **Breaking**: `_args` is renamed to `lastArgs`.
+- **Breaking**: `_hasWindow` is renamed to `hasWindow`.
+- **Changed**: `_didUpdate()` is renamed to `didUpdate` now receives an element argument `el` e.g. `didUpdate(el)`.  This makes it's argument signature consistent with the other life-cycle methods.
+- **Added**: Added [on-load][ol] hooks `load` and `unload`.  [on-load][ol] listeners only get added when one or both of the hooks are implemented on a component making the mutation observers optional.
 
 
 #### `cache-component@5` to `nanocomponent@6` upgrade guide:
 
-- No changes nessisary to `_render`
-- You must implement `_update` now.  Here is an example of doing shallow compare on components that didn't implement their own update function previously:
+- Renamed `_render` to `createElement`.
+- You must implement `update` now.  Rename existing `_update` method to `update`.  Here is an example of doing shallow compare on components that didn't implement their own update function previously:
 
 ```js
 var html = require('choo/html')
@@ -40,7 +42,7 @@ class Meta extends Component {
     this._album = null
   }
 
-  _render (title, artist, album) {
+  createElement (title, artist, album) {
     this._title = title || '--'
     this._artist = artist || '--'
     this._album = album || '--'
@@ -56,19 +58,19 @@ class Meta extends Component {
   }
 
   // Implement this to recreate cache-component@5
-  // behavior when _update was not implemented
-  _update () {
-    return compare(arguments, this._args)
+  // behavior when update was not implemented
+  update () {
+    return compare(arguments, this.lastArgs)
   }
 }
 
 ```
 
-- Rename components with `_willMount` to `_willRender`
-- Move any `_didMount` implementations into `_load` or a `window.requestAnmimationFrame` inside of `_willRender`.
-- Move any `_willUpdate` implementations into `_update`.
-- `_didUpdate` remains the same.
-- Take advantage of `_load` and `_unload` for DOM insertion aware node interactions 🙌
+- Rename components with `_willMount` to `willRender`
+- Move any `_didMount` implementations into `load` or a `window.requestAnmimationFrame` inside of `willRender`.
+- Move any `_willUpdate` implementations into `update`.
+- Rename `_didUpdate` to `_didUpdate`.
+- Take advantage of `load` and `unload` for DOM insertion aware node interactions 🙌
 
 ### Changes since nanocomponent@5
 
@@ -76,20 +78,22 @@ class Meta extends Component {
 
 - **Breaking**: The `_element` property is removed.  A [getter][getter] called `element` is now used instead.  Since this is now a read-only getter, you must not assign anything to this property or else bad things will happen.  The `element` getter returns the component's DOM node if mounted in the page, and `undefined` otherwise.  You are allowed to mutate that DOM node by hand however.  Just don't reassign the property on the component instance.
 - **Changed**: `render` can now handle being removed and re-rendered into the DOM.  It can also handle rendering two instances of components in two different views over each other.
-- **Breaking**: `_render` must now return a DOM node always.  In earlier versions you could get away with not returning from `_render` and assigning nodes to `_element`.  No longer!  Also, you should move your DOM mutations into `_update`.
-- **Changed**: Update still works the same way: return true to run `_render` or return false to skip a call to `_render` when `render` is called.  If you decide to mutate `element` "by hand" on updates, do that here (rather than conditional paths inside `_render`).
-- **Changed**: `_load` and `_unload` have always been optional, but now the mutation observers are only added if at least one of these methods are implemented prior to component instantiation.
-- **Added**: `_willRender` lifecycle hook.  Its similar to `_load` but runs before mounting.
-- **Added**: `_didUpdate` runs after `_update` returns true and the results of `_render` is mutated over the mounted component.  Useful for adjusting scroll position.
+- **Breaking**: `_render` is renamed to `createElement` and must now return a DOM node always.  In earlier versions you could get away with not returning from `_render` and assigning nodes to `_element`.  No longer!  Also, you should move your DOM mutations into `update`.
+- **Changed**: Update still works the same way: return true to run `createElement` or return false to skip a call to `createElement` when `render` is called.  If you decide to mutate `element` "by hand" on updates, do that here (rather than conditional paths inside `createElement`).
+- **Changed**: `_load` and `_unload` renamed to `load` and `unload`. They have always been optional, but now the mutation observers are only added if at least one of these methods are implemented prior to component instantiation.
+- **Added**: `willRender` lifecycle hook.  Its similar to `load` but runs before mounting.
+- **Added**: `didUpdate` runs after `update` returns true and the results of `createElement` is mutated over the mounted component.  Useful for adjusting scroll position.
 - **Fixed**: More robust unmount and remounting behavior.
 
 #### `nanocomponent@5` to `nanocomponent@6` upgrade guide:
 
 - Read through the new leaflet example to get an idea of the differences between the old and new API. 🗺
-- Move any DOM mutation code from `_render` into `_update`.
-- Ensure `_render` returns a DOM node always. (You will get warnings if you don't and it probably won't work)
-- Consider moving any `_load` actions into `_willRender` if they don't depend on the newly rendered node being mounted in a DOM tree yet.
-- Take advantage of `_didUpdate` allowing you to interact with your component after `_render` is called on mounted components 🙌
+- Renamed `_render` to `createElement` and `_update` to `update`.
+- Move any DOM mutation code from `createElement` into `update`.
+- Ensure `createElement` returns a DOM node always. (You will get warnings if you don't and it probably won't work)
+- Rename `_load` and `_unload` to `load` and `unload`.
+- Consider moving any `load` actions into `willRender` if they don't depend on the newly rendered node being mounted in a DOM tree yet.
+- Take advantage of `didUpdate` allowing you to interact with your component after `createElement` is called on mounted components 🙌
 
 ## 5.2.0
 * Added more lifecycle hooks: `_willMount`, `_didMount`, `_willUpdate` in addition to `_didUpdate`.

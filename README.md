@@ -21,13 +21,13 @@ var html = require('bel')
 
 function Button () {
   if (!(this instanceof Button)) return new Button()
-  this._color = null
+  this.color = null
   Nanocomponent.call(this)
 }
 Button.prototype = Object.create(Nanocomponent.prototype)
 
-Button.prototype._render = function (color) {
-  this._color = color
+Button.prototype.createElement = function (color) {
+  this.color = color
   return html`
     <button style="background-color: ${color}">
       Click Me
@@ -36,8 +36,8 @@ Button.prototype._render = function (color) {
 }
 
 // Implement conditional rendering
-Button.prototype._update = function (newColor) {
-  return newColor !== this._color
+Button.prototype.update = function (newColor) {
+  return newColor !== this.color
 }
 ```
 
@@ -100,16 +100,22 @@ function Component () {
   Nanocomponent.call(this)
 
   // Bind the method so it can be passed around
-  this._handleClick = this._handleClick.bind(this)
+  this.handleClick = this.handleClick.bind(this)
 }
 Component.prototype = Object.create(Nanocomponent.prototype)
 
-Component.prototype._handleClick = function () {
+Component.prototype.handleClick = function (ev) {
   console.log('element is', this.element)
 }
 
-Component.prototype._render = function () {
-  return html`<div>My component</div>`
+Component.prototype.createElement = function () {
+  return html`<button onClick=${this.handleClick}>
+    My component
+  </button>`
+}
+
+Component.prototype.update = function () {
+  return false // Never re-render
 }
 ```
 
@@ -125,11 +131,11 @@ var html = require('bel')
 class Component extends Nanocomponent {
   constructor () {
     super()
-    this._color = null
+    this.color = null
   }
 
-  _render (color) {
-    this._color = color
+  createElement (color) {
+    this.color = color
     return html`
       <div style="background-color: ${color}">
         Color is ${color}
@@ -137,8 +143,8 @@ class Component extends Nanocomponent {
     `
   }
 
-  _update (newColor) {
-    return newColor !== this._color
+  update (newColor) {
+    return newColor !== this.color
   }
 }
 ```
@@ -155,24 +161,24 @@ var html = require('bel')
 function Component () {
   if (!(this instanceof Button)) return new Component()
   Nanocomponent.call(this)
-  this._text = ''
+  this.text = ''
 }
 Component.prototype = Object.create(Nanocomponent.prototype)
 
-Component.prototype._render = function (text) {
-  this._text = text
+Component.prototype.createElement = function (text) {
+  this.text = text
   return html`<h1>${text}</h1>`
 }
 
-Component.prototype._update = function (text) {
-  if (text !== this._text) {
-    this._text = text
-    this.element.innerText = this._text   // Directly update the element
+Component.prototype.update = function (text) {
+  if (text !== this.text) {
+    this.text = text
+    this.element.innerText = this.text   // Directly update the element
   }
-  return false                            // Don't call _render again
+  return false                           // Don't call createElement again
 }
 
-Component.prototype._unload = function (text) {
+Component.prototype.unload = function (text) {
   console.log('No longer mounted on the DOM!')
 }
 ```
@@ -190,32 +196,32 @@ var Button = require('./button.js')
 function Component () {
   if (!(this instanceof Button)) return new Component()
   Nanocomponent.call(this)
-  this._button1 = new Button ()
-  this._button2 = new Button ()
-  this._button3 = new Button ()
+  this.button1 = new Button ()
+  this.button2 = new Button ()
+  this.button3 = new Button ()
 }
 Component.prototype = Object.create(Nanocomponent.prototype)
 
-Component.prototype._render = function (state) {
-  var colorArray = this._shapeData(state)
+Component.prototype.createElement = function (state) {
+  var colorArray = shapeData(state)
   return html`
     <div>
-      ${this._button1.render(colorArray[0])}
-      ${this._button2.render(colorArray[1])}
-      ${this._button3.render(colorArray[2])}
+      ${this.button1.render(colorArray[0])}
+      ${this.button2.render(colorArray[1])}
+      ${this.button3.render(colorArray[2])}
     </div>
   `
 }
 
-Component.prototype._update = function (state) {
-  var colorArray = this._shapeData(state) // process app specific data in a container
-  this._button1.render(colorArray[0]) // pass processed data to owned children components
-  this._button2.render(colorArray[1])
-  this._button3.render(colorArray[2])
+Component.prototype.update = function (state) {
+  var colorArray = shapeData(state) // process app specific data in a container
+  this.button1.render(colorArray[0]) // pass processed data to owned children components
+  this.button2.render(colorArray[1])
+  this.button3.render(colorArray[2])
   return false // always return false when mounted
 }
 
-Component.prototype._shapeData = function (state) {
+function shapeData (state) {
   return [state.colors.color1, state.colors.color2, state.colors.color3]
 }
 ```
@@ -281,33 +287,41 @@ A [getter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Fun
 property that returns the component's DOM node if its mounted in the page and
 `null` when its not.
 
-### `DOMNode = Nanocomponent.prototype._render([arguments…])`
+### `component.lastArgs`
+A property that has a copy of all arguments used during the last call to `createElement`.
+Useful for implementing argument comparisons in `update` during calls to `render`.
+
+### `component.hasWindow`
+Boolean that reflects if the component is rendered in a browser environment.  Can be useful for
+components that are server side rendering friendly.
+
+### `DOMNode = Nanocomponent.prototype.createElement([arguments…])`
 __Must be implemented.__ Component specific render function.  Optionally cache
 argument values here.  Run anything here that needs to run along side node
-rendering.  Must return a DOMNode. Use `_willRender` to run code after
-`_render` when the component is unmounted.
+rendering.  Must return a DOMNode. Use `willRender` to run code after
+`createElement` when the component is unmounted.  Previously named `_render`.
 
-### `Boolean = Nanocomponent.prototype._update([arguments…])`
+### `Boolean = Nanocomponent.prototype.update([arguments…])`
 __Must be implemented.__ Return a boolean to determine if
-`prototype._render()` should be called.  The `_update` method is analogous to
+`prototype.createElement()` should be called.  The `update` method is analogous to
 React's `shouldComponentUpdate`. Called only when the component is mounted in
 the DOM tree.
 
-### `Nanocomponent.prototype._willRender(el)`
-A function called right after `_render` returns with `el`, but before the fully rendered
-element is returned to the `render` caller. Run any first render hooks here. The `_load` and
-`_unload` hooks are added at this stage.
+### `Nanocomponent.prototype.willRender(el)`
+A function called right after `createElement` returns with `el`, but before the fully rendered
+element is returned to the `render` caller. Run any first render hooks here. The `load` and
+`unload` hooks are added at this stage.
 
-### `Nanocomponent.prototype._load(el)`
+### `Nanocomponent.prototype.load(el)`
 Called when the component is mounted on the DOM. Uses [on-load][onload] under
 the hood.
 
-### `Nanocomponent.prototype._unload(el)`
+### `Nanocomponent.prototype.unload(el)`
 Called when the component is removed from the DOM. Uses [on-load][onload] under
 the hood.
 
-### `Nanocomponent.prototype._didUpdate(el)`
-Called after a mounted component updates (e.g. `_update` returns true).  You can use this hook to call
+### `Nanocomponent.prototype.didUpdate(el)`
+Called after a mounted component updates (e.g. `update` returns true).  You can use this hook to call
 `element.scrollIntoView` or other dom methods on the mounted component.
 
 ## Installation

@@ -6,7 +6,7 @@ test('cache', (t) => {
   t.test('should validate input types', (t) => {
     t.plan(1)
     var comp = new Nanocomponent()
-    t.throws(comp.render.bind(comp), /_render should be implemented/)
+    t.throws(comp.render.bind(comp), /createElement should be implemented/)
   })
 
   t.test('should render elements', (t) => {
@@ -18,8 +18,12 @@ test('cache', (t) => {
     }
     MyComp.prototype = Object.create(Nanocomponent.prototype)
 
-    MyComp.prototype._render = function (name) {
+    MyComp.prototype.createElement = function (name) {
       return html`<div>${name}</div>`
+    }
+
+    MyComp.prototype.update = function (name) {
+      return false
     }
 
     var myComp = new MyComp()
