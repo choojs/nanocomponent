@@ -4,8 +4,11 @@
   "description": "Native DOM components that pair nicely with DOM diffing algorithms",
   "main": "index.js",
   "scripts": {
-    "deps": "dependency-check . && dependency-check . --extra --no-dev",
-    "test": "standard *.js && npm run deps && NODE_ENV=test node test | tap-format-spec",
+    "test": "run-s test:*",
+    "test:deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "test:node": "NODE_ENV=test node test/node.js | tap-format-spec",
+    "test:browser": "browserify test/browser.js | tape-run | tap-format-spec",
+    "test:lint": "standard *.js",
     "start": "bankai start example"
   },
   "repository": {
@@ -42,15 +45,18 @@
     "@tap-format/spec": "^0.2.0",
     "bankai": "^8.1.1",
     "bel": "^5.0.0",
+    "browserify": "^14.4.0",
     "choo": "^5.6.2",
     "choo-log": "^7.0.1",
     "dependency-check": "^2.6.0",
     "envify": "^4.0.0",
     "leaflet": "^1.1.0",
+    "microbounce": "^1.0.0",
     "nanologger": "^1.2.0",
+    "npm-run-all": "^4.0.2",
     "on-idle": "^3.1.0",
     "standard": "^10.0.0",
-    "tape": "^4.6.0",
-    "microbounce": "^1.0.0"
+    "tape": "^4.7.0",
+    "tape-run": "^3.0.0"
   }
 }

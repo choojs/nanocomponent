@@ -1,4 +1,4 @@
-var Nanocomponent = require('./')
+var Nanocomponent = require('../')
 var test = require('tape')
 var html = require('bel')
 
