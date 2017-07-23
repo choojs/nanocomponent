@@ -35,7 +35,7 @@ Button.prototype._render = function (color) {
   `
 }
 
-// Override default shallow compare _update function
+// Implement conditional rendering
 Button.prototype._update = function (newColor) {
   return newColor !== this._color
 }
