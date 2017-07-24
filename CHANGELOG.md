@@ -14,8 +14,7 @@ Be sure to read the README so that you get an understanding of the new API, but 
 
 - **Breaking**: The `_element` [getter][getter] is renamed to `element`.
 - **Breaking**: `_willMount` is renamed to `beforerender` because DOM mounting can't be guaranteed from the perspective of a component.
-- **Breaking**: `_didMount` is removed.  Consider using `load` instead now.  If you want this on-load free hook still, you can just call `window.requestAnimationFrame` from `willRender`.
-- **Breaking**: `_willUpdate` is removed.  Anything you can do in `_willUpdate` you can just move to `update`.
+- **Breaking**: `_didMount` is removed.  Consider using `load` instead now.  Anything you can do in `_willUpdate` you can just move to `update`.
 - **Breaking**: `_update` is renamed to `update` and should always be implemented.  Instead of the old default shallow compare, not implementing `update` throws.  You can `require('nanocomponent/compare')` to implement the shallow compare if you want that still.  See below.
 - **Breaking**: `_args` is removed.  `arguments` in `createElement` and `update` are already "sliced", so you can simply capture a copy in `update` and `createElement` and use it for comparison at a later time.
 - **Breaking**: `_hasWindow` is renamed to `hasWindow`.
@@ -88,7 +87,7 @@ class Meta extends Component {
 - Move any DOM mutation code from `createElement` into `update`.
 - Ensure `createElement` returns a DOM node always. (You will get warnings if you don't and it probably won't work)
 - Rename `_load` and `_unload` to `load` and `unload`.
-- Consider moving any `load` actions into `willRender` if they don't depend on the newly rendered node being mounted in a DOM tree yet.
+- Consider moving any `load` actions into `beforerender` if they don't depend on the newly rendered node being mounted in a DOM tree yet.
 - Take advantage of `didUpdate` allowing you to interact with your component after `createElement` is called on mounted components 🙌
 
 ## 5.2.0

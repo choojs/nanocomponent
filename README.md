@@ -221,6 +221,7 @@ Component.prototype.update = function (state) {
   return false // always return false when mounted
 }
 
+// Some arbitrary data shaping function
 function shapeData (state) {
   return [state.colors.color1, state.colors.color2, state.colors.color3]
 }
