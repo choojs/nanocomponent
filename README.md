@@ -287,10 +287,6 @@ A [getter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Fun
 property that returns the component's DOM node if its mounted in the page and
 `null` when its not.
 
-### `component.lastArgs`
-A property that has a copy of all arguments used during the last call to `createElement`.
-Useful for implementing argument comparisons in `update` during calls to `render`.
-
 ### `component.hasWindow`
 Boolean that reflects if the component is rendered in a browser environment.  Can be useful for
 components that are server side rendering friendly.

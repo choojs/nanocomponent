@@ -11,7 +11,6 @@ function makeID () {
 
 function Nanocomponent () {
   this.hasWindow = typeof window !== 'undefined'
-  this.lastArgs = [] // Copy of arguments from last render
   this._id = null // represents the id of the root node
   this._ncID = null // internal nanocomponent id
   this._proxy = null
@@ -39,7 +38,6 @@ Nanocomponent.prototype.render = function () {
   } else if (this.element) {
     var shouldUpdate = this.update.apply(this, args)
     if (shouldUpdate) {
-      this.lastArgs = args
       morph(this.element, this._handleRender(args))
       if (this.didUpdate) window.requestAnimationFrame(function () { self.didUpdate(self.element) })
     }
@@ -47,7 +45,6 @@ Nanocomponent.prototype.render = function () {
     return this._proxy
   } else {
     this._ncID = makeID()
-    this.lastArgs = args
     this._proxy = null
     var el = this._handleRender(args)
     if (this.willRender) this.willRender(el)

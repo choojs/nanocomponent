@@ -10,16 +10,16 @@ Be sure to read the README so that you get an understanding of the new API, but 
 
 ### Changes since `cache-component@5`
 
-`nanocomponent@6` is mostly the same as `cache-component@5` except a few methods are rename and everything you interact with has had the `_` prefix removed.
+`nanocomponent@6` is mostly the same as `cache-component@5` except a few methods are renamed and everything you interact with has had the `_` prefix removed.
 
 - **Breaking**: The `_element` [getter][getter] is renamed to `element`.
 - **Breaking**: `_willMount` is renamed to `willRender` because DOM mounting can't be guaranteed from the perspective of a component.
 - **Breaking**: `_didMount` is removed.  Consider using `load` instead now.  If you want this on-load free hook still, you can just call `window.requestAnimationFrame` from `willRender`.
 - **Breaking**: `_willUpdate` is removed.  Anything you can do in `_willUpdate` you can just move to `update`.
-- **Breaking**: `_update` is rename to `update` and should always be implemented.  Instead of the old default shallow compare, not implementing `update` throws.  You can `require('nanocomponent/compare')` to implement the shallow compare if you want that still.  See below.
-- **Breaking**: `_args` is renamed to `lastArgs`.
+- **Breaking**: `_update` is renamed to `update` and should always be implemented.  Instead of the old default shallow compare, not implementing `update` throws.  You can `require('nanocomponent/compare')` to implement the shallow compare if you want that still.  See below.
+- **Breaking**: `_args` is removed.  `arguments` in `createElement` and `update` are already "sliced", so you can simply capture a copy in `update` and `createElement` and use it for comparison at a later time.
 - **Breaking**: `_hasWindow` is renamed to `hasWindow`.
-- **Changed**: `_didUpdate()` is renamed to `didUpdate` now receives an element argument `el` e.g. `didUpdate(el)`.  This makes it's argument signature consistent with the other life-cycle methods.
+- **Changed**: `_didUpdate()` is renamed to `didUpdate`.  It alsot receives an element argument `el` e.g. `didUpdate(el)`.  This makes its argument signature consistent with the other life-cycle methods.
 - **Added**: Added [on-load][ol] hooks `load` and `unload`.  [on-load][ol] listeners only get added when one or both of the hooks are implemented on a component making the mutation observers optional.
 
 
@@ -37,15 +37,11 @@ class Meta extends Component {
   constructor () {
     super()
 
-    this._title = null
-    this._artist = null
-    this._album = null
+    this.arguments = []
   }
 
   createElement (title, artist, album) {
-    this._title = title || '--'
-    this._artist = artist || '--'
-    this._album = album || '--'
+    this.arguments = arguments // cache a copy of arguments
 
     return html`
       <div>
@@ -60,7 +56,7 @@ class Meta extends Component {
   // Implement this to recreate cache-component@5
   // behavior when update was not implemented
   update () {
-    return compare(arguments, this.lastArgs)
+    return compare(arguments, this.arguments)
   }
 }
 
