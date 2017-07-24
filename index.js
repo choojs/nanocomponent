@@ -39,7 +39,7 @@ Nanocomponent.prototype.render = function () {
     var shouldUpdate = this.update.apply(this, args)
     if (shouldUpdate) {
       morph(this.element, this._handleRender(args))
-      if (this.didUpdate) window.requestAnimationFrame(function () { self.didUpdate(self.element) })
+      if (this.afterupdate) window.requestAnimationFrame(function () { self.afterupdate(self.element) })
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
     return this._proxy
@@ -47,7 +47,7 @@ Nanocomponent.prototype.render = function () {
     this._ncID = makeID()
     this._proxy = null
     var el = this._handleRender(args)
-    if (this.willRender) this.willRender(el)
+    if (this.beforerender) this.beforerender(el)
     if (this.load || this.unload) {
       onload(el, this._handleLoad, this._handleUnload, this)
     }

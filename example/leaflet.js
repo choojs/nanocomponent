@@ -40,7 +40,7 @@ Leaflet.prototype.update = function (coords) {
   return false
 }
 
-Leaflet.prototype.willRender = function (el) {
+Leaflet.prototype.beforerender = function (el) {
   var coords = this.coords
   this._log.info('create-map', coords)
 

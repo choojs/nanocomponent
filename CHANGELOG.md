@@ -13,13 +13,13 @@ Be sure to read the README so that you get an understanding of the new API, but 
 `nanocomponent@6` is mostly the same as `cache-component@5` except a few methods are renamed and everything you interact with has had the `_` prefix removed.
 
 - **Breaking**: The `_element` [getter][getter] is renamed to `element`.
-- **Breaking**: `_willMount` is renamed to `willRender` because DOM mounting can't be guaranteed from the perspective of a component.
+- **Breaking**: `_willMount` is renamed to `beforerender` because DOM mounting can't be guaranteed from the perspective of a component.
 - **Breaking**: `_didMount` is removed.  Consider using `load` instead now.  If you want this on-load free hook still, you can just call `window.requestAnimationFrame` from `willRender`.
 - **Breaking**: `_willUpdate` is removed.  Anything you can do in `_willUpdate` you can just move to `update`.
 - **Breaking**: `_update` is renamed to `update` and should always be implemented.  Instead of the old default shallow compare, not implementing `update` throws.  You can `require('nanocomponent/compare')` to implement the shallow compare if you want that still.  See below.
 - **Breaking**: `_args` is removed.  `arguments` in `createElement` and `update` are already "sliced", so you can simply capture a copy in `update` and `createElement` and use it for comparison at a later time.
 - **Breaking**: `_hasWindow` is renamed to `hasWindow`.
-- **Changed**: `_didUpdate()` is renamed to `didUpdate`.  It alsot receives an element argument `el` e.g. `didUpdate(el)`.  This makes its argument signature consistent with the other life-cycle methods.
+- **Changed**: `_didUpdate()` is renamed to `afterupdate`.  It alsot receives an element argument `el` e.g. `afterupdate(el)`.  This makes its argument signature consistent with the other life-cycle methods.
 - **Added**: Added [on-load][ol] hooks `load` and `unload`.  [on-load][ol] listeners only get added when one or both of the hooks are implemented on a component making the mutation observers optional.
 
 
@@ -62,10 +62,10 @@ class Meta extends Component {
 
 ```
 
-- Rename components with `_willMount` to `willRender`
-- Move any `_didMount` implementations into `load` or a `window.requestAnmimationFrame` inside of `willRender`.
+- Rename components with `_willMount` to `beforerender`
+- Move any `_didMount` implementations into `load` or a `window.requestAnmimationFrame` inside of `beforerender`.
 - Move any `_willUpdate` implementations into `update`.
-- Rename `_didUpdate` to `_didUpdate`.
+- Rename `_didUpdate` to `afterupdate`.
 - Take advantage of `load` and `unload` for DOM insertion aware node interactions 🙌
 
 ### Changes since nanocomponent@5
@@ -77,8 +77,8 @@ class Meta extends Component {
 - **Breaking**: `_render` is renamed to `createElement` and must now return a DOM node always.  In earlier versions you could get away with not returning from `_render` and assigning nodes to `_element`.  No longer!  Also, you should move your DOM mutations into `update`.
 - **Changed**: Update still works the same way: return true to run `createElement` or return false to skip a call to `createElement` when `render` is called.  If you decide to mutate `element` "by hand" on updates, do that here (rather than conditional paths inside `createElement`).
 - **Changed**: `_load` and `_unload` renamed to `load` and `unload`. They have always been optional, but now the mutation observers are only added if at least one of these methods are implemented prior to component instantiation.
-- **Added**: `willRender` lifecycle hook.  Its similar to `load` but runs before mounting.
-- **Added**: `didUpdate` runs after `update` returns true and the results of `createElement` is mutated over the mounted component.  Useful for adjusting scroll position.
+- **Added**: `beforerender` lifecycle hook.  Its similar to `load` but runs before mounting.
+- **Added**: `afterupdate` runs after `update` returns true and the results of `createElement` is mutated over the mounted component.  Useful for adjusting scroll position.
 - **Fixed**: More robust unmount and remounting behavior.
 
 #### `nanocomponent@5` to `nanocomponent@6` upgrade guide:

@@ -294,7 +294,7 @@ components that are server side rendering friendly.
 ### `DOMNode = Nanocomponent.prototype.createElement([arguments…])`
 __Must be implemented.__ Component specific render function.  Optionally cache
 argument values here.  Run anything here that needs to run along side node
-rendering.  Must return a DOMNode. Use `willRender` to run code after
+rendering.  Must return a DOMNode. Use `beforerender` to run code after
 `createElement` when the component is unmounted.  Previously named `_render`.
 
 ### `Boolean = Nanocomponent.prototype.update([arguments…])`
@@ -303,7 +303,7 @@ __Must be implemented.__ Return a boolean to determine if
 React's `shouldComponentUpdate`. Called only when the component is mounted in
 the DOM tree.
 
-### `Nanocomponent.prototype.willRender(el)`
+### `Nanocomponent.prototype.beforerender(el)`
 A function called right after `createElement` returns with `el`, but before the fully rendered
 element is returned to the `render` caller. Run any first render hooks here. The `load` and
 `unload` hooks are added at this stage.
@@ -316,7 +316,7 @@ the hood.
 Called when the component is removed from the DOM. Uses [on-load][onload] under
 the hood.
 
-### `Nanocomponent.prototype.didUpdate(el)`
+### `Nanocomponent.prototype.afterupdate(el)`
 Called after a mounted component updates (e.g. `update` returns true).  You can use this hook to call
 `element.scrollIntoView` or other dom methods on the mounted component.
 
