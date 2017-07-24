@@ -279,7 +279,7 @@ its conception.
 Create a new Nanocomponent instance. Additional methods can be set on the
 prototype.
 
-### `component.render([…arguments])`
+### `component.render([arguments…])`
 Render the component. Returns a proxy node if already mounted on the DOM. Proxy
 nodes make it so DOM diffing algorithms leave the element alone when diffing.
 
@@ -288,21 +288,17 @@ A [getter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Fun
 property that returns the component's DOM node if its mounted in the page and
 `null` when its not.
 
-### `component.hasWindow`
-Boolean that reflects if the component is rendered in a browser environment.  Can be useful for
-components that are server side rendering friendly.
-
 ### `DOMNode = Nanocomponent.prototype.createElement([arguments…])`
 __Must be implemented.__ Component specific render function.  Optionally cache
 argument values here.  Run anything here that needs to run along side node
 rendering.  Must return a DOMNode. Use `beforerender` to run code after
-`createElement` when the component is unmounted.  Previously named `_render`.
+`createElement` when the component is unmounted.  Previously named `_render`.  Arguments that passed to `render` are passed to `createElement`.
 
 ### `Boolean = Nanocomponent.prototype.update([arguments…])`
 __Must be implemented.__ Return a boolean to determine if
 `prototype.createElement()` should be called.  The `update` method is analogous to
 React's `shouldComponentUpdate`. Called only when the component is mounted in
-the DOM tree.
+the DOM tree.  Arguments passed to `render` are passed to `update`.
 
 ### `Nanocomponent.prototype.beforerender(el)`
 A function called right after `createElement` returns with `el`, but before the fully rendered

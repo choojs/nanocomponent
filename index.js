@@ -10,7 +10,7 @@ function makeID () {
 }
 
 function Nanocomponent () {
-  this.hasWindow = typeof window !== 'undefined'
+  this._hasWindow = typeof window !== 'undefined'
   this._id = null // represents the id of the root node
   this._ncID = null // internal nanocomponent id
   this._proxy = null
@@ -33,7 +33,7 @@ Nanocomponent.prototype.render = function () {
   var self = this
   var args = new Array(arguments.length)
   for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
-  if (!this.hasWindow) {
+  if (!this._hasWindow) {
     return this.createElement.apply(this, args)
   } else if (this.element) {
     var shouldUpdate = this.update.apply(this, args)

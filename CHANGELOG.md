@@ -17,7 +17,6 @@ Be sure to read the README so that you get an understanding of the new API, but 
 - **Breaking**: `_didMount` is removed.  Consider using `load` instead now.
 - **Breaking**: `_update` is renamed to `update` and should always be implemented.  Instead of the old default shallow compare, not implementing `update` throws.  You can `require('nanocomponent/compare')` to implement the shallow compare if you want that still.  See below.
 - **Breaking**: `_args` is removed.  `arguments` in `createElement` and `update` are already "sliced", so you can simply capture a copy in `update` and `createElement` and use it for comparison at a later time.
-- **Breaking**: `_hasWindow` is renamed to `hasWindow`.
 - **Breaking**: `_willUpdate` is removed.  Anything you could do in `_willUpdate` you can just move to `update`.
 - **Changed**: `_didUpdate` is renamed to `afterupdate`.  It alsot receives an element argument `el` e.g. `afterupdate(el)`.  This makes its argument signature consistent with the other life-cycle methods.
 - **Added**: Added [on-load][ol] hooks `load` and `unload`.  [on-load][ol] listeners only get added when one or both of the hooks are implemented on a component making the mutation observers optional.
@@ -89,40 +88,10 @@ class Meta extends Component {
 - Ensure `createElement` returns a DOM node always. (You will get warnings if you don't and it probably won't work)
 - Rename `_load` and `_unload` to `load` and `unload`.
 - Consider moving any `load` actions into `beforerender` if they don't depend on the newly rendered node being mounted in a DOM tree yet.
-- Take advantage of `didUpdate` allowing you to interact with your component after `createElement` is called on mounted components 🙌
-
-## 5.2.0
-* Added more lifecycle hooks: `_willMount`, `_didMount`, `_willUpdate` in addition to `_didUpdate`.
-
-## 5.1.0
-* Update [nanomorph](http://ghub.io/nanomorph) to `^5.1.2`.  This adds the new child-reordering algorithm so we get a minor version bump.  Keep an eye out for weird ness and report broken corner cases 🙏
-
-## 5.0.1
-* Fix proxy leak by resetting proxy node ID after DOM removal is detected.
-
-## 5.0.0
-* Update [bel](http://ghub.io/bel) to ^5.0.0
-
-## 5.0.0-1 - 2017-05-16
-* Beta release!  Please let me know if there is anything wrong with this!
-* **Breaking**: Remove `on-load` and use a new DOM ID based DOM tracking system.  Requires ES5 support for getters.
-* **Breaking**: Remove `_load` and `_unload` methods.  You have to wrap instances of `cache-component` with `on-load` on your own now.
-* **Added**: Add `_didUpdate` hook so you can call DOM methods after the component updates.  Handy for updating a scroll position.
-
-## 4.0.2 - 2017-05-05
-* Run _unload before we clear internal references, allowing you to clean up event listeners on `this._element` and anything else you want to do.
-
-## 4.0.1 - 2017-04-10
-* Fix instance clobbering bug.  This bug showed up when you had two instances of the same component morphing over each other.  This would cause the real DOM reference to get lost between the internal _element references of the two instances.  The work around was the introduction of ccId which is a unique ID to prevent this.
-
-## 4.0.0 - 2017-04-10
-* use [on-load](https://github.com/shama/on-load) to invalidate `this._element`.  Fixes component rendering when they get completely removed from the DOM.
-* added `_load` and `_unload` methods to allow you to run code when the DOM is mounted and unmounted.
-* handle morphing internally, and ALWAYSE return a proxy node.  There is no other way.
-
-## 3.0.0 - 2017-04-10
-* initial release
+- Take advantage of `afterupdate` allowing you to interact with your component after `createElement` is called on mounted components 🙌
 
 [ol]: https://github.com/shama/on-load
 [cc]: https://github.com/hypermodules/cache-component
+[bel]: http://ghub.io/bel
+[nm]: http://ghub.io/nanomorph
 [getter]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get
