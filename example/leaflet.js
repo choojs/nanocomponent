@@ -18,7 +18,7 @@ function Leaflet () {
 
 Leaflet.prototype = Object.create(Nanocomponent.prototype)
 
-Leaflet.prototype._render = function (coords) {
+Leaflet.prototype.createElement = function (coords) {
   this.coords = coords
   return html`
     <div style="height: 500px">
@@ -27,7 +27,7 @@ Leaflet.prototype._render = function (coords) {
   `
 }
 
-Leaflet.prototype._update = function (coords) {
+Leaflet.prototype.update = function (coords) {
   if (!this.map) return this._log.warn('missing map', 'failed to update')
   if (coords[0] !== this.coords[0] || coords[1] !== this.coords[1]) {
     var self = this
@@ -40,7 +40,7 @@ Leaflet.prototype._update = function (coords) {
   return false
 }
 
-Leaflet.prototype._willRender = function (el) {
+Leaflet.prototype.beforerender = function (el) {
   var coords = this.coords
   this._log.info('create-map', coords)
 
@@ -55,12 +55,12 @@ Leaflet.prototype._willRender = function (el) {
   this.map = map
 }
 
-Leaflet.prototype._load = function () {
+Leaflet.prototype.load = function () {
   this._log.info('load')
   this.map.invalidateSize()
 }
 
-Leaflet.prototype._unload = function () {
+Leaflet.prototype.unload = function () {
   this._log.info('unload')
 
   this.map.remove()

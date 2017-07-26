@@ -14,8 +14,8 @@ function Nanocomponent () {
   this._id = null // represents the id of the root node
   this._ncID = null // internal nanocomponent id
   this._proxy = null
-  this._args = []
   this._loaded = false // Used to debounce on-load when child-reordering
+  this._rootNodeName = null
 
   this._handleLoad = this._handleLoad.bind(this)
   this._handleUnload = this._handleUnload.bind(this)
@@ -35,23 +35,21 @@ Nanocomponent.prototype.render = function () {
   var args = new Array(arguments.length)
   for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
   if (!this._hasWindow) {
-    return this._render.apply(this, args)
+    return this.createElement.apply(this, args)
   } else if (this.element) {
-    var shouldUpdate = this._update.apply(this, args)
+    var shouldUpdate = this.update.apply(this, args)
     if (shouldUpdate) {
-      this._args = args
       morph(this.element, this._handleRender(args))
-      if (this._didUpdate) window.requestAnimationFrame(function () { self._didUpdate(self.element) })
+      if (this.afterupdate) window.requestAnimationFrame(function () { self.afterupdate(self.element) })
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
     return this._proxy
   } else {
     this._ncID = makeID()
-    this._args = args
     this._proxy = null
     var el = this._handleRender(args)
-    if (this._willRender) this._willRender(el)
-    if (this._load || this._unload) {
+    if (this.beforerender) this.beforerender(el)
+    if (this.load || this.unload) {
       onload(el, this._handleLoad, this._handleUnload, this)
     }
     return el
@@ -59,8 +57,10 @@ Nanocomponent.prototype.render = function () {
 }
 
 Nanocomponent.prototype._handleRender = function (args) {
-  var el = this._render.apply(this, args)
-  assert(el instanceof window.HTMLElement, 'nanocomponent: _render should return a DOM node')
+  var el = this.createElement.apply(this, args)
+  if (!this._rootNodeName) this._rootNodeName = el.nodeName
+  assert(el instanceof window.HTMLElement, 'nanocomponent: createElement should return a DOM node')
+  assert.equal(this._rootNodeName, el.nodeName, 'nanocomponent: root node types cannot differ between re-renders')
   return this._brandNode(this._ensureID(el))
 }
 
@@ -90,20 +90,20 @@ Nanocomponent.prototype._handleLoad = function () {
   var self = this
   if (this._loaded) return // Debounce child-reorders
   this._loaded = true
-  if (this._load) window.requestAnimationFrame(function () { self._load() })
+  if (this.load) window.requestAnimationFrame(function () { self.load() })
 }
 
 Nanocomponent.prototype._handleUnload = function () {
   var self = this
   if (this.element) return // Debounce child-reorders
   this._loaded = false
-  if (this._unload) window.requestAnimationFrame(function () { self._unload() })
+  if (this.unload) window.requestAnimationFrame(function () { self.unload() })
 }
 
-Nanocomponent.prototype._render = function () {
-  throw new Error('nanocomponent: _render should be implemented!')
+Nanocomponent.prototype.createElement = function () {
+  throw new Error('nanocomponent: createElement should be implemented!')
 }
 
-Nanocomponent.prototype._update = function () {
-  throw new Error('nanocomponent: _update should be implemented!')
+Nanocomponent.prototype.update = function () {
+  throw new Error('nanocomponent: update should be implemented!')
 }
