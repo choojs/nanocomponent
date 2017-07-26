@@ -18,7 +18,7 @@ Be sure to read the README so that you get an understanding of the new API, but 
 - **Breaking**: `_update` is renamed to `update` and should always be implemented.  Instead of the old default shallow compare, not implementing `update` throws.  You can `require('nanocomponent/compare')` to implement the shallow compare if you want that still.  See below.
 - **Breaking**: `_args` is removed.  `arguments` in `createElement` and `update` are already "sliced", so you can simply capture a copy in `update` and `createElement` and use it for comparison at a later time.
 - **Breaking**: `_willUpdate` is removed.  Anything you could do in `_willUpdate` you can just move to `update`.
-- **Changed**: `_didUpdate` is renamed to `afterupdate`.  It alsot receives an element argument `el` e.g. `afterupdate(el)`.  This makes its argument signature consistent with the other life-cycle methods.
+- **Changed**: `_didUpdate` is renamed to `afterupdate`.  It also receives an element argument `el` e.g. `afterupdate(el)`.  This makes its argument signature consistent with the other life-cycle methods.
 - **Added**: Added [on-load][ol] hooks `load` and `unload`.  [on-load][ol] listeners only get added when one or both of the hooks are implemented on a component making the mutation observers optional.
 
 
@@ -67,18 +67,17 @@ class Meta extends Component {
 - Rename `_didUpdate` to `afterupdate`.
 - Take advantage of `load` and `unload` for DOM insertion aware node interactions 🙌
 
-### Changes since nanocomponent@5
+### Changes since `nanocomponent@5`
 
 `nanocomponent@6` has some subtle but important differences from `nanocompnent@5`.  Be sure to read the README and check out the examples to get an understanding of the new API.
 
 - **Breaking**: The `_element` property is removed.  A [getter][getter] called `element` is now used instead.  Since this is now a read-only getter, you must not assign anything to this property or else bad things will happen.  The `element` getter returns the component's DOM node if mounted in the page, and `undefined` otherwise.  You are allowed to mutate that DOM node by hand however.  Just don't reassign the property on the component instance.
-- **Changed**: `render` can now handle being removed and re-rendered into the DOM.  It can also handle rendering two instances of components in two different views over each other.
+- **Fixed**: Components can gracefully be removed, re-ordered and remounted between views.  You can even mutate the same component over individual instances.  This is an improvement over `nanocomponent@5`.
 - **Breaking**: `_render` is renamed to `createElement` and must now return a DOM node always.  In earlier versions you could get away with not returning from `_render` and assigning nodes to `_element`.  No longer!  Also, you should move your DOM mutations into `update`.
 - **Changed**: Update still works the same way: return true to run `createElement` or return false to skip a call to `createElement` when `render` is called.  If you decide to mutate `element` "by hand" on updates, do that here (rather than conditional paths inside `createElement`).
 - **Changed**: `_load` and `_unload` renamed to `load` and `unload`. They have always been optional, but now the mutation observers are only added if at least one of these methods are implemented prior to component instantiation.
-- **Added**: `beforerender` lifecycle hook.  Its similar to `load` but runs before mounting.
+- **Added**: `beforerender` lifecycle hook.  Its similar to `load` but runs before the function call to `render` returns on unmounted component instances.  This is where the [on-load][ol] listeners are added and is a good opportunity to add any other lifecycle hooks.
 - **Added**: `afterupdate` runs after `update` returns true and the results of `createElement` is mutated over the mounted component.  Useful for adjusting scroll position.
-- **Fixed**: More robust unmount and remounting behavior.
 
 #### `nanocomponent@5` to `nanocomponent@6` upgrade guide:
 
