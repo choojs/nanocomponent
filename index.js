@@ -15,6 +15,7 @@ function Nanocomponent () {
   this._ncID = null // internal nanocomponent id
   this._proxy = null
   this._loaded = false // Used to debounce on-load when child-reordering
+  this._rootNodeName = null
 
   this._handleLoad = this._handleLoad.bind(this)
   this._handleUnload = this._handleUnload.bind(this)
@@ -57,7 +58,9 @@ Nanocomponent.prototype.render = function () {
 
 Nanocomponent.prototype._handleRender = function (args) {
   var el = this.createElement.apply(this, args)
+  if (!this._rootNodeName) this._rootNodeName = el.nodeName
   assert(el instanceof window.HTMLElement, 'nanocomponent: createElement should return a DOM node')
+  assert.equal(this._rootNodeName, el.nodeName, 'nanocomponent: root node types cannot differ between re-renders')
   return this._brandNode(this._ensureID(el))
 }
 
