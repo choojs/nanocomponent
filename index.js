@@ -49,7 +49,7 @@ Nanocomponent.prototype.render = function () {
     var el = this._handleRender(args)
     if (this.beforerender) this.beforerender(el)
     if (this.load || this.unload) {
-      onload(el, this._handleLoad, this._handleUnload, this)
+      onload(el, self._handleLoad, self._handleUnload, self)
     }
     return el
   }
@@ -68,6 +68,7 @@ Nanocomponent.prototype._createProxy = function () {
   var self = this
   this._brandNode(proxy)
   proxy.id = this._id
+  proxy.setAttribute('data-proxy', '')
   proxy.isSameNode = function (el) {
     return (el && el.dataset.nanocomponent === self._ncID)
   }
@@ -79,7 +80,6 @@ Nanocomponent.prototype._reset = function () {
   this._id = null
   this._proxy = null
   this._rootNodeName = null
-  this._loaded = false
 }
 
 Nanocomponent.prototype._brandNode = function (node) {
