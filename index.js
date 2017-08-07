@@ -40,7 +40,7 @@ Nanocomponent.prototype.render = function () {
     var shouldUpdate = this.update.apply(this, args)
     if (shouldUpdate) {
       morph(this.element, this._handleRender(args))
-      if (this.afterupdate) window.requestAnimationFrame(function () { self.afterupdate(self.element) })
+      if (this.afterupdate) this.afterupdate(this.element)
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
     return this._proxy

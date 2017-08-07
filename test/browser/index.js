@@ -3,6 +3,7 @@ var SimpleComponent = require('./simple')
 var Nanocomponent = require('../../')
 var html = require('bel')
 var compare = require('../../compare')
+var nanobus = require('nanobus')
 
 function makeID () {
   return 'testid-' + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
@@ -74,56 +75,112 @@ test('missing update', function (t) {
 })
 
 test('lifecycle tests', function (t) {
+  var testRoot = createTestElement()
   class LifeCycleComp extends Nanocomponent {
+    constructor () {
+      super()
+      this.bus = nanobus()
+      this.testState = {
+        'create-element': 0,
+        update: 0,
+        beforerender: 0,
+        afterupdate: 0,
+        load: 0,
+        unload: 0
+      }
+    }
     createElement (text) {
       this.arguments = arguments
-      t.pass('render ran')
+      this.testState['create-element']++
       return html`<div>${text}</div>`
     }
 
     update (text) {
       var shouldUpdate = compare(this.arguments, arguments)
-      t.pass('update ran: ' + shouldUpdate)
+      this.testState.update++
       return shouldUpdate
     }
 
     beforerender () {
-      t.pass('willrender ran')
+      this.testState.beforerender++
     }
 
     afterupdate () {
-      t.pass('afterupdate ran')
+      this.testState.afterupdate++
     }
 
     load () {
-      t.pass('load ran')
+      this.testState.load++
+      this.bus.emit('load')
     }
 
     unload () {
-      t.pass('unload ran')
+      this.testState.unload++
+      this.bus.emit('unload')
     }
   }
 
-  t.plan(8)
-
   var comp = new LifeCycleComp()
-  var testRoot = createTestElement()
+  comp.bus.on('load', onLoad)
+  comp.bus.on('unload', onUnload)
+
+  t.deepEqual(comp.testState, {
+    'create-element': 0,
+    update: 0,
+    beforerender: 0,
+    afterupdate: 0,
+    load: 0,
+    unload: 0
+  }, 'no lifecycle methods run on instantiation')
   var el = comp.render('hey')
-  window.setTimeout(function () {
-    testRoot.appendChild(el)
-    window.setTimeout(function () {
-      comp.render('hi')
-      window.setTimeout(function () {
-        comp.render('hi')
-        window.setTimeout(function () {
-          window.setTimeout(function () {
-            console.log('keep alive')
-            var newEl = comp.render('beep')
-            t.equal(newEl.dataset.proxy, undefined, 'mounted node isn\'t a proxy')
-          }, 50)
-          testRoot.innerHTML = ''
-        }, 50)
-      }, 50)
-    }, 50)
-  }, 50)
+  t.deepEqual(comp.testState, {
+    'create-element': 1,
+    update: 0,
+    beforerender: 1,
+    afterupdate: 0,
+    load: 0,
+    unload: 0
+  }, 'create-element and beforerender is run on first render')
+
+  testRoot.appendChild(el)
+
+  function onLoad () {
+    t.deepEqual(comp.testState, {
+      'create-element': 1,
+      update: 0,
+      beforerender: 1,
+      afterupdate: 0,
+      load: 1,
+      unload: 0
+    }, 'component loaded')
+
+    comp.render('hi')
+
+    t.deepEqual(comp.testState, {
+      'create-element': 2,
+      update: 1,
+      beforerender: 1,
+      afterupdate: 1,
+      load: 1,
+      unload: 0
+    }, 'component re-rendered')
+
+    comp.render('hi')
+
+    t.deepEqual(comp.testState, {
+      'create-element': 2,
+      update: 2,
+      beforerender: 1,
+      afterupdate: 1,
+      load: 1,
+      unload: 0
+    }, 'component cache hit')
+
+    testRoot.removeChild(comp.element)
+  }
+
+  function onUnload () {
+    t.equal(comp.element, undefined, 'component unmounted')
+    t.end()
+  }
 })
