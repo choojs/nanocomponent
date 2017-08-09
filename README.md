@@ -12,7 +12,7 @@ Native DOM components that pair nicely with DOM diffing algorithms.
 - Only uses native DOM methods
 - Class based components offering a familiar component structure
 - Works well with [bel][bel] and [yoyoify][yoyoify]
-- Combines the best of `nanocomponent@5` and [`cache-component@5`][https://github.com/hypermodules/cache-component].
+- Combines the best of `nanocomponent@5` and [`cache-component@5`](https://github.com/hypermodules/cache-component).
 
 ## Usage
 ```js
