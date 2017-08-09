@@ -12,6 +12,7 @@ Native DOM components that pair nicely with DOM diffing algorithms.
 - Only uses native DOM methods
 - Class based components offering a familiar component structure
 - Works well with [bel][bel] and [yoyoify][yoyoify]
+- Combines the best of `nanocomponent@5` and [`cache-component@5`][https://github.com/hypermodules/cache-component].
 
 ## Usage
 ```js
@@ -229,10 +230,12 @@ function shapeData (state) {
 
 ## FAQ
 ### Where does this run?
-Make sure you're running a diffing engine that checks for `.isSameNode()`, if
-it doesn't you'll end up with super weird results because proxy nodes will
-probably be rendered which is not what should happen. Probably make sure you're
-using [morphdom][md] or [nanomorph][nm]. Seriously.
+Nanocomponent was written to work well with [choo][choo], but it also works well
+with DOM diffing engines that check `.isSamNode()` like [nanomorph][nm] and
+[morphdom][md].  It is designed and documented in isolation however, so it also
+works well on it's own if you are careful.  You can even embed it in other SPA
+frameworks like React or Preact with the use of [nanocomponent-adapters][nca] which
+enable framework-free components! 😎
 
 ### What's a proxy node?
 It's a node that overloads `Node.isSameNode()` to compare it to another node.
@@ -260,19 +263,26 @@ proxy.isSameNode(el2) // false
 ```
 
 ### How does it work?
-[Morphdom][md] is a diffing engine that diffs real DOM trees. It runs a series
+[`nanomorph`][nm] is a diffing engine that diffs real DOM trees. It runs a series
 of checks between nodes to see if they should either be replaced, removed,
 updated or reordered. This is done using a series of property checks on the
 nodes.
 
-Since [v2.1.0][210] `morphdom` also runs `Node.isSameNode(otherNode)`. This
+[`nanomorph`][nm] runs `Node.isSameNode(otherNode)` when diffing two DOM trees. This
 allows us to override the function and replace it with a custom function that
 proxies an existing node. Check out the code to see how it works. The result is
 that if every element in our tree uses `nanocomponent`, only elements that have
 changed will be recomputed and re-rendered making things very fast.
 
 `nanomorph`, which saw first use in choo 5, has supported `isSameNode` since
-its conception.
+its conception. [`morphdom`][md] has supported `.isSameNode` since [v2.1.0][210].
+
+### Is this basically `react-create-class`?
+`nanocomponent` is very similar to `react-create-class`, but it leaves more decisions up
+to you.  For example, there is no built in `props` or `state` abstraction in `nanocomponent`
+but you can do something similar with `arguments` (perhaps passing a single `props` object
+to `.render` e.g. `.render({ foo, bar })` and assigning internal state to `this` however
+you want (perhaps `this.state = { fizz: buzz }`).
 
 ## API
 ### `component = Nanocomponent()`
@@ -323,9 +333,16 @@ $ npm install nanocomponent
 ```
 
 ## See Also
-- [choojs/choo](https://github.com/choojs/choo)
+- [choojs/choo][choo]
+- [choojs/nanocomponent-adapters][nca]
 - [shama/bel](https://github.com/shama/bel)
 - [shama/on-load](https://github.com/shama/on-load)
+
+## Optional lifecycle events
+
+You can add even more lifecycle events to your components by attatching the following modules
+in the `beforerender` hook.
+
 - [yoshuawuyts/observe-resize](https://github.com/yoshuawuyts/observe-resize)
 - [bendrucker/document-ready](https://github.com/bendrucker/document-ready)
 - [yoshuawuyts/on-intersect](https://github.com/yoshuawuyts/on-intersect)
@@ -345,8 +362,6 @@ $ npm install nanocomponent
 [3]: https://npmjs.org/package/nanocomponent
 [4]: https://img.shields.io/travis/choojs/nanocomponent/master.svg?style=flat-square
 [5]: https://travis-ci.org/choojs/nanocomponent
-[6]: https://img.shields.io/codecov/c/github/choojs/cache-component/master.svg?style=flat-square
-[7]: https://codecov.io/github/choojs/nanocomponent
 [8]: http://img.shields.io/npm/dm/nanocomponent.svg?style=flat-square
 [9]: https://npmjs.org/package/nanocomponent
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
@@ -360,3 +375,5 @@ $ npm install nanocomponent
 [class]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
 [isSameNode]: https://github.com/choojs/nanomorph#caching-dom-elements
 [onload]: https://github.com/shama/on-load
+[choo]: https://github.com/choojs/choo
+[nca]: https://github.com/choojs/nanocomponent-adapters
