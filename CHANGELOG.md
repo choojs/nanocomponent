@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.0.1 - 2017-08-09
+
+- **Fixed**: [[`f9f7540415`](https://github.com/choojs/nanocomponent/commit/f9f7540415)] - load & unload callbacks should be passed el (timwis)
+
 ## 6.0.0 - 2017-08-09
 
 🎉 nanocomponent and [cache-component][cc] are merged into one module: `nanocomponent@6.0.0` 🎉.
