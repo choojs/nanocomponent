@@ -93,18 +93,18 @@ Nanocomponent.prototype._ensureID = function (node) {
   return node
 }
 
-Nanocomponent.prototype._handleLoad = function () {
+Nanocomponent.prototype._handleLoad = function (el) {
   var self = this
   if (this._loaded) return // Debounce child-reorders
   this._loaded = true
-  if (this.load) window.requestAnimationFrame(function () { self.load() })
+  if (this.load) window.requestAnimationFrame(function () { self.load(el) })
 }
 
-Nanocomponent.prototype._handleUnload = function () {
+Nanocomponent.prototype._handleUnload = function (el) {
   var self = this
   if (this.element) return // Debounce child-reorders
   this._loaded = false
-  if (this.unload) window.requestAnimationFrame(function () { self.unload() })
+  if (this.unload) window.requestAnimationFrame(function () { self.unload(el) })
 }
 
 Nanocomponent.prototype.createElement = function () {
