@@ -1,4 +1,5 @@
 var document = require('global/document')
+var nanotiming = require('nanotiming')
 var morph = require('nanomorph')
 var onload = require('on-load')
 var assert = require('assert')
@@ -9,13 +10,14 @@ function makeID () {
   return 'ncid-' + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
 }
 
-function Nanocomponent () {
+function Nanocomponent (name) {
   this._hasWindow = typeof window !== 'undefined'
   this._id = null // represents the id of the root node
   this._ncID = null // internal nanocomponent id
   this._proxy = null
   this._loaded = false // Used to debounce on-load when child-reordering
   this._rootNodeName = null
+  this._name = name || 'nanocomponent'
 
   this._handleLoad = this._handleLoad.bind(this)
   this._handleUnload = this._handleUnload.bind(this)
@@ -31,11 +33,15 @@ function Nanocomponent () {
 }
 
 Nanocomponent.prototype.render = function () {
+  var timing = nanotiming(this._name + '.render')
   var self = this
   var args = new Array(arguments.length)
+  var el
   for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
   if (!this._hasWindow) {
-    return this.createElement.apply(this, args)
+    el = this.createElement.apply(this, args)
+    timing()
+    return el
   } else if (this.element) {
     var shouldUpdate = this.update.apply(this, args)
     if (shouldUpdate) {
@@ -43,14 +49,16 @@ Nanocomponent.prototype.render = function () {
       if (this.afterupdate) this.afterupdate(this.element)
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
+    timing()
     return this._proxy
   } else {
     this._reset()
-    var el = this._handleRender(args)
+    el = this._handleRender(args)
     if (this.beforerender) this.beforerender(el)
     if (this.load || this.unload) {
       onload(el, self._handleLoad, self._handleUnload, self)
     }
+    timing()
     return el
   }
 }
