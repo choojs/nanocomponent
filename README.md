@@ -285,9 +285,9 @@ to `.render` e.g. `.render({ foo, bar })` and assigning internal state to `this`
 you want (perhaps `this.state = { fizz: buzz }`).
 
 ## API
-### `component = Nanocomponent()`
+### `component = Nanocomponent([name])`
 Create a new Nanocomponent instance. Additional methods can be set on the
-prototype.
+prototype. Takes an optional name which is used when emitting timings.
 
 ### `component.render([arguments…])`
 Render the component. Returns a proxy node if already mounted on the DOM. Proxy
