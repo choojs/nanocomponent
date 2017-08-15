@@ -229,6 +229,13 @@ function shapeData (state) {
 ```
 
 ## FAQ
+### What order do lifecycle events run in?
+
+<figure>
+  <img src="lifecycle.jpg" alt="Lifecycle diagram">
+  <figcaption>Note: aftercreate should actually say afterupdate.  Shoutout to @lrlna for the excellent diagram.</figcaption>
+</figure>
+
 ### Where does this run?
 Nanocomponent was written to work well with [choo][choo], but it also works well
 with DOM diffing engines that check `.isSamNode()` like [nanomorph][nm] and
