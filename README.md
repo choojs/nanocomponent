@@ -229,7 +229,7 @@ function shapeData (state) {
 ```
 
 ## FAQ
-### What order to lifecycle events run in?
+### What order do lifecycle events run in?
 
 <figure>
   <img src="lifecycle.jpg" alt="Lifecycle diagram">
