@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.1.0 - 2017-08-14
+
+- **Added**: [nanotiming](https://github.com/choojs/nanotiming) timings.  You can name component instances and it will emit timing information. See [nanocomponent/pull/47](https://github.com/choojs/nanocomponent/pull/47)
+
 ## 6.0.1 - 2017-08-09
 
 - **Fixed**: [[`f9f7540415`](https://github.com/choojs/nanocomponent/commit/f9f7540415)] - load & unload callbacks should be passed el (timwis)
