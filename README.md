@@ -233,7 +233,7 @@ function shapeData (state) {
 
 <figure>
   <img src="lifecycle.jpg" alt="Lifecycle diagram">
-  <figcaption>Note: aftercreate should actually say afterupdate.  Shoutout to @lrlna for the excellent diagram.</figcaption>
+  <figcaption>Note: aftercreate should actually say afterupdate.  Shoutout to <a href="https://github.com/lrlna">@lrlna</a> for the excellent diagram.</figcaption>
 </figure>
 
 ### Where does this run?
