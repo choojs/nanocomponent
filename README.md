@@ -334,6 +334,10 @@ the hood.
 Called after a mounted component updates (e.g. `update` returns true).  You can use this hook to call
 `element.scrollIntoView` or other dom methods on the mounted component.
 
+### `Nanocomponent.prototype.afterreorder(el)`
+Called after a component is re-ordered.  This method is rarely needed, but is handy when you have a component
+that is sensitive to temorary removals from the DOM, such as externally controlled iframes or embeds (e.g. embedded tweets).
+
 ## Installation
 ```sh
 $ npm install nanocomponent

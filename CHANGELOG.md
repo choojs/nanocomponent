@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.2.0 - 2017-08-18
+
+- **Added**: `afterreorder` event which is called after your component is remounted on sibbling reorders.
+
 ## 6.1.0 - 2017-08-14
 
 - **Added**: [nanotiming](https://github.com/choojs/nanotiming) timings.  You can name component instances and it will emit timing information. See [nanocomponent/pull/47](https://github.com/choojs/nanocomponent/pull/47)

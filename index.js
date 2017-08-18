@@ -55,7 +55,7 @@ Nanocomponent.prototype.render = function () {
     this._reset()
     el = this._handleRender(args)
     if (this.beforerender) this.beforerender(el)
-    if (this.load || this.unload) {
+    if (this.load || this.unload || this.afterrreorder) {
       onload(el, self._handleLoad, self._handleUnload, self)
     }
     timing()
@@ -103,7 +103,10 @@ Nanocomponent.prototype._ensureID = function (node) {
 
 Nanocomponent.prototype._handleLoad = function (el) {
   var self = this
-  if (this._loaded) return // Debounce child-reorders
+  if (this._loaded) {
+    if (this.afterreorder) window.requestAnimationFrame(function () { self.afterreorder(el) })
+    return // Debounce child-reorders
+  }
   this._loaded = true
   if (this.load) window.requestAnimationFrame(function () { self.load(el) })
 }
