@@ -70,7 +70,7 @@ app.use(function (state, emitter) {
 These are some common patterns you might encounter when writing components.
 
 ### Standalone
-Nanocomponents is part of the choo ecosystem, but works great standalone!
+Nanocomponent is part of the choo ecosystem, but works great standalone!
 
 ```js
 var Button = require('./button.js')
