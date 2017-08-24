@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+- **Added**: Use [`nanoassert`](https://github.com/emilbayes/nanoassert) in the browser.
+
 ## 6.2.0 - 2017-08-18
 
 - **Added**: `afterreorder` event which is called after your component is remounted on sibbling reorders.

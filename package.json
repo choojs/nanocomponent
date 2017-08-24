@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "run-s test:*",
-    "test:deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "test:deps": "dependency-check .",
     "test:node": "NODE_ENV=test node test/node.js | tap-format-spec",
     "test:browser": "browserify test/browser/index.js | tape-run | tap-format-spec",
     "test:lint": "standard *.js",
