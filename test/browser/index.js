@@ -20,10 +20,10 @@ test('can create a simple component', function (t) {
   var testRoot = createTestElement()
 
   // Create instance and mount
-  var comp = new SimpleComponent('Bob')
+  var comp = new SimpleComponent('yosh')
   testRoot.appendChild(comp.render('green'))
   t.ok(comp.element, 'component created and mounted in page')
-  t.equal(comp.element.querySelector('.name').innerText, 'Bob', 'instance options correctly rendered')
+  t.equal(comp.element.querySelector('.name').innerText, 'yosh', 'instance options correctly rendered')
   t.equal(comp.element.querySelector('.color').innerText, 'green', 'arguments correctly rendered')
   t.equal(comp.element.dataset.proxy, undefined, 'not a proxy element')
 
@@ -39,6 +39,13 @@ test('can create a simple component', function (t) {
   comp.render('red')
   t.ok(comp.element, 'component is still mounted in page')
   t.equal(comp.element.querySelector('.color').innerText, 'red', 'arguments correctly rendered')
+  t.equal(comp.element.dataset.proxy, undefined, 'mounted node isn\'t a proxy')
+
+  comp.name = 'lrlna' // Update internal state
+  comp.rerender()
+  t.ok(comp.element, 'component is still mounted in page')
+  t.equal(comp.element.querySelector('.name').innerText, 'lrlna', 'instance options correctly rerendered')
+  t.equal(comp.element.querySelector('.color').innerText, 'red', 'internal state reflected in rerender')
   t.equal(comp.element.dataset.proxy, undefined, 'mounted node isn\'t a proxy')
 
   t.end()

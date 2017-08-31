@@ -24,5 +24,6 @@ SimpleComponent.prototype.createElement = function (color) {
 
 SimpleComponent.prototype.update = function (color) {
   if (this.color !== color) return true
+  if (this.element.querySelector('.name').value !== this.name) return true
   return false
 }
