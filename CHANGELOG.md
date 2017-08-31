@@ -2,9 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 6.4.0 - 2017-08-31
 
 - **Added**: `.rerender()` method to allow re-rendering with the last rendered arguments if internal state changes.
+- Updated docs for `rerender`.
+- Add a few more pitfall pointers in the lifecycle API docs around rerendering in `beforerender`.
 
 ## 6.3.0 - 2017-08-24
 

@@ -300,6 +300,9 @@ prototype. Takes an optional name which is used when emitting timings.
 Render the component. Returns a proxy node if already mounted on the DOM. Proxy
 nodes make it so DOM diffing algorithms leave the element alone when diffing.
 
+### `component.rerender()`
+Re-run `.render` using the last `arguments` that were passed to the `render` call.  Useful for triggering component renders if internal state has change.  Arguments are automatically cached under `this._arguments` (🖐 hands off, buster! 🖐).
+
 ### `component.element`
 A [getter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get)
 property that returns the component's DOM node if its mounted in the page and
@@ -320,7 +323,7 @@ the DOM tree.  Arguments passed to `render` are passed to `update`.
 ### `Nanocomponent.prototype.beforerender(el)`
 A function called right after `createElement` returns with `el`, but before the fully rendered
 element is returned to the `render` caller. Run any first render hooks here. The `load` and
-`unload` hooks are added at this stage.
+`unload` hooks are added at this stage.  Do not attempt to `rerender` in `beforerender` as the component may not be in the DOM yet.
 
 ### `Nanocomponent.prototype.load(el)`
 Called when the component is mounted on the DOM. Uses [on-load][onload] under
