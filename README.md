@@ -238,7 +238,7 @@ function shapeData (state) {
 
 ### Where does this run?
 Nanocomponent was written to work well with [choo][choo], but it also works well
-with DOM diffing engines that check `.isSamNode()` like [nanomorph][nm] and
+with DOM diffing engines that check `.isSameNode()` like [nanomorph][nm] and
 [morphdom][md].  It is designed and documented in isolation however, so it also
 works well on it's own if you are careful.  You can even embed it in other SPA
 frameworks like React or Preact with the use of [nanocomponent-adapters][nca] which
