@@ -18,9 +18,12 @@ function Nanocomponent (name) {
   this._loaded = false // Used to debounce on-load when child-reordering
   this._rootNodeName = null
   this._name = name || 'nanocomponent'
+  this._rerender = false
 
   this._handleLoad = this._handleLoad.bind(this)
   this._handleUnload = this._handleUnload.bind(this)
+
+  this._arguments = []
 
   var self = this
 
@@ -43,7 +46,8 @@ Nanocomponent.prototype.render = function () {
     timing()
     return el
   } else if (this.element) {
-    var shouldUpdate = this.update.apply(this, args)
+    var shouldUpdate = this._rerender || this.update.apply(this, args)
+    if (this._rerender) this._render = false
     if (shouldUpdate) {
       morph(this.element, this._handleRender(args))
       if (this.afterupdate) this.afterupdate(this.element)
@@ -63,11 +67,18 @@ Nanocomponent.prototype.render = function () {
   }
 }
 
+Nanocomponent.prototype.rerender = function () {
+  assert(this.element, 'nanocomponent: cant rerender on an unmounted dom node')
+  this._rerender = true
+  this.render.apply(this, this._arguments)
+}
+
 Nanocomponent.prototype._handleRender = function (args) {
   var el = this.createElement.apply(this, args)
   if (!this._rootNodeName) this._rootNodeName = el.nodeName
   assert(el instanceof window.HTMLElement, 'nanocomponent: createElement should return a DOM node')
   assert.equal(this._rootNodeName, el.nodeName, 'nanocomponent: root node types cannot differ between re-renders')
+  this._arguments = args
   return this._brandNode(this._ensureID(el))
 }
 

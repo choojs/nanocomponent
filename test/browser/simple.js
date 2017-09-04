@@ -23,6 +23,5 @@ SimpleComponent.prototype.createElement = function (color) {
 }
 
 SimpleComponent.prototype.update = function (color) {
-  if (this.color !== color) return true
-  return false
+  return this.color !== color
 }
