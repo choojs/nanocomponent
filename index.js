@@ -59,7 +59,7 @@ Nanocomponent.prototype.render = function () {
     this._reset()
     el = this._handleRender(args)
     if (this.beforerender) this.beforerender(el)
-    if (this.load || this.unload || this.afterrreorder) {
+    if (this.load || this.unload || this.afterreorder) {
       onload(el, self._handleLoad, self._handleUnload, self)
     }
     timing()
