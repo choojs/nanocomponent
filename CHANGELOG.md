@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.4.1 - 2017-09-11
+- Fixed `afterreorder` hook typo.
+- Update `on-load` to handle `<head>` loading.
+- Assert `on-load` hooks to run only when `document.body` is available.
+
 ## 6.4.0 - 2017-09-04
 
 - **Added**: `.rerender()` method to allow re-rendering with the last rendered arguments if internal state changes.

@@ -60,6 +60,7 @@ Nanocomponent.prototype.render = function () {
     el = this._handleRender(args)
     if (this.beforerender) this.beforerender(el)
     if (this.load || this.unload || this.afterreorder) {
+      assert(document.body, 'nanocomponent: on-load will not work before DOMContentLoaded')
       onload(el, self._handleLoad, self._handleUnload, self)
     }
     timing()
