@@ -4,8 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 6.4.1 - 2017-09-11
 - Fixed `afterreorder` hook typo.
-- Update `on-load` to handle `<head>` loading.
-- Assert `on-load` hooks to run only when `document.body` is available.
+- Update `on-load` to handle `<head>` loading and for addded assertions.
 
 ## 6.4.0 - 2017-09-04
 
