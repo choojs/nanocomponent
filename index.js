@@ -115,7 +115,7 @@ Nanocomponent.prototype._ensureID = function (node) {
 Nanocomponent.prototype._handleLoad = function (el) {
   var self = this
   if (this._loaded) {
-    if (this.afterreorder) window.requestAnimationFrame(function () { self.afterreorder(el) })
+    if (this.afterreorder) self.afterreorder(el)
     return // Debounce child-reorders
   }
   this._loaded = true
