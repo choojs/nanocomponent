@@ -2,6 +2,8 @@ var document = require('global/document')
 var nanotiming = require('nanotiming')
 var morph = require('nanomorph')
 var onload = require('on-load')
+var OL_KEY_ID = onload.KEY_ID
+var OL_ATTR_ID = onload.KEY_ATTR
 var assert = require('assert')
 
 module.exports = Nanocomponent
@@ -14,6 +16,7 @@ function Nanocomponent (name) {
   this._hasWindow = typeof window !== 'undefined'
   this._id = null // represents the id of the root node
   this._ncID = null // internal nanocomponent id
+  this._olID = null
   this._proxy = null
   this._loaded = false // Used to debounce on-load when child-reordering
   this._rootNodeName = null
@@ -50,11 +53,7 @@ Nanocomponent.prototype.render = function () {
     var shouldUpdate = this._rerender || this.update.apply(this, args)
     if (this._rerender) this._render = false
     if (shouldUpdate) {
-      var newTree = this._handleRender(args)
-      Object.entries(el.dataset).forEach(entry => {
-        newTree.dataset[entry[0]] = entry[1]
-      })
-      morph(el, newTree)
+      morph(el, this._handleRender(args))
       if (this.afterupdate) this.afterupdate(el)
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
@@ -66,6 +65,7 @@ Nanocomponent.prototype.render = function () {
     if (this.beforerender) this.beforerender(el)
     if (this.load || this.unload || this.afterreorder) {
       onload(el, self._handleLoad, self._handleUnload, self._ncID)
+      this._olID = el.dataset[OL_KEY_ID]
     }
     timing()
     return el
@@ -101,6 +101,7 @@ Nanocomponent.prototype._createProxy = function () {
 
 Nanocomponent.prototype._reset = function () {
   this._ncID = makeID()
+  this._olID = null
   this._id = null
   this._proxy = null
   this._rootNodeName = null
@@ -108,6 +109,7 @@ Nanocomponent.prototype._reset = function () {
 
 Nanocomponent.prototype._brandNode = function (node) {
   node.setAttribute('data-nanocomponent', this._ncID)
+  if (this._olID) node.setAttribute(OL_ATTR_ID, this._olID)
   return node
 }
 
