@@ -46,11 +46,12 @@ Nanocomponent.prototype.render = function () {
     timing()
     return el
   } else if (this.element) {
+    el = this.element  // retain reference, as the ID might change on render
     var shouldUpdate = this._rerender || this.update.apply(this, args)
     if (this._rerender) this._render = false
     if (shouldUpdate) {
-      morph(this.element, this._handleRender(args))
-      if (this.afterupdate) this.afterupdate(this.element)
+      morph(el, this._handleRender(args))
+      if (this.afterupdate) this.afterupdate(el)
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
     timing()
@@ -60,7 +61,7 @@ Nanocomponent.prototype.render = function () {
     el = this._handleRender(args)
     if (this.beforerender) this.beforerender(el)
     if (this.load || this.unload || this.afterreorder) {
-      onload(el, self._handleLoad, self._handleUnload, self)
+      onload(el, self._handleLoad, self._handleUnload, self._ncID)
     }
     timing()
     return el
@@ -109,24 +110,24 @@ Nanocomponent.prototype._brandNode = function (node) {
 Nanocomponent.prototype._ensureID = function (node) {
   if (node.id) this._id = node.id
   else node.id = this._id = this._ncID
+  // Update proxy node ID if it changed
+  if (this._proxy && this._proxy.id !== this._id) this._proxy.id = this._id
   return node
 }
 
 Nanocomponent.prototype._handleLoad = function (el) {
-  var self = this
   if (this._loaded) {
-    if (this.afterreorder) self.afterreorder(el)
+    if (this.afterreorder) this.afterreorder(el)
     return // Debounce child-reorders
   }
   this._loaded = true
-  if (this.load) self.load(el)
+  if (this.load) this.load(el)
 }
 
 Nanocomponent.prototype._handleUnload = function (el) {
-  var self = this
   if (this.element) return // Debounce child-reorders
   this._loaded = false
-  if (this.unload) self.unload(el)
+  if (this.unload) this.unload(el)
 }
 
 Nanocomponent.prototype.createElement = function () {
