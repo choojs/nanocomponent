@@ -119,14 +119,14 @@ Nanocomponent.prototype._handleLoad = function (el) {
     return // Debounce child-reorders
   }
   this._loaded = true
-  if (this.load) window.requestAnimationFrame(function () { self.load(el) })
+  if (this.load) self.load(el)
 }
 
 Nanocomponent.prototype._handleUnload = function (el) {
   var self = this
   if (this.element) return // Debounce child-reorders
   this._loaded = false
-  if (this.unload) window.requestAnimationFrame(function () { self.unload(el) })
+  if (this.unload) self.unload(el)
 }
 
 Nanocomponent.prototype.createElement = function () {
