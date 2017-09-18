@@ -50,7 +50,11 @@ Nanocomponent.prototype.render = function () {
     var shouldUpdate = this._rerender || this.update.apply(this, args)
     if (this._rerender) this._render = false
     if (shouldUpdate) {
-      morph(el, this._handleRender(args))
+      var newTree = this._handleRender(args)
+      Object.entries(el.dataset).forEach(entry => {
+        newTree.dataset[entry[0]] = entry[1]
+      })
+      morph(el, newTree)
       if (this.afterupdate) this.afterupdate(el)
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
