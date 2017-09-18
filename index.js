@@ -2,6 +2,8 @@ var document = require('global/document')
 var nanotiming = require('nanotiming')
 var morph = require('nanomorph')
 var onload = require('on-load')
+var OL_KEY_ID = onload.KEY_ID
+var OL_ATTR_ID = onload.KEY_ATTR
 var assert = require('assert')
 
 module.exports = Nanocomponent
@@ -14,6 +16,7 @@ function Nanocomponent (name) {
   this._hasWindow = typeof window !== 'undefined'
   this._id = null // represents the id of the root node
   this._ncID = null // internal nanocomponent id
+  this._olID = null
   this._proxy = null
   this._loaded = false // Used to debounce on-load when child-reordering
   this._rootNodeName = null
@@ -46,11 +49,12 @@ Nanocomponent.prototype.render = function () {
     timing()
     return el
   } else if (this.element) {
+    el = this.element  // retain reference, as the ID might change on render
     var shouldUpdate = this._rerender || this.update.apply(this, args)
     if (this._rerender) this._render = false
     if (shouldUpdate) {
-      morph(this.element, this._handleRender(args))
-      if (this.afterupdate) this.afterupdate(this.element)
+      morph(el, this._handleRender(args))
+      if (this.afterupdate) this.afterupdate(el)
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
     timing()
@@ -60,7 +64,8 @@ Nanocomponent.prototype.render = function () {
     el = this._handleRender(args)
     if (this.beforerender) this.beforerender(el)
     if (this.load || this.unload || this.afterreorder) {
-      onload(el, self._handleLoad, self._handleUnload, self)
+      onload(el, self._handleLoad, self._handleUnload, self._ncID)
+      this._olID = el.dataset[OL_KEY_ID]
     }
     timing()
     return el
@@ -96,6 +101,7 @@ Nanocomponent.prototype._createProxy = function () {
 
 Nanocomponent.prototype._reset = function () {
   this._ncID = makeID()
+  this._olID = null
   this._id = null
   this._proxy = null
   this._rootNodeName = null
@@ -103,30 +109,31 @@ Nanocomponent.prototype._reset = function () {
 
 Nanocomponent.prototype._brandNode = function (node) {
   node.setAttribute('data-nanocomponent', this._ncID)
+  if (this._olID) node.setAttribute(OL_ATTR_ID, this._olID)
   return node
 }
 
 Nanocomponent.prototype._ensureID = function (node) {
   if (node.id) this._id = node.id
   else node.id = this._id = this._ncID
+  // Update proxy node ID if it changed
+  if (this._proxy && this._proxy.id !== this._id) this._proxy.id = this._id
   return node
 }
 
 Nanocomponent.prototype._handleLoad = function (el) {
-  var self = this
   if (this._loaded) {
-    if (this.afterreorder) window.requestAnimationFrame(function () { self.afterreorder(el) })
+    if (this.afterreorder) this.afterreorder(el)
     return // Debounce child-reorders
   }
   this._loaded = true
-  if (this.load) window.requestAnimationFrame(function () { self.load(el) })
+  if (this.load) this.load(el)
 }
 
 Nanocomponent.prototype._handleUnload = function (el) {
-  var self = this
   if (this.element) return // Debounce child-reorders
   this._loaded = false
-  if (this.unload) window.requestAnimationFrame(function () { self.unload(el) })
+  if (this.unload) this.unload(el)
 }
 
 Nanocomponent.prototype.createElement = function () {

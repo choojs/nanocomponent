@@ -128,8 +128,8 @@ test('lifecycle tests', function (t) {
   }
 
   var comp = new LifeCycleComp()
-  comp.bus.on('load', onLoad)
-  comp.bus.on('unload', onUnload)
+  comp.bus.on('load', () => window.requestAnimationFrame(onLoad))
+  comp.bus.on('unload', () => window.requestAnimationFrame(onUnload))
 
   t.deepEqual(comp.testState, {
     'create-element': 0,
