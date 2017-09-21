@@ -51,7 +51,7 @@ Nanocomponent.prototype.render = function () {
   } else if (this.element) {
     el = this.element  // retain reference, as the ID might change on render
     var shouldUpdate = this._rerender || this.update.apply(this, args)
-    if (this._rerender) this._render = false
+    if (this._rerender) this._rerender = false
     if (shouldUpdate) {
       morph(el, this._handleRender(args))
       if (this.afterupdate) this.afterupdate(el)
