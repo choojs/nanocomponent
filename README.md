@@ -367,9 +367,9 @@ in the `beforerender` hook.
 
 ## Examples
 
-- [Bloomberg: What’s Inside All the iPhones][https://www.bloomberg.com/features/apple-iphone-guts/] (👏 @jongacnik 👏)
-- [twitter-component][https://github.com/bcomnes/twitter-component]
-- [youtube-component][https://github.com/bcomnes/youtube-component]
+- [Bloomberg: What’s Inside All the iPhones](https://www.bloomberg.com/features/apple-iphone-guts/) (👏 @jongacnik 👏)
+- [twitter-component](https://github.com/bcomnes/twitter-component)
+- [youtube-component](https://github.com/bcomnes/youtube-component)
 
 ## Similar Packages
 - [shama/base-element](https://github.com/shama/base-element)
