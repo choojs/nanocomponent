@@ -367,7 +367,7 @@ in the `beforerender` hook.
 
 ## Examples
 
-- [Bloomberg: What’s Inside All the iPhones](https://www.bloomberg.com/features/apple-iphone-guts/) (👏 @jongacnik 👏)
+- [Bloomberg: What’s Inside All the iPhones](https://www.bloomberg.com/features/apple-iphone-guts/) (👏 [@jongacnik](https://github.com/jongacnik) 👏)
 - [twitter-component](https://github.com/bcomnes/twitter-component)
 - [youtube-component](https://github.com/bcomnes/youtube-component)
 
