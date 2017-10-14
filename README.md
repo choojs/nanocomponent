@@ -346,12 +346,6 @@ that is sensitive to temorary removals from the DOM, such as externally controll
 $ npm install nanocomponent
 ```
 
-## See Also
-- [choojs/choo][choo]
-- [choojs/nanocomponent-adapters][nca]
-- [shama/bel](https://github.com/shama/bel)
-- [shama/on-load](https://github.com/shama/on-load)
-
 ## Optional lifecycle events
 
 You can add even more lifecycle events to your components by attatching the following modules
@@ -366,6 +360,10 @@ in the `beforerender` hook.
 
 - [component-box][cb] - Dynamic component instance caching
 - [nanomap][nanomap] - Functional mapping into keyed component instances
+- [choojs/choo][choo]
+- [choojs/nanocomponent-adapters][nca]
+- [shama/bel](https://github.com/shama/bel)
+- [shama/on-load](https://github.com/shama/on-load)
 
 ## Examples
 
