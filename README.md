@@ -12,7 +12,7 @@ Native DOM components that pair nicely with DOM diffing algorithms.
 - Only uses native DOM methods
 - Class based components offering a familiar component structure
 - Works well with [bel][bel] and [yoyoify][yoyoify]
-- Combines the best of `nanocomponent@5` and [`cache-component@5`](https://github.com/hypermodules/cache-component).
+- Combines the best of `nanocomponent@5` and [`cache-component@5`][cc].
 
 ## Usage
 ```js
@@ -298,7 +298,7 @@ prototype. Takes an optional name which is used when emitting timings.
 
 ### `component.render([arguments…])`
 Render the component. Returns a proxy node if already mounted on the DOM. Proxy
-nodes make it so DOM diffing algorithms leave the element alone when diffing.  Call this when `arguments` have changed.  
+nodes make it so DOM diffing algorithms leave the element alone when diffing.  Call this when `arguments` have changed.
 
 ### `component.rerender()`
 Re-run `.render` using the last `arguments` that were passed to the `render` call.  Useful for triggering component renders if internal state has changed.  Arguments are automatically cached under `this._arguments` (🖐 hands off, buster! 🖐).  The `update` method is bypassed on re-render.
@@ -362,10 +362,22 @@ in the `beforerender` hook.
 - [yoshuawuyts/on-intersect](https://github.com/yoshuawuyts/on-intersect)
 - [yoshuawuyts/on-idle](https://github.com/yoshuawuyts/on-idle)
 
+## See also
+
+- [component-box][cb] - Dynamic component instance caching
+- [nanomap][nanomap] - Functional mapping into keyed component instances
+
+## Examples
+
+- [Bloomberg: What’s Inside All the iPhones][https://www.bloomberg.com/features/apple-iphone-guts/] (👏 @jongacnik 👏)
+- [twitter-component][https://github.com/bcomnes/twitter-component]
+- [youtube-component][https://github.com/bcomnes/youtube-component]
+
 ## Similar Packages
 - [shama/base-element](https://github.com/shama/base-element)
 - [yoshuawuyts/cache-element](https://github.com/yoshuawuyts/cache-element)
 - [yoshuawuyts/microcomponent](https://github.com/yoshuawuyts/microcomponent)
+- [hypermodules/cache-component](https://github.com/hypermodules/cache-component)
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
@@ -391,3 +403,6 @@ in the `beforerender` hook.
 [onload]: https://github.com/shama/on-load
 [choo]: https://github.com/choojs/choo
 [nca]: https://github.com/choojs/nanocomponent-adapters
+[cc]: https://github.com/hypermodules/cache-component
+[nanomap]: https://github.com/bcomnes/nanomap
+[cb]: https://github.com/jongacnik/component-box
