@@ -97,7 +97,7 @@ var Nanocomponent = require('nanocomponent')
 var html = require('bel')
 
 function Component () {
-  if (!(this instanceof Button)) return new Component()
+  if (!(this instanceof Component)) return new Component()
   Nanocomponent.call(this)
 
   // Bind the method so it can be passed around
@@ -160,7 +160,7 @@ var Nanocomponent = require('nanocomponent')
 var html = require('bel')
 
 function Component () {
-  if (!(this instanceof Button)) return new Component()
+  if (!(this instanceof Component)) return new Component()
   Nanocomponent.call(this)
   this.text = ''
 }
@@ -195,7 +195,7 @@ var html = require('bel')
 var Button = require('./button.js')
 
 function Component () {
-  if (!(this instanceof Button)) return new Component()
+  if (!(this instanceof Component)) return new Component()
   Nanocomponent.call(this)
   this.button1 = new Button ()
   this.button2 = new Button ()
