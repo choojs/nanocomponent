@@ -312,7 +312,7 @@ property that returns the component's DOM node if its mounted in the page and
 __Must be implemented.__ Component specific render function.  Optionally cache
 argument values here.  Run anything here that needs to run along side node
 rendering.  Must return a DOMNode. Use `beforerender` to run code after
-`createElement` when the component is unmounted.  Previously named `_render`.  Arguments that passed to `render` are passed to `createElement`.  Elements returned from `createElement` must always return the same root node type.
+`createElement` when the component is unmounted.  Previously named `_render`.  Arguments passed to `render` are passed to `createElement`.  Elements returned from `createElement` must always return the same root node type.
 
 ### `Boolean = Nanocomponent.prototype.update([arguments…])`
 __Must be implemented.__ Return a boolean to determine if
