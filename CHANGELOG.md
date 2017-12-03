@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.4.4 - 2017-12-02
+- Pin `on-load` to v3.3.3 to fix unbundled electron import.
+
 ## 6.4.3 - 2017-12-02
 - Pin `on-load` to 3.3.2 to fix unbundled electron import.
 
