@@ -88,7 +88,7 @@ Nanocomponent.prototype._handleRender = function (args) {
 }
 
 Nanocomponent.prototype._createProxy = function () {
-  var proxy = document.createElement('div')
+  var proxy = document.createElement(this._rootNodeName)
   var self = this
   this._brandNode(proxy)
   proxy.id = this._id

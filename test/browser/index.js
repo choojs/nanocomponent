@@ -31,6 +31,7 @@ test('can create a simple component', function (t) {
   var proxy = comp.render('red')
   t.ok(proxy.dataset.proxy != null, 'proxy is returned on mounted component')
   t.equal(proxy.dataset.nanocomponent, comp._ncID, 'proxy is tagged with the correct ncID')
+  t.equal(proxy.nodeName, comp.element.nodeName, 'proxy is of same type')
   t.ok(proxy.isSameNode(comp.element), 'isSameNode works')
   t.ok(comp.element, 'component is still mounted in page')
   t.equal(comp.element.querySelector('.color').innerText, 'red', 'arguments correctly rendered')
