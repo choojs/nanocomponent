@@ -1,5 +1,6 @@
 var test = require('tape')
 var SimpleComponent = require('./simple')
+var BlogSection = require('./blog-section')
 var Nanocomponent = require('../../')
 var html = require('bel')
 var compare = require('../../compare')
@@ -48,6 +49,20 @@ test('can create a simple component', function (t) {
   t.equal(comp.element.querySelector('.name').innerText, 'lrlna', 'instance options correctly rerendered')
   t.equal(comp.element.querySelector('.color').innerText, 'red', 'internal state reflected in rerender')
   t.equal(comp.element.dataset.proxy, undefined, 'mounted node isn\'t a proxy')
+
+  t.end()
+})
+
+test('proxy node types match the root node returned from createElement', function (t) {
+  var testRoot = createTestElement()
+  var comp = new BlogSection()
+  testRoot.appendChild(comp.render(['hey', 'hi', 'howdy']))
+  t.ok(comp.element, 'component created and mounted in page')
+  t.equal(comp.element.nodeName, 'SECTION', 'correctly rendered')
+  t.equal(comp.element.dataset.proxy, undefined, 'not a proxy element')
+
+  var proxy = comp.render(['by', 'bye', 'cya'])
+  t.equal(proxy.nodeName, comp.element.nodeName, 'proxy is of same type as the root node of createElement')
 
   t.end()
 })

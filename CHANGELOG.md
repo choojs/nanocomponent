@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.4.6 - 2017-12-05
+- Proxy elements are created matching the root node returned from the `createElement` method. (🙏@tornqvist🙏)
+
 ## 6.4.5 - 2017-12-03
 - Pin `on-load` to v3.3.4 to fix node import.
 
