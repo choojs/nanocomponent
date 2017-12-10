@@ -39,25 +39,32 @@ function Nanocomponent (name) {
 }
 
 Nanocomponent.prototype.render = function () {
-  var timing = nanotiming(this._name + '.render')
+  var renderTiming = nanotiming(this._name + '.render')
   var self = this
   var args = new Array(arguments.length)
   var el
   for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
   if (!this._hasWindow) {
+    var createTiming = nanotiming(this._name + '.create')
     el = this.createElement.apply(this, args)
-    timing()
+    createTiming()
+    renderTiming()
     return el
   } else if (this.element) {
     el = this.element  // retain reference, as the ID might change on render
+    var updateTiming = nanotiming(this._name + '.update')
     var shouldUpdate = this._rerender || this.update.apply(this, args)
+    updateTiming()
     if (this._rerender) this._rerender = false
     if (shouldUpdate) {
-      morph(el, this._handleRender(args))
+      var desiredHtml = this._handleRender(args)
+      var morphTiming = nanotiming(this._name + '.morph')
+      morph(el, desiredHtml)
+      morphTiming()
       if (this.afterupdate) this.afterupdate(el)
     }
     if (!this._proxy) { this._proxy = this._createProxy() }
-    timing()
+    renderTiming()
     return this._proxy
   } else {
     this._reset()
@@ -67,7 +74,7 @@ Nanocomponent.prototype.render = function () {
       onload(el, self._handleLoad, self._handleUnload, self._ncID)
       this._olID = el.dataset[OL_KEY_ID]
     }
-    timing()
+    renderTiming()
     return el
   }
 }
@@ -79,7 +86,9 @@ Nanocomponent.prototype.rerender = function () {
 }
 
 Nanocomponent.prototype._handleRender = function (args) {
+  var createElementTiming = nanotiming(this._name + '.createElement')
   var el = this.createElement.apply(this, args)
+  createElementTiming()
   if (!this._rootNodeName) this._rootNodeName = el.nodeName
   assert(el instanceof window.HTMLElement, 'nanocomponent: createElement should return a DOM node')
   assert.equal(this._rootNodeName, el.nodeName, 'nanocomponent: root node types cannot differ between re-renders')
