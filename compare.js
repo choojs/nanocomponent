@@ -1,6 +1,6 @@
 module.exports = compare
 
-// included for compatability reasons only
+// included for compatibility reasons only
 // implements a simple shallow compare for simple values in arrays
 
 function compare (array1, array2) {
