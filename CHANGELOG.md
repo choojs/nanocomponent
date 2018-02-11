@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+- Update nanotiming@7.2.0
+- Update devdeps: tap-run, dependency-check, browserify, bankai
+
 ## 6.4.6 - 2017-12-05
 - Proxy elements are created matching the root node returned from the `createElement` method. (🙏@tornqvist🙏)
 
