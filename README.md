@@ -406,6 +406,7 @@ in the `beforerender` hook.
 - [yoshuawuyts/cache-element](https://github.com/yoshuawuyts/cache-element)
 - [yoshuawuyts/microcomponent](https://github.com/yoshuawuyts/microcomponent)
 - [hypermodules/cache-component](https://github.com/hypermodules/cache-component)
+- [rafaelrinaldi/data-components](https://github.com/rafaelrinaldi/data-components)
 
 ## License
 
