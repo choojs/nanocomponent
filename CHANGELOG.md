@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 7.0.0-beta1 - 2018-03-02
+- Update nanomorph@6.0.0-beta1.
+- Store a real dom-node reference to the proxy node for nanomorph to use.
+- This should fix leaky proxy nodes and improve failure modes.
+
 ## 6.5.1 - 2018-02-11
 - Update nanotiming@7.2.0
 - Update devdeps: tap-run, dependency-check, browserify, bankai
