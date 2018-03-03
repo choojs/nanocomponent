@@ -13,7 +13,8 @@
     "test:browser": "browserify test/browser/index.js | tape-run | tap-format-spec",
     "test:proxy": "browserify test/browser/proxy-leak.js | tape-run | tap-format-spec",
     "test:lint": "standard *.js",
-    "start": "bankai start example"
+    "start": "bankai start example",
+    "br": "budo test/browser/index.js --live --open"
   },
   "repository": {
     "type": "git",
@@ -52,6 +53,7 @@
     "bankai": "^9.5.1",
     "bel": "^5.1.1",
     "browserify": "^16.0.0",
+    "budo": "^11.1.7",
     "choo": "^6.0.1",
     "choo-log": "^8.0.0",
     "dependency-check": "^3.0.0",

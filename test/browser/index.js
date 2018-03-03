@@ -5,6 +5,7 @@ var Nanocomponent = require('../../')
 var html = require('bel')
 var compare = require('../../compare')
 var nanobus = require('nanobus')
+var LifeCycleComp = require('./life-cycle-comp')
 
 function makeID () {
   return 'testid-' + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
@@ -99,49 +100,6 @@ test('missing update', function (t) {
 
 test('lifecycle tests', function (t) {
   var testRoot = createTestElement()
-  class LifeCycleComp extends Nanocomponent {
-    constructor () {
-      super()
-      this.bus = nanobus()
-      this.testState = {
-        'create-element': 0,
-        update: 0,
-        beforerender: 0,
-        afterupdate: 0,
-        load: 0,
-        unload: 0
-      }
-    }
-    createElement (text) {
-      this.arguments = arguments
-      this.testState['create-element']++
-      return html`<div>${text}</div>`
-    }
-
-    update (text) {
-      var shouldUpdate = compare(this.arguments, arguments)
-      this.testState.update++
-      return shouldUpdate
-    }
-
-    beforerender () {
-      this.testState.beforerender++
-    }
-
-    afterupdate () {
-      this.testState.afterupdate++
-    }
-
-    load () {
-      this.testState.load++
-      this.bus.emit('load')
-    }
-
-    unload () {
-      this.testState.unload++
-      this.bus.emit('unload')
-    }
-  }
 
   var comp = new LifeCycleComp()
   comp.bus.on('load', () => window.requestAnimationFrame(onLoad))
@@ -205,5 +163,33 @@ test('lifecycle tests', function (t) {
   function onUnload () {
     t.equal(comp.element, undefined, 'component unmounted')
     t.end()
+  }
+})
+
+test('multi-render before mounting onload failure mode', function (t) {
+  var testRoot = createTestElement()
+  debugger
+  var comp = new LifeCycleComp()
+  var node1 = comp.render('node1')
+  var node2 = comp.render('node2')
+  var node3 = comp.render('node3')
+
+  testRoot.appendChild(node1)
+  testRoot.appendChild(node1)
+  testRoot.appendChild(node1)
+
+  comp.bus.on('load', () => window.requestAnimationFrame(onLoad))
+  comp.bus.on('unload', () => window.requestAnimationFrame(onUnload))
+
+  function onLoad () {
+    debugger
+    var node5 = comp.render('node5')
+    testRoot.removeChild(comp.element)
+  }
+
+  function onUnload () {
+    debugger
+    var node6 = comp.render('node6')
+    t.equal(comp.element, undefined, 'component unmounted')
   }
 })
