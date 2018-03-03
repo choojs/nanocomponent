@@ -105,6 +105,7 @@ Nanocomponent.prototype._createProxy = function () {
   proxy.isSameNode = function (el) {
     return (el && el.dataset.nanocomponent === self._ncID)
   }
+  proxy.realNode = this.element
   return proxy
 }
 

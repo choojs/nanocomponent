@@ -11,6 +11,7 @@
     "test:deps": "dependency-check .",
     "test:node": "NODE_ENV=test node test/node.js | tap-format-spec",
     "test:browser": "browserify test/browser/index.js | tape-run | tap-format-spec",
+    "test:proxy": "browserify test/browser/proxy-leak.js | tape-run | tap-format-spec",
     "test:lint": "standard *.js",
     "start": "bankai start example"
   },
@@ -42,7 +43,7 @@
   "dependencies": {
     "global": "^4.3.1",
     "nanoassert": "^1.1.0",
-    "nanomorph": "^5.1.2",
+    "nanomorph": "^6.0.0-beta1",
     "nanotiming": "^7.2.0",
     "on-load": "^3.3.4"
   },
