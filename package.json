@@ -1,6 +1,6 @@
 {
   "name": "nanocomponent",
-  "version": "7.0.0-beta1",
+  "version": "7.0.0-beta2",
   "description": "Native DOM components that pair nicely with DOM diffing algorithms",
   "main": "index.js",
   "browser": {
