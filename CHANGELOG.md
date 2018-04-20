@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.5.2 - 2018-04-20
+- Allow SVGs as the root node (https://github.com/choojs/nanocomponent/pull/79)
+- Update deps
+
 ## 6.5.1 - 2018-02-11
 - Update nanotiming@7.2.0
 - Update devdeps: tap-run, dependency-check, browserify, bankai
@@ -133,6 +137,6 @@ class Meta extends Component {
 
 [ol]: https://github.com/shama/on-load
 [cc]: https://github.com/hypermodules/cache-component
-[bel]: http://ghub.io/bel
+[nanohtml]: http://ghub.io/nanohtml
 [nm]: http://ghub.io/nanomorph
 [getter]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get

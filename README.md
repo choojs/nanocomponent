@@ -13,7 +13,7 @@ Native DOM components that pair nicely with DOM diffing algorithms.
 - Implemented in only a few lines
 - Only uses native DOM methods
 - Class based components offering a familiar component structure
-- Works well with [bel][bel] and [yoyoify][yoyoify]
+- Works well with [nanohtml][nanohtml] and [yoyoify][yoyoify]
 - Combines the best of `nanocomponent@5` and [`cache-component@5`][cc].
 
 ## Usage
@@ -21,7 +21,7 @@ Native DOM components that pair nicely with DOM diffing algorithms.
 ```js
 // button.js
 var Nanocomponent = require('nanocomponent')
-var html = require('bel')
+var html = require('nanohtml')
 
 class Button extends Nanocomponent {
   constructor () {
@@ -50,7 +50,7 @@ module.exports = Button
 ```js
 // index.js
 var choo = require('choo')
-var html = require('bel')
+var html = require('nanohtml')
 
 var Button = require('./button.js')
 var button = new Button()
@@ -102,7 +102,7 @@ This can be done by binding the method that's going to be passed around:
 
 ```js
 var Nanocomponent = require('nanocomponent')
-var html = require('bel')
+var html = require('nanohtml')
 
 class Component extends Nanocomponent {
   constructor () {
@@ -134,7 +134,7 @@ Nanocomponent can be written using prototypal inheritance too:
 
 ```js
 var Nanocomponent = require('nanocomponent')
-var html = require('bel')
+var html = require('nanohtml')
 
 function Component () {
   if (!(this instanceof Component)) return new Component()
@@ -166,7 +166,7 @@ themselves.
 
 ```js
 var Nanocomponent = require('nanocomponent')
-var html = require('bel')
+var html = require('nanohtml')
 
 class Component extends Nanocomponent {
   constructor () {
@@ -201,7 +201,7 @@ components.
 
 ```js
 var Nanocomponent = require('nanocomponent')
-var html = require('bel')
+var html = require('nanohtml')
 var Button = require('./button.js')
 
 class Component extends Nanocomponent {
@@ -266,7 +266,7 @@ using them. Hence the proxy pattern, and the recently added support for it in
 certain diffing engines:
 
 ```js
-var html = require('bel')
+var html = require('nanohtml')
 
 var el1 = html`<div>pink is the best</div>`
 var el2 = html`<div>blue is the best</div>`
@@ -391,7 +391,7 @@ in the `beforerender` hook.
 - [nanomap][nanomap] - Functional mapping into keyed component instances
 - [choojs/choo][choo]
 - [choojs/nanocomponent-adapters][nca]
-- [shama/bel](https://github.com/shama/bel)
+- [choojs/nanohtml](https://github.com/choojs/nanohtml)
 - [shama/on-load](https://github.com/shama/on-load)
 
 ## Examples
@@ -422,7 +422,7 @@ in the `beforerender` hook.
 [9]: https://npmjs.org/package/nanocomponent
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [11]: https://github.com/feross/standard
-[bel]: https://github.com/shama/bel
+[nanohtml]: https://github.com/choojs/nanohtml
 [yoyoify]: https://github.com/shama/yo-yoify
 [md]: https://github.com/patrick-steele-idem/morphdom
 [210]: https://github.com/patrick-steele-idem/morphdom/pull/81

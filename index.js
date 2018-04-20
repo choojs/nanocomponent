@@ -51,7 +51,7 @@ Nanocomponent.prototype.render = function () {
     renderTiming()
     return el
   } else if (this.element) {
-    el = this.element  // retain reference, as the ID might change on render
+    el = this.element // retain reference, as the ID might change on render
     var updateTiming = nanotiming(this._name + '.update')
     var shouldUpdate = this._rerender || this.update.apply(this, args)
     updateTiming()

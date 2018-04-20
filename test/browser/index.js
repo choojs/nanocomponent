@@ -2,7 +2,7 @@ var test = require('tape')
 var SimpleComponent = require('./simple')
 var BlogSection = require('./blog-section')
 var Nanocomponent = require('../../')
-var html = require('bel')
+var html = require('nanohtml')
 var compare = require('../../compare')
 var nanobus = require('nanobus')
 

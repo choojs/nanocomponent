@@ -3,7 +3,7 @@ var Nanocomponent = require('../')
 var nanologger = require('nanologger')
 var leaflet = require('leaflet')
 var onIdle = require('on-idle')
-var html = require('bel')
+var html = require('nanohtml')
 
 module.exports = Leaflet
 

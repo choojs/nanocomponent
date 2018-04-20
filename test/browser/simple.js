@@ -1,5 +1,5 @@
 var Nanocomponent = require('../../')
-var html = require('bel')
+var html = require('nanohtml')
 
 module.exports = SimpleComponent
 

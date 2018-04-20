@@ -1,6 +1,6 @@
 var Nanocomponent = require('../')
 var test = require('tape')
-var html = require('bel')
+var html = require('nanohtml')
 
 test('cache', (t) => {
   t.test('should validate input types', (t) => {

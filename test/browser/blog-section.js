@@ -1,5 +1,5 @@
 var Nanocomponent = require('../../')
-var html = require('bel')
+var html = require('nanohtml')
 
 class BlogSection extends Nanocomponent {
   constructor (name = 'BlogSection') {
