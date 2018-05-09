@@ -117,7 +117,7 @@ class Component extends Nanocomponent {
   }
 
   createElement () {
-    return html`<button onClick=${this.handleClick}>
+    return html`<button onclick=${this.handleClick}>
       My component
     </button>`
   }
