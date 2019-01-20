@@ -399,6 +399,7 @@ in the `beforerender` hook.
 - [Bloomberg: What’s Inside All the iPhones](https://www.bloomberg.com/features/apple-iphone-guts/) (👏 [@jongacnik](https://github.com/jongacnik) 👏)
 - [twitter-component](https://github.com/bcomnes/twitter-component)
 - [youtube-component](https://github.com/bcomnes/youtube-component)
+- [Ara File Manager](https://ara.one/app) (Decentralized application built atop Electron)
 
 ## Similar Packages
 
