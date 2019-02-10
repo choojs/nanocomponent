@@ -193,6 +193,8 @@ class Component extends Nanocomponent {
 }
 ```
 
+Please note that if you remove a component from the DOM, it will be unloaded, and when reinserted into the DOM, `createElement` will be fired again. If you want to maintain control of a component's rendering, it has to stay mounted! See [issue #88](https://github.com/choojs/nanocomponent/issues/88) for a more detailed discussion.
+
 ### Nested components and component containers
 
 Components nest and can skip renders at intermediary levels.  Components can
