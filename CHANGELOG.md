@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.5.3 - 2019-11-12
+- Fix `onclick` event name in readme example (https://github.com/choojs/nanocomponent/pull/82)
+- Add doc note about maintaining control of a component (https://github.com/choojs/nanocomponent/pull/89)
+- Point out the `createElement()` return value should be a single DOM node (https://github.com/choojs/nanocomponent/pull/93)
+
 ## 6.5.2 - 2018-04-20
 - Allow SVGs as the root node (https://github.com/choojs/nanocomponent/pull/79)
 - Update deps
