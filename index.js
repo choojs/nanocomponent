@@ -90,7 +90,7 @@ Nanocomponent.prototype._handleRender = function (args) {
   var el = this.createElement.apply(this, args)
   createElementTiming()
   if (!this._rootNodeName) this._rootNodeName = el.nodeName
-  assert(el instanceof window.Element, 'nanocomponent: createElement should return a DOM node')
+  assert(el instanceof window.Element, 'nanocomponent: createElement should return a single DOM node')
   assert.equal(this._rootNodeName, el.nodeName, 'nanocomponent: root node types cannot differ between re-renders')
   this._arguments = args
   return this._brandNode(this._ensureID(el))
