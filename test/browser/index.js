@@ -112,6 +112,7 @@ test('lifecycle tests', function (t) {
         unload: 0
       }
     }
+
     createElement (text) {
       this.arguments = arguments
       this.testState['create-element']++
