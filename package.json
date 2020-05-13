@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "run-s test:*",
-    "test:deps": "dependency-check .",
+    "test:deps": "dependency-check . --no-dev -i nanoassert",
     "test:node": "NODE_ENV=test node test/node.js | tap-format-spec",
     "test:browser": "browserify test/browser/index.js | tape-run --render='tap-format-spec'",
     "test:lint": "standard *.js",
@@ -42,28 +42,28 @@
   "homepage": "https://github.com/choojs/nanocomponent#readme",
   "dependencies": {
     "global": "^4.3.1",
-    "nanoassert": "^1.1.0",
+    "nanoassert": "^2.0.0",
     "nanomorph": "^5.1.2",
     "nanotiming": "^7.2.0",
-    "on-load": "^3.3.4"
+    "on-load": "^4.0.2"
   },
   "devDependencies": {
     "@tap-format/spec": "^0.2.0",
     "bankai": "^9.5.1",
     "browserify": "^16.0.0",
-    "choo": "^6.0.1",
+    "choo": "^7.1.0",
     "choo-log": "^8.0.0",
-    "dependency-check": "^3.0.0",
+    "dependency-check": "^4.1.0",
     "envify": "^4.0.0",
     "leaflet": "^1.1.0",
     "microbounce": "^1.0.0",
     "nanobus": "^4.2.0",
     "nanohtml": "^1.2.3",
-    "nanologger": "^1.3.1",
+    "nanologger": "^2.0.0",
     "npm-run-all": "^4.0.2",
     "on-idle": "^3.1.0",
-    "standard": "^11.0.1",
-    "tape": "^4.7.0",
-    "tape-run": "^4.0.0"
+    "standard": "^14.3.4",
+    "tape": "^5.0.0",
+    "tape-run": "^7.0.0"
   }
 }

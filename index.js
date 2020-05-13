@@ -1,10 +1,11 @@
-var document = require('global/document')
-var nanotiming = require('nanotiming')
-var morph = require('nanomorph')
-var onload = require('on-load')
-var OL_KEY_ID = onload.KEY_ID
-var OL_ATTR_ID = onload.KEY_ATTR
-var assert = require('assert')
+const document = require('global/document')
+const nanotiming = require('nanotiming')
+const morph = require('nanomorph')
+const onload = require('on-load')
+const assert = require('assert')
+
+const OL_KEY_ID = onload.KEY_ID
+const OL_ATTR_ID = onload.KEY_ATTR
 
 module.exports = Nanocomponent
 
@@ -28,37 +29,38 @@ function Nanocomponent (name) {
 
   this._arguments = []
 
-  var self = this
+  const self = this
 
   Object.defineProperty(this, 'element', {
     get: function () {
-      var el = document.getElementById(self._id)
+      const el = document.getElementById(self._id)
       if (el) return el.dataset.nanocomponent === self._ncID ? el : undefined
     }
   })
 }
 
 Nanocomponent.prototype.render = function () {
-  var renderTiming = nanotiming(this._name + '.render')
-  var self = this
-  var args = new Array(arguments.length)
-  var el
-  for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
+  const renderTiming = nanotiming(this._name + '.render')
+  const self = this
+  const args = new Array(arguments.length)
+  let el
+
+  for (let i = 0; i < arguments.length; i++) args[i] = arguments[i]
   if (!this._hasWindow) {
-    var createTiming = nanotiming(this._name + '.create')
+    const createTiming = nanotiming(this._name + '.create')
     el = this.createElement.apply(this, args)
     createTiming()
     renderTiming()
     return el
   } else if (this.element) {
     el = this.element // retain reference, as the ID might change on render
-    var updateTiming = nanotiming(this._name + '.update')
-    var shouldUpdate = this._rerender || this.update.apply(this, args)
+    const updateTiming = nanotiming(this._name + '.update')
+    const shouldUpdate = this._rerender || this.update.apply(this, args)
     updateTiming()
     if (this._rerender) this._rerender = false
     if (shouldUpdate) {
-      var desiredHtml = this._handleRender(args)
-      var morphTiming = nanotiming(this._name + '.morph')
+      const desiredHtml = this._handleRender(args)
+      const morphTiming = nanotiming(this._name + '.morph')
       morph(el, desiredHtml)
       morphTiming()
       if (this.afterupdate) this.afterupdate(el)
@@ -86,19 +88,19 @@ Nanocomponent.prototype.rerender = function () {
 }
 
 Nanocomponent.prototype._handleRender = function (args) {
-  var createElementTiming = nanotiming(this._name + '.createElement')
-  var el = this.createElement.apply(this, args)
+  const createElementTiming = nanotiming(this._name + '.createElement')
+  const el = this.createElement.apply(this, args)
   createElementTiming()
   if (!this._rootNodeName) this._rootNodeName = el.nodeName
   assert(el instanceof window.Element, 'nanocomponent: createElement should return a single DOM node')
-  assert.equal(this._rootNodeName, el.nodeName, 'nanocomponent: root node types cannot differ between re-renders')
+  assert(this._rootNodeName === el.nodeName, 'nanocomponent: root node types cannot differ between re-renders')
   this._arguments = args
   return this._brandNode(this._ensureID(el))
 }
 
 Nanocomponent.prototype._createProxy = function () {
-  var proxy = document.createElement(this._rootNodeName)
-  var self = this
+  const proxy = document.createElement(this._rootNodeName)
+  const self = this
   this._brandNode(proxy)
   proxy.id = this._id
   proxy.setAttribute('data-proxy', '')
