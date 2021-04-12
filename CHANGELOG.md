@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 6.6.0 - 2021-04-12
+- You can modify makeID (https://github.com/choojs/nanocomponent/pull/96)
+
 ## 6.5.3 - 2019-11-12
 - Fix `onclick` event name in readme example (https://github.com/choojs/nanocomponent/pull/82)
 - Add doc note about maintaining control of a component (https://github.com/choojs/nanocomponent/pull/89)
