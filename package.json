@@ -12,7 +12,8 @@
     "test:node": "NODE_ENV=test node test/node.js | tap-format-spec",
     "test:browser": "browserify test/browser/index.js | tape-run --render='tap-format-spec'",
     "test:lint": "standard *.js",
-    "start": "bankai start example"
+    "start": "bankai start example",
+    "build": "rm -rf example/dist && rm -rf dist && bankai build example && mv example/dist ."
   },
   "repository": {
     "type": "git",
