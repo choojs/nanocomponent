@@ -13,6 +13,8 @@ function makeID () {
   return 'ncid-' + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
 }
 
+Nanocomponent.makeID = makeID
+
 function Nanocomponent (name) {
   this._hasWindow = typeof window !== 'undefined'
   this._id = null // represents the id of the root node
@@ -111,7 +113,7 @@ Nanocomponent.prototype._createProxy = function () {
 }
 
 Nanocomponent.prototype._reset = function () {
-  this._ncID = makeID()
+  this._ncID = Nanocomponent.makeID()
   this._olID = null
   this._id = null
   this._proxy = null
